@@ -1,0 +1,71 @@
+{
+  "settings": "Settings",
+  "language": "Language",
+  "arabic": "العربية",
+  "english": "English",
+  "app_language": "App Language",
+  "dashboard": {
+    "title": "Wedding Planner",
+    "home": "Home",
+    "guests": "Guests",
+    "preparations": "Wedding Preparations",
+    "hospitality": "Hospitality Team",
+    "settings_card": "Settings",
+    "days_remaining": "Days remaining to wedding: {days}"
+  },
+  "guests": {
+    "title": "Guests Management",
+    "search_hint": "Search guest name...",
+    "pending": "Pending",
+    "attended": "Attended",
+    "pending_count": "Pending ({count})",
+    "attended_count": "Attended ({count})",
+    "mark_attended": "Check-in",
+    "undo_attended": "Undo",
+    "no_pending": "No pending guests",
+    "no_attended": "No one attended yet",
+    "details": "Guest Details",
+    "id_number": "ID Number",
+    "age": "Age",
+    "status": "Status",
+    "completed": "Completed",
+    "available": "Available",
+    "confirm_action": "Confirm Action",
+    "confirm_message": "Are you sure you want to {action} for \"{name}\"?",
+    "confirm": "Confirm",
+    "reminder_task": "Create Reminder Task",
+    "call_confirmation": "Call {name} to confirm attendance",
+    "reminder_created": "Reminder task for {name} created successfully 🔔",
+    "hidden_list": "List is hidden"
+  },
+  "tasks": {
+    "title": "Wedding Preparations",
+    "no_tasks": "No preparations currently, add a new one!",
+    "add_new": "Add New Preparation",
+    "example": "Example: Welcome the band...",
+    "assign_to": "Assign to (optional):",
+    "assisted_by": "Assisted by: {names}",
+    "no_people": "No people available"
+  },
+  "hospitality": {
+    "title": "Hospitality Team",
+    "no_data": "No data to display",
+    "details": "Team Member Details",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "age": "Age",
+    "edit_name": "Edit Name"
+  },
+  "common": {
+    "edit": "Edit",
+    "save": "Save",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "add": "Add",
+    "confirm": "Confirm",
+    "edit_data": "Edit Data",
+    "save_changes": "Save Changes",
+    "name": "Name",
+    "year": "year"
+  }
+}

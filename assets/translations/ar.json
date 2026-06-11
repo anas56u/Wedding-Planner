@@ -1,0 +1,71 @@
+{
+  "settings": "الإعدادات",
+  "language": "اللغة",
+  "arabic": "العربية",
+  "english": "English",
+  "app_language": "لغة التطبيق",
+  "dashboard": {
+    "title": "مساعد الزفاف",
+    "home": "الرئيسية",
+    "guests": "المعازيم",
+    "preparations": "تجهيزات الزفاف",
+    "hospitality": "فريق الضيافة",
+    "settings_card": "الإعدادات",
+    "days_remaining": "متبقي للزفاف: {days} يوم"
+  },
+  "guests": {
+    "title": "إدارة المعازيم",
+    "search_hint": "ابحث عن اسم مدعو...",
+    "pending": "في الانتظار",
+    "attended": "تم الحضور",
+    "pending_count": "في الانتظار ({count})",
+    "attended_count": "حاضر ({count})",
+    "mark_attended": "حاضر",
+    "undo_attended": "تراجع",
+    "no_pending": "لا يوجد معازيم في الانتظار",
+    "no_attended": "لم يحضر أحد بعد",
+    "details": "تفاصيل الضيف",
+    "id_number": "رقم المعرف (ID)",
+    "age": "العمر",
+    "status": "الحالة",
+    "completed": "تم الإنجاز",
+    "available": "متاح",
+    "confirm_action": "تأكيد الإجراء",
+    "confirm_message": "هل أنت متأكد أنك تريد {action} لـ \"{name}\"؟",
+    "confirm": "تأكيد",
+    "reminder_task": "إنشاء مهمة تذكير",
+    "call_confirmation": "الاتصال بـ {name} لتأكيد الحضور",
+    "reminder_created": "تم إضافة مهمة تذكير لـ {name} بنجاح 🔔",
+    "hidden_list": "تم إخفاء القائمة"
+  },
+  "tasks": {
+    "title": "تجهيزات الزفاف",
+    "no_tasks": "لا توجد تجهيزات حالياً، أضف تجهيزاً جديداً!",
+    "add_new": "إضافة تجهيز جديد",
+    "example": "مثال: استقبال فرقة الزفة...",
+    "assign_to": "توكيل المهمة إلى (اختياري):",
+    "assisted_by": "بمساعدة: {names}",
+    "no_people": "لا يوجد أشخاص حالياً"
+  },
+  "hospitality": {
+    "title": "فريق الضيافة",
+    "no_data": "لا يوجد بيانات لعرضها",
+    "details": "بيانات فريق الضيافة",
+    "first_name": "الاسم الأول",
+    "last_name": "الاسم الأخير",
+    "age": "العمر",
+    "edit_name": "تعديل الاسم"
+  },
+  "common": {
+    "edit": "تعديل",
+    "save": "حفظ",
+    "delete": "حذف",
+    "cancel": "إلغاء",
+    "add": "إضافة",
+    "confirm": "تأكيد",
+    "edit_data": "تعديل البيانات",
+    "save_changes": "حفظ التعديلات",
+    "name": "الاسم",
+    "year": "سنة"
+  }
+}
