@@ -84,9 +84,8 @@ class MyApp extends StatelessWidget {
           title: 'مساعد الزفاف',
 
           localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          locale: languageProvider.appLocale,
-
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
           theme: AppTheme.lightTheme,
 
           builder: (context, child) {
