@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart'; // ضروري لاستخدام .tr() و context.setLocale()
+import 'package:easy_localization/easy_localization.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // جلب اللغة الحالية للتطبيق
+    // جلب اللغة الحالية من مكتبة easy_localization مباشرة
     final isArabic = context.locale.languageCode == 'ar';
 
     return Scaffold(
@@ -15,7 +15,6 @@ class SettingsScreen extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.white,
         foregroundColor: Colors.black87,
-        // استخدام .tr() لترجمة النص حسب اللغة الحالية
         title: Text('settings'.tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: Padding(
@@ -38,9 +37,9 @@ class SettingsScreen extends StatelessWidget {
                       children: [
                         const Icon(Icons.language, color: Colors.blue),
                         const SizedBox(width: 12),
-                        Text(
+                        const Text(
                           'app_language',
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ).tr()
                       ],
                     ),
@@ -50,13 +49,12 @@ class SettingsScreen extends StatelessWidget {
                         Switch(
                           value: isArabic,
                           activeColor: Colors.blue,
-                          // يتم استدعاء هذه الدالة عند الضغط على الـ Switch
                           onChanged: (bool value) async {
+                            // استخدام دالة setLocale المدمجة في المكتبة
+                            // هذه الدالة ستقوم بتغيير اللغة، وحفظها، وإعادة بناء التطبيق (Rebuild) بالكامل فوراً!
                             if (value) {
-                              // إذا كانت القيمة true، حوّل للعربية
                               await context.setLocale(const Locale('ar'));
                             } else {
-                              // إذا كانت القيمة false، حوّل للإنجليزية
                               await context.setLocale(const Locale('en'));
                             }
                           },
