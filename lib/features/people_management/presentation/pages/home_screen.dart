@@ -74,11 +74,17 @@ class _HomeScreenState extends State<HomeScreen> {
             indicatorColor: Colors.white,
             indicatorWeight: 3,
             // ✅ تم إضافة const هنا لأن الستايل ثابت
-            labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            labelStyle: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
             tabs: [
               // ✅ تم إضافة const للأيقونات فقط، وإزالتها من الـ Tab لأن النص متغير
               Tab(icon: const Icon(Icons.list), text: 'guests.pending'.tr()),
-              Tab(icon: const Icon(Icons.done_all), text: 'guests.attended'.tr()),
+              Tab(
+                icon: const Icon(Icons.done_all),
+                text: 'guests.attended'.tr(),
+              ),
             ],
           ),
         ),
@@ -152,7 +158,9 @@ class _HomeScreenState extends State<HomeScreen> {
     bool isCompletedTab,
   ) async {
     // ✅ تحويل نصوص الـ Dialog لتدعم الترجمة
-    final String actionText = isCompletedTab ? 'guests.undo_attended'.tr() : 'guests.mark_attended'.tr();
+    final String actionText = isCompletedTab
+        ? 'guests.undo_attended'.tr()
+        : 'guests.mark_attended'.tr();
     final bool? userConfirmed = await showDialog<bool>(
       context: context,
       builder: (BuildContext dialogContext) {
@@ -165,7 +173,9 @@ class _HomeScreenState extends State<HomeScreen> {
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           content: Text(
-            'guests.confirm_message'.tr(namedArgs: {'action': actionText, 'name': person.name}),
+            'guests.confirm_message'.tr(
+              namedArgs: {'action': actionText, 'name': person.name},
+            ),
           ),
           actions: [
             TextButton(
@@ -209,8 +219,12 @@ class _HomeScreenState extends State<HomeScreen> {
               // ✅ استخدام namedArgs لتمرير العدد المتغير إلى الترجمة
               Text(
                 isCompletedTab
-                    ? 'guests.attended_count'.tr(namedArgs: {'count': people.length.toString()})
-                    : 'guests.pending_count'.tr(namedArgs: {'count': people.length.toString()}),
+                    ? 'guests.attended_count'.tr(
+                        namedArgs: {'count': people.length.toString()},
+                      )
+                    : 'guests.pending_count'.tr(
+                        namedArgs: {'count': people.length.toString()},
+                      ),
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -317,12 +331,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         confirmDismiss: (direction) async {
                           context.read<TasksProvider>().addTask(
-                            'guests.call_confirmation'.tr(namedArgs: {'name': person.name}),
+                            'guests.call_confirmation'.tr(
+                              namedArgs: {'name': person.name},
+                            ),
                           );
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                'guests.reminder_created'.tr(namedArgs: {'name': person.name}),
+                                'guests.reminder_created'.tr(
+                                  namedArgs: {'name': person.name},
+                                ),
                               ),
                               backgroundColor: Colors.green,
                               duration: const Duration(seconds: 2),
@@ -372,7 +390,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 fontSize: 16,
                               ),
                             ),
-                            subtitle: Text('guests.age'.tr(namedArgs: {'age': person.age.toString()})),
+                            subtitle: Text(
+                              '${'guests.age'.tr()}: ${person.age}',
+                            ),
                             trailing: isCompletedTab
                                 ? OutlinedButton.icon(
                                     onPressed: () => _confirmAction(

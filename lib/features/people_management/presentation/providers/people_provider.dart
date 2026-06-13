@@ -76,14 +76,22 @@ class PeopleProvider extends ChangeNotifier {
   }
 
   Future<void> toggleSelection(int personId) async {
+    // 1. استدعاء دالة execute كما هي معرفة في الـ UseCase
     final result = await togglePersonSelectionUseCase.execute(personId);
+    
     result.fold(
-      (Failure failure) => _errorMessage = failure.message,
+      (Failure failure) {
+        _errorMessage = failure.message;
+        notifyListeners();
+      },
       (_) {
+        // 2. تحديث الذاكرة المحلية باستخدام copyWith السحرية الموجودة لديك
         final index = _allPeople.indexWhere((p) => p.id == personId);
         if (index != -1) {
           final current = _allPeople[index];
           _allPeople[index] = current.copyWith(isSelected: !current.isSelected);
+          
+          // 3. إخبار واجهة المستخدم بتحديث نفسها فوراً
           notifyListeners();
         }
       },

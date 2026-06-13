@@ -8,13 +8,11 @@ import 'package:provider_test/injection_container.dart' as di;
 import 'features/people_management/presentation/providers/people_provider.dart';
 import 'core/theme/app_theme.dart'; 
 import 'core/widgets/global_network_overlay.dart'; 
-
-// 🌟 الاستيراد الجديد الذي كان مفقوداً
 import 'features/dashboard/presentation/provider/network_provider.dart'; 
 
 Future<String> fetchDailyWeddingTip() async {
   await Future.delayed(const Duration(seconds: 2));
-  final tips = [
+  final tips = [  
     "لا تنسَ تأكيد حجز القاعة قبل شهر من الموعد!",
     "ابتسم دائماً، صور الزفاف تدوم للأبد.",
     "تأكد من توزيع المهام ولا تحمل كل العبء وحدك.",
@@ -52,7 +50,6 @@ void main() async {
           ChangeNotifierProvider(create: (_) => di.sl<TasksProvider>()),
           ChangeNotifierProvider(create: (_) => di.sl<PeopleProvider>()),
           
-          // 🌟 الحل هنا: أضفنا مزود الإنترنت لكي لا ينهار الـ Overlay
           ChangeNotifierProvider(create: (_) => NetworkProvider()), 
           
           FutureProvider<String>( 

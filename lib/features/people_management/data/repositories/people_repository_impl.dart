@@ -16,20 +16,24 @@ class PeopleRepositoryImpl implements IPeopleRepository {
     required this.remoteDataSource,
   });
 
-  @override
-  Future<Either<Failure, List<PersonEntity>>> getPeople() async {
+
+@override
+Future<Either<Failure, List<PersonEntity>>> getPeople() async {
+  try {
+    final remoteModels = await remoteDataSource.getPeopleFromApi();
+    
+    localDataSource.cachePeople(remoteModels);
+    
+    return Right(List<PersonEntity>.from(remoteModels));
+  } catch (apiError) {
     try {
-      final remoteModels = await remoteDataSource.getPeopleFromApi();
-      return Right(List<PersonEntity>.from(remoteModels));
-    } catch (apiError) {
-      try {
-        final localModels = await localDataSource.getPeople();
-        return Right(List<PersonEntity>.from(localModels));
-      } catch (localError) {
-        return Left(CacheFailure('تعذر جلب البيانات من الإنترنت ومن الملف المحلي'));
-      }
+      final localModels = await localDataSource.getPeople();
+      return Right(List<PersonEntity>.from(localModels));
+    } catch (localError) {
+      return Left(CacheFailure('تعذر جلب البيانات من الإنترنت ومن الملف المحلي'));
     }
   }
+}
 
   @override
   Future<Either<Failure, Unit>> editPerson(int id, String newName, int newAge) async {

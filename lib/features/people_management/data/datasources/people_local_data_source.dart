@@ -8,6 +8,7 @@ abstract class IPeopleLocalDataSource {
   Future<List<PersonModel>> getPeople();
   Future<void> editPerson(int id, String newName, int newAge);
   Future<void> toggleSelection(int id);
+  void cachePeople(List<PersonModel> people);
 }
 
 @LazySingleton(as: IPeopleLocalDataSource)
@@ -29,6 +30,10 @@ class PeopleLocalDataSourceImpl implements IPeopleLocalDataSource {
     } catch (e) {
       throw Exception('فشل في قراءة ملف الأشخاص: $e');
     }
+  }
+  @override
+  void cachePeople(List<PersonModel> people) {
+    _cachedPeople = people;
   }
 
   @override
