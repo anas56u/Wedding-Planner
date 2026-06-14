@@ -1,0 +1,16 @@
+import 'package:dartz/dartz.dart';
+import '../../../../core/errors/Failure.dart';
+import '../entities/user_entity.dart';
+
+abstract class AuthRepository {
+  Future<Either<Failure, UserEntity>> login(String email, String password);
+  
+  // إنشاء حساب
+  Future<Either<Failure, UserEntity>> signUp(String email, String password);
+  
+  Future<Either<Failure, void>> sendEmailVerification();
+  
+  Future<Either<Failure, UserEntity>> checkCachedUser();
+  
+  Future<Either<Failure, void>> logout();
+}
