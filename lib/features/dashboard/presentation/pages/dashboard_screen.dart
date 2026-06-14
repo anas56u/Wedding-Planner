@@ -6,13 +6,16 @@ import 'package:provider_test/features/people_management/presentation/pages/home
 import 'package:provider_test/features/tasks/presentation/pages/tasks_screen.dart';
 import 'package:provider_test/features/hospitality_staff/presentation/pages/hospitality_staff_screen.dart';
 
-
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
   @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  @override
   Widget build(BuildContext context) {
-    // 💡 نقرأ النصيحة فقط هنا (لأنها تتغير مرة واحدة ولن تضر الأداء)
     final dailyTip = context.watch<String>();
 
     return Scaffold(
@@ -43,18 +46,20 @@ class DashboardScreen extends StatelessWidget {
               ),
               child: Text(
                 '💡 $dailyTip',
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blue, height: 1.5),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                  height: 1.5,
+                ),
                 textAlign: TextAlign.center,
               ),
             ),
 
-            // 🌟 --- صندوق العداد الحي (Stream) --- 🌟
-            // استدعينا الويدجت المعزول هنا لحماية الشاشة من إعادة البناء المتكرر
             const CountdownWidget(),
-            
+
             const SizedBox(height: 20),
 
-            // --- شبكة الأزرار الثابتة ---
             Expanded(
               child: GridView.count(
                 crossAxisCount: 2,
@@ -68,7 +73,12 @@ class DashboardScreen extends StatelessWidget {
                     icon: Icons.people_alt_rounded,
                     color: Colors.blue,
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomeScreen(),
+                        ),
+                      );
                     },
                   ),
                   _buildGridCard(
@@ -77,7 +87,12 @@ class DashboardScreen extends StatelessWidget {
                     icon: Icons.task_alt_rounded,
                     color: Colors.green,
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const TasksScreen()));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const TasksScreen(),
+                        ),
+                      );
                     },
                   ),
                   _buildGridCard(
@@ -86,18 +101,30 @@ class DashboardScreen extends StatelessWidget {
                     icon: Icons.woman,
                     color: Colors.red,
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const HospitalityStaffScreen()));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HospitalityStaffScreen(),
+                        ),
+                      );
                     },
                   ),
                   _buildGridCard(
                     context: context,
-                    title: 'dashboard.settings'.tr(),
+                    title: 'settings'.tr(),
                     icon: Icons.settings,
                     color: Colors.orange,
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SettingsScreen(),
+                        ),
+                      ).then((_) {
+                        setState(() {});
+                      });
                     },
-                  ), 
+                  ),
                 ],
               ),
             ),
@@ -107,12 +134,25 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildGridCard({required BuildContext context, required String title, required IconData icon, required Color color, required VoidCallback onTap}) {
+  Widget _buildGridCard({
+    required BuildContext context,
+    required String title,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(color: color.withOpacity(0.1), blurRadius: 10, spreadRadius: 2, offset: const Offset(0, 4))],
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.1),
+            blurRadius: 10,
+            spreadRadius: 2,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Material(
         color: Colors.transparent,
@@ -124,9 +164,23 @@ class DashboardScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(padding: const EdgeInsets.all(16), decoration: BoxDecoration(color: color.withOpacity(0.1), shape: BoxShape.circle), child: Icon(icon, size: 40, color: color)),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, size: 40, color: color),
+              ),
               const SizedBox(height: 12),
-              Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87)),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
             ],
           ),
         ),
@@ -157,8 +211,14 @@ class CountdownWidget extends StatelessWidget {
           const Icon(Icons.timer, color: Colors.red),
           const SizedBox(width: 8),
           Text(
-            'dashboard.days_remaining'.tr(namedArgs: {'days': timeLeft.toString()}),
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
+            'dashboard.days_remaining'.tr(
+              namedArgs: {'days': timeLeft.toString()},
+            ),
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.red,
+            ),
           ),
         ],
       ),

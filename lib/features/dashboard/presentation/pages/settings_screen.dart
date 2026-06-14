@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // جلب اللغة الحالية من مكتبة easy_localization مباشرة
     final isArabic = context.locale.languageCode == 'ar';
 
     return Scaffold(
@@ -50,8 +49,6 @@ class SettingsScreen extends StatelessWidget {
                           value: isArabic,
                           activeColor: Colors.blue,
                           onChanged: (bool value) async {
-                            // استخدام دالة setLocale المدمجة في المكتبة
-                            // هذه الدالة ستقوم بتغيير اللغة، وحفظها، وإعادة بناء التطبيق (Rebuild) بالكامل فوراً!
                             if (value) {
                               await context.setLocale(const Locale('ar'));
                             } else {
@@ -59,7 +56,7 @@ class SettingsScreen extends StatelessWidget {
                             }
                           },
                         ),
-                        Text('arabic'.tr(), style: TextStyle(color: isArabic ? Colors.blue : Colors.grey)),
+                          Text('arabic'.tr(), style: TextStyle(color: isArabic ? Colors.blue : Colors.grey)),
                       ],
                     ),
                   ],
