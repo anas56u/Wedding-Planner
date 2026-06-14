@@ -1,9 +1,7 @@
 {
-  "settings": "الإعدادات",
   "language": "اللغة",
   "arabic": "العربية",
   "english": "English",
-  "app_language": "لغة التطبيق",
   "dashboard": {
     "title": "مساعد الزفاف",
     "home": "الرئيسية",
@@ -11,7 +9,19 @@
     "preparations": "تجهيزات الزفاف",
     "hospitality": "فريق الضيافة",
     "settings_card": "الإعدادات",
-    "days_remaining": "متبقي للزفاف: {days} يوم"
+    "days_remaining": "متبقي للزفاف: {days} يوم",
+    "wedding_approaching": "يوم الزفاف يقترب! 🎉"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "welcome": "مرحباً بك",
+    "subtitle": "مساعد تخطيط الزفاف",
+    "general_section": "إعدادات عامة",
+    "app_language": "لغة التطبيق",
+    "notifications": "الإشعارات",
+    "about_section": "عن التطبيق",
+    "privacy_policy": "سياسة الخصوصية",
+    "logout": "تسجيل الخروج"
   },
   "guests": {
     "title": "إدارة المعازيم",

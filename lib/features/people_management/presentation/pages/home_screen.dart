@@ -24,100 +24,111 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        backgroundColor: theme.scaffoldBackgroundColor,
         appBar: AppBar(
           title: Text(
             'guests.title'.tr(),
-            style: const TextStyle(fontSize: 18),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           actions: [
+            // زر التحديث بتصميم أنيق
             IconButton(
-              icon: const Icon(Icons.refresh, color: Colors.blue),
+              icon: Icon(Icons.refresh_rounded, color: theme.colorScheme.primary),
               onPressed: () {
                 context.read<PeopleProvider>().loadData();
               },
             ),
+            // قائمة الفرز (Sorting) - تم إصلاح خطأ النصوص هنا!
             Consumer<PeopleProvider>(
               builder: (context, provider, child) {
-                return DropdownButton<SortType>(
-                  value: provider.currentSort,
-                  dropdownColor: Colors.white,
-                  icon: const Icon(Icons.sort),
-                  underline: const SizedBox(),
-                  onChanged: (SortType? newValue) {
-                    if (newValue != null) {
-                      context.read<PeopleProvider>().changeSort(newValue);
-                    }
-                  },
-                  items: [
-                    DropdownMenuItem(
-                      value: SortType.nameAscending,
-                      child: Text('guests.pending'.tr()),
-                    ),
-                    DropdownMenuItem(
-                      value: SortType.ageAscending,
-                      child: Text('guests.attended'.tr()),
-                    ),
-                    DropdownMenuItem(
-                      value: SortType.ageDescending,
-                      child: Text('guests.attended'.tr()),
-                    ),
-                  ],
+                return DropdownButtonHideUnderline(
+                  child: DropdownButton<SortType>(
+                    value: provider.currentSort,
+                    dropdownColor: theme.cardTheme.color,
+                    icon: Icon(Icons.sort_rounded, color: theme.colorScheme.primary),
+                    borderRadius: BorderRadius.circular(16),
+                    onChanged: (SortType? newValue) {
+                      if (newValue != null) {
+                        context.read<PeopleProvider>().changeSort(newValue);
+                      }
+                    },
+                    items: [
+                      DropdownMenuItem(
+                        value: SortType.nameAscending,
+                        child: Text('common.name'.tr(), style: TextStyle(color: theme.colorScheme.primary)),
+                      ),
+                      DropdownMenuItem(
+                        value: SortType.ageAscending,
+                        child: Text('العمر (تصاعدي)', style: TextStyle(color: theme.colorScheme.primary)), // يمكن إضافتها للترجمة لاحقاً
+                      ),
+                      DropdownMenuItem(
+                        value: SortType.ageDescending,
+                        child: Text('العمر (تنازلي)', style: TextStyle(color: theme.colorScheme.primary)),
+                      ),
+                    ],
+                  ),
                 );
               },
             ),
             const SizedBox(width: 8),
           ],
+          // تصميم عصري للـ TabBar
           bottom: TabBar(
-            indicatorColor: Colors.white,
-            indicatorWeight: 3,
-            // ✅ تم إضافة const هنا لأن الستايل ثابت
-            labelStyle: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
+            indicatorColor: theme.colorScheme.secondary, // الخط السفلي باللون الذهبي
+            indicatorWeight: 4,
+            indicatorSize: TabBarIndicatorSize.tab,
+            labelColor: theme.colorScheme.secondary,
+            unselectedLabelColor: Colors.grey.shade500,
+            labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             tabs: [
-              // ✅ تم إضافة const للأيقونات فقط، وإزالتها من الـ Tab لأن النص متغير
-              Tab(icon: const Icon(Icons.list), text: 'guests.pending'.tr()),
-              Tab(
-                icon: const Icon(Icons.done_all),
-                text: 'guests.attended'.tr(),
-              ),
+              Tab(icon: const Icon(Icons.pending_actions_rounded), text: 'guests.pending'.tr()),
+              Tab(icon: const Icon(Icons.how_to_reg_rounded), text: 'guests.attended'.tr()),
             ],
           ),
         ),
-
         body: Consumer<PeopleProvider>(
           builder: (context, provider, child) {
             if (provider.isLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return Center(
+                child: CircularProgressIndicator(color: theme.colorScheme.secondary),
+              );
             }
 
             if (provider.errorMessage != null) {
               return Center(
                 child: Text(
                   provider.errorMessage!,
-                  style: const TextStyle(color: Colors.red, fontSize: 16),
+                  style: TextStyle(color: Colors.red.shade400, fontSize: 16),
                 ),
               );
             }
 
             return Column(
               children: [
+                // شريط البحث المطور (Modern Search Bar)
                 Padding(
-                  padding: const EdgeInsets.all(12.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: TextField(
+                    style: TextStyle(color: theme.colorScheme.primary),
                     decoration: InputDecoration(
                       hintText: 'guests.search_hint'.tr(),
-                      prefixIcon: const Icon(Icons.search, color: Colors.blue),
+                      hintStyle: TextStyle(color: Colors.grey.shade400),
+                      prefixIcon: Icon(Icons.search_rounded, color: theme.colorScheme.secondary),
                       filled: true,
-                      fillColor: Colors.grey.shade100,
+                      fillColor: theme.cardTheme.color,
                       contentPadding: const EdgeInsets.symmetric(vertical: 0),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(20), // حواف دائرية بالكامل
                         borderSide: BorderSide.none,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        borderSide: BorderSide(color: theme.colorScheme.secondary, width: 1.5),
                       ),
                     ),
                     onChanged: (String value) {
@@ -126,6 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
 
+                // عرض القوائم بناءً على الـ Tab المختار
                 Expanded(
                   child: TabBarView(
                     children: [
@@ -134,12 +146,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         people: provider.availablePeople,
                         isCompletedTab: false,
                         isVisible: provider.isAvailableVisible,
+                        theme: theme,
                       ),
                       _buildPeopleList(
                         context: context,
                         people: provider.selectedPeople,
                         isCompletedTab: true,
                         isVisible: provider.isCompletedVisible,
+                        theme: theme,
                       ),
                     ],
                   ),
@@ -152,43 +166,34 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Future<void> _confirmAction(
-    BuildContext context,
-    PersonEntity person,
-    bool isCompletedTab,
-  ) async {
-    // ✅ تحويل نصوص الـ Dialog لتدعم الترجمة
-    final String actionText = isCompletedTab
-        ? 'guests.undo_attended'.tr()
-        : 'guests.mark_attended'.tr();
+  // دالة عرض الديالوج (Dialog) بتصميم حديث
+  Future<void> _confirmAction(BuildContext context, PersonEntity person, bool isCompletedTab, ThemeData theme) async {
+    final String actionText = isCompletedTab ? 'guests.undo_attended'.tr() : 'guests.mark_attended'.tr();
+    
     final bool? userConfirmed = await showDialog<bool>(
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
+          backgroundColor: theme.cardTheme.color,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
           title: Text(
             'guests.confirm_action'.tr(),
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
           ),
           content: Text(
-            'guests.confirm_message'.tr(
-              namedArgs: {'action': actionText, 'name': person.name},
-            ),
+            'guests.confirm_message'.tr(namedArgs: {'action': actionText, 'name': person.name}),
+            style: TextStyle(color: Colors.grey.shade700, fontSize: 16),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(
-                'common.cancel'.tr(),
-                style: const TextStyle(color: Colors.grey),
-              ),
+              child: Text('common.cancel'.tr(), style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: isCompletedTab ? Colors.red : Colors.blue,
+                backgroundColor: isCompletedTab ? Colors.red.shade400 : Colors.green.shade600,
                 foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
               onPressed: () => Navigator.of(dialogContext).pop(true),
               child: Text('common.confirm'.tr()),
@@ -203,48 +208,39 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  // بناء قائمة الأشخاص
   Widget _buildPeopleList({
     required BuildContext context,
     required List<PersonEntity> people,
     required bool isCompletedTab,
     required bool isVisible,
+    required ThemeData theme,
   }) {
     return Column(
       children: [
+        // ترويسة القائمة (العدد وزر الإخفاء)
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // ✅ استخدام namedArgs لتمرير العدد المتغير إلى الترجمة
               Text(
                 isCompletedTab
-                    ? 'guests.attended_count'.tr(
-                        namedArgs: {'count': people.length.toString()},
-                      )
-                    : 'guests.pending_count'.tr(
-                        namedArgs: {'count': people.length.toString()},
-                      ),
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                    ? 'guests.attended_count'.tr(namedArgs: {'count': people.length.toString()})
+                    : 'guests.pending_count'.tr(namedArgs: {'count': people.length.toString()}),
+                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
               ),
               Row(
                 children: [
-                  const Icon(Icons.visibility, color: Colors.grey, size: 20),
-                  Switch(
+                  Icon(isVisible ? Icons.visibility_rounded : Icons.visibility_off_rounded, color: Colors.grey.shade500, size: 20),
+                  Switch.adaptive( // استخدام Switch.adaptive لأفضل تجربة عبر المنصات
                     value: isVisible,
-                    activeColor: isCompletedTab ? Colors.green : Colors.blue,
+                    activeColor: theme.colorScheme.secondary,
                     onChanged: (bool value) {
                       if (isCompletedTab) {
-                        context
-                            .read<PeopleProvider>()
-                            .toggleCompletedVisibility(value);
+                        context.read<PeopleProvider>().toggleCompletedVisibility(value);
                       } else {
-                        context
-                            .read<PeopleProvider>()
-                            .toggleAvailableVisibility(value);
+                        context.read<PeopleProvider>().toggleAvailableVisibility(value);
                       }
                     },
                   ),
@@ -254,186 +250,157 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
 
+        // حالة القائمة المخفية
         if (!isVisible)
           Expanded(
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.visibility_off,
-                    size: 80,
-                    color: Colors.grey.shade400,
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(color: Colors.grey.shade200, shape: BoxShape.circle),
+                    child: Icon(Icons.visibility_off_rounded, size: 60, color: Colors.grey.shade500),
                   ),
                   const SizedBox(height: 16),
                   Text(
                     'guests.hidden_list'.tr(),
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey,
-                    ),
+                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: Colors.grey.shade600),
                   ),
                 ],
               ),
             ),
           )
+        // حالة عرض البيانات
         else
           Expanded(
             child: people.isEmpty
                 ? Center(
-                    child: Text(
-                      isCompletedTab
-                          ? 'guests.no_attended'.tr()
-                          : 'guests.no_pending'.tr(),
-                      style: const TextStyle(fontSize: 18, color: Colors.grey),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(isCompletedTab ? Icons.how_to_reg_rounded : Icons.people_outline_rounded, size: 60, color: Colors.grey.shade400),
+                        const SizedBox(height: 12),
+                        Text(
+                          isCompletedTab ? 'guests.no_attended'.tr() : 'guests.no_pending'.tr(),
+                          style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
+                        ),
+                      ],
                     ),
                   )
-                : ListView.builder(
-                    padding: const EdgeInsets.all(8),
+                : ListView.separated( // استخدام separated بدلاً من builder
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     itemCount: people.length,
+                    separatorBuilder: (context, index) => const SizedBox(height: 12),
                     itemBuilder: (context, index) {
                       final person = people[index];
 
                       return Dismissible(
                         key: ValueKey('person_${person.id}'),
                         direction: DismissDirection.startToEnd,
+                        // تصميم خلفية السحب (Swipe to Add Task)
                         background: Container(
-                          margin: const EdgeInsetsDirectional.symmetric(
-                            vertical: 6,
-                            horizontal: 4,
-                          ),
                           decoration: BoxDecoration(
-                            color: Colors.orange.shade400,
-                            borderRadius: BorderRadius.circular(12),
+                            gradient: LinearGradient(
+                              colors: [theme.colorScheme.secondary, theme.colorScheme.secondary.withOpacity(0.7)],
+                            ),
+                            borderRadius: BorderRadius.circular(16),
                           ),
-                          alignment: AlignmentDirectional.centerEnd,
-                          padding: const EdgeInsetsDirectional.only(end: 20),
+                          alignment: AlignmentDirectional.centerStart,
+                          padding: const EdgeInsetsDirectional.only(start: 24),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
+                              const Icon(Icons.add_task_rounded, color: Colors.white, size: 28),
+                              const SizedBox(width: 12),
                               Text(
                                 'guests.reminder_task'.tr(),
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              const Icon(
-                                Icons.alarm_add,
-                                color: Colors.white,
-                                size: 30,
+                                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
                               ),
                             ],
                           ),
                         ),
                         confirmDismiss: (direction) async {
-                          context.read<TasksProvider>().addTask(
-                            'guests.call_confirmation'.tr(
-                              namedArgs: {'name': person.name},
-                            ),
-                          );
+                          context.read<TasksProvider>().addTask('guests.call_confirmation'.tr(namedArgs: {'name': person.name}));
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text(
-                                'guests.reminder_created'.tr(
-                                  namedArgs: {'name': person.name},
-                                ),
+                              content: Row(
+                                children: [
+                                  const Icon(Icons.check_circle_outline, color: Colors.white),
+                                  const SizedBox(width: 12),
+                                  Expanded(child: Text('guests.reminder_created'.tr(namedArgs: {'name': person.name}))),
+                                ],
                               ),
-                              backgroundColor: Colors.green,
-                              duration: const Duration(seconds: 2),
+                              backgroundColor: Colors.green.shade600,
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              duration: const Duration(seconds: 3),
                             ),
                           );
-                          return false;
+                          return false; // نرجع false لأننا لا نريد حذف العنصر من القائمة!
                         },
-                        child: Card(
-                          elevation: 2,
-                          margin: const EdgeInsets.symmetric(
-                            vertical: 6,
-                            horizontal: 4,
+                        // بطاقة الضيف
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: theme.cardTheme.color,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: theme.colorScheme.primary.withOpacity(0.04),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
                           ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: ListTile(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => PersonDetailsScreen(
-                                    initialPerson: person,
-                                  ),
+                          child: Material(
+                            color: Colors.transparent,
+                            clipBehavior: Clip.hardEdge,
+                            borderRadius: BorderRadius.circular(16),
+                            child: ListTile(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => PersonDetailsScreen(initialPerson: person)),
+                                );
+                              },
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              leading: CircleAvatar(
+                                radius: 24,
+                                backgroundColor: isCompletedTab ? Colors.green.shade50 : theme.colorScheme.primary.withOpacity(0.05),
+                                child: Icon(
+                                  isCompletedTab ? Icons.check_rounded : Icons.person_outline_rounded,
+                                  color: isCompletedTab ? Colors.green.shade600 : theme.colorScheme.primary,
                                 ),
-                              );
-                            },
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8,
-                            ),
-                            leading: CircleAvatar(
-                              backgroundColor: isCompletedTab
-                                  ? Colors.green.shade100
-                                  : Colors.blue.shade100,
-                              child: Icon(
-                                isCompletedTab ? Icons.check : Icons.person,
-                                color: isCompletedTab
-                                    ? Colors.green
-                                    : Colors.blue,
                               ),
-                            ),
-                            title: Text(
-                              person.name,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                              title: Text(
+                                person.name,
+                                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
                               ),
-                            ),
-                            subtitle: Text(
-                              '${'guests.age'.tr()}: ${person.age}',
-                            ),
-                            trailing: isCompletedTab
-                                ? OutlinedButton.icon(
-                                    onPressed: () => _confirmAction(
-                                      context,
-                                      person,
-                                      isCompletedTab,
-                                    ),
-                                    icon: const Icon(
-                                      Icons.undo,
-                                      size: 18,
-                                      color: Colors.red,
-                                    ),
-                                    // ✅ استخدام كلمة "تراجع" أو "Undo" من الترجمة
-                                    label: Text(
-                                      'guests.undo_attended'.tr(),
-                                      style: const TextStyle(color: Colors.red),
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      side: const BorderSide(color: Colors.red),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
+                              subtitle: Text(
+                                '${'guests.age'.tr()}: ${person.age}',
+                                style: TextStyle(color: Colors.grey.shade600),
+                              ),
+                              trailing: isCompletedTab
+                                  ? OutlinedButton.icon(
+                                      onPressed: () => _confirmAction(context, person, isCompletedTab, theme),
+                                      icon: Icon(Icons.undo_rounded, size: 18, color: Colors.red.shade400),
+                                      label: Text('guests.undo_attended'.tr(), style: TextStyle(color: Colors.red.shade400)),
+                                      style: OutlinedButton.styleFrom(
+                                        side: BorderSide(color: Colors.red.shade200),
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                      ),
+                                    )
+                                  : ElevatedButton.icon(
+                                      onPressed: () => _confirmAction(context, person, isCompletedTab, theme),
+                                      icon: const Icon(Icons.how_to_reg_rounded, size: 18),
+                                      label: Text('guests.mark_attended'.tr()),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.green.shade600, // الأخضر يدل على التأكيد بنجاح
+                                        foregroundColor: Colors.white,
+                                        elevation: 0,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                       ),
                                     ),
-                                  )
-                                : ElevatedButton.icon(
-                                    onPressed: () => _confirmAction(
-                                      context,
-                                      person,
-                                      isCompletedTab,
-                                    ),
-                                    icon: const Icon(Icons.check, size: 18),
-                                    // ✅ استخدام كلمة "حاضر" أو "Check-in" من الترجمة
-                                    label: Text('guests.mark_attended'.tr()),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.blue,
-                                      foregroundColor: Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                  ),
+                            ),
                           ),
                         ),
                       );

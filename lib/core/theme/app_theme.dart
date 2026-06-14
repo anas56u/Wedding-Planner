@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  // 1. تعريف الألوان الأساسية (Color Palette)
-  // استخدام const يقلل استهلاك الذاكرة
+ 
   static const Color primaryNavy = Color(0xFF1A2A3A); // كحلي ملكي راقي
   static const Color accentRoseGold = Color(0xFFD4AF37); // ذهبي/روز جولد للمناسبات
   static const Color backgroundCream = Color(0xFFF9F9F6); // خلفية كريمية مريحة للعين (Off-White)

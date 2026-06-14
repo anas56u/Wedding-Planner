@@ -1,26 +1,36 @@
 {
-  "settings": "Settings",
   "language": "Language",
   "arabic": "العربية",
   "english": "English",
-  "app_language": "App Language",
   "dashboard": {
     "title": "Wedding Planner",
-    "home": "Home",
+    "home": "Dashboard",
     "guests": "Guests",
-    "preparations": "Wedding Preparations",
+    "preparations": "Preparations",
     "hospitality": "Hospitality Team",
     "settings_card": "Settings",
-    "days_remaining": "Days remaining to wedding: {days}"
+    "days_remaining": "{days} Days Left",
+    "wedding_approaching": "Wedding day is approaching! 🎉"
+  },
+  "settings": {
+    "title": "Settings",
+    "welcome": "Welcome Back",
+    "subtitle": "Wedding Planning Assistant",
+    "general_section": "General Settings",
+    "app_language": "App Language",
+    "notifications": "Notifications",
+    "about_section": "About App",
+    "privacy_policy": "Privacy Policy",
+    "logout": "Log Out"
   },
   "guests": {
     "title": "Guests Management",
-    "search_hint": "Search guest name...",
+    "search_hint": "Search for a guest...",
     "pending": "Pending",
     "attended": "Attended",
     "pending_count": "Pending ({count})",
     "attended_count": "Attended ({count})",
-    "mark_attended": "Check-in",
+    "mark_attended": "Attend",
     "undo_attended": "Undo",
     "no_pending": "No pending guests",
     "no_attended": "No one attended yet",
@@ -31,26 +41,26 @@
     "completed": "Completed",
     "available": "Available",
     "confirm_action": "Confirm Action",
-    "confirm_message": "Are you sure you want to {action} for \"{name}\"?",
+    "confirm_message": "Are you sure you want to {action} \"{name}\"?",
     "confirm": "Confirm",
     "reminder_task": "Create Reminder Task",
     "call_confirmation": "Call {name} to confirm attendance",
-    "reminder_created": "Reminder task for {name} created successfully 🔔",
+    "reminder_created": "Reminder task for {name} added successfully 🔔",
     "hidden_list": "List is hidden"
   },
   "tasks": {
     "title": "Wedding Preparations",
-    "no_tasks": "No preparations currently, add a new one!",
+    "no_tasks": "No preparations yet, add a new one!",
     "add_new": "Add New Preparation",
     "example": "Example: Welcome the band...",
-    "assign_to": "Assign to (optional):",
+    "assign_to": "Assign to (Optional):",
     "assisted_by": "Assisted by: {names}",
     "no_people": "No people available"
   },
   "hospitality": {
     "title": "Hospitality Team",
     "no_data": "No data to display",
-    "details": "Team Member Details",
+    "details": "Hospitality Team Details",
     "first_name": "First Name",
     "last_name": "Last Name",
     "age": "Age",
@@ -66,6 +76,6 @@
     "edit_data": "Edit Data",
     "save_changes": "Save Changes",
     "name": "Name",
-    "year": "year"
+    "year": "Year"
   }
 }
