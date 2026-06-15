@@ -6,7 +6,7 @@ final sl = GetIt.instance;
 
 @InjectableInit(
   initializerName: 'init', // اسم الدالة التي سيولدها الروبوت
-  preferRelativeImports: true, 
+  preferRelativeImports: false, 
   asExtension: true,
 )
 Future<void> configureDependencies() async {

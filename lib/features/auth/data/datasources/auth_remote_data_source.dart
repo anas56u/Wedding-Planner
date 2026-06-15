@@ -1,13 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
 import '../models/user_model.dart';
-@LazySingleton(as: AuthRemoteDataSource)
 abstract class AuthRemoteDataSource {
   Future<UserModel> login(String email, String password);
   Future<UserModel> signUp(String email, String password);
   Future<void> sendEmailVerification();
   Future<void> logout();
 }
+@LazySingleton(as: AuthRemoteDataSource)
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final FirebaseAuth firebaseAuth;

@@ -3,7 +3,6 @@ import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_model.dart';
 
-@LazySingleton(as: AuthLocalDataSource)
 abstract class AuthLocalDataSource {
   Future<void> cacheUser(UserModel userToCache);
   Future<UserModel> getLastCachedUser();
@@ -11,6 +10,7 @@ abstract class AuthLocalDataSource {
 }
 
 const CACHED_USER_KEY = 'CACHED_USER';
+@LazySingleton(as: AuthLocalDataSource)
 
 class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   final SharedPreferences sharedPreferences;

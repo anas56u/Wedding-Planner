@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:provider_test/features/auth/presentation/screens/sign_up_screen.dart';
 // تأكد من صحة هذه المسارات بناءً على هيكل مشروعك
 import '../providers/auth_provider.dart'; 
 import '../../../dashboard/presentation/pages/dashboard_screen.dart';
@@ -197,13 +198,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       TextButton(
                         onPressed: () {
-                          // TODO: سنفعلها في الخطوة القادمة
-                          /*
+                          
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const SignUpScreen()),
                           );
-                          */
+                          
                         },
                         child: Text(
                           'إنشاء حساب',
