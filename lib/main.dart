@@ -3,6 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/core/providers/Language_Provider.dart';
+import 'package:provider_test/features/auth/presentation/providers/auth_provider.dart';
+import 'package:provider_test/features/auth/presentation/screens/login_screen.dart';
 import 'package:provider_test/features/dashboard/presentation/pages/dashboard_screen.dart';
 import 'package:provider_test/features/hospitality_staff/presentation/providers/hospitality_staff_provider.dart';
 import 'package:provider_test/features/tasks/presentation/providers/tasks_provider.dart';
@@ -52,6 +54,8 @@ void main() async {
       startLocale: const Locale('ar'),
       child: MultiProvider(
         providers: [
+          ChangeNotifierProvider(
+      create: (_) => di.sl<AuthProvider>()..checkAuthStatus(),),
           ChangeNotifierProvider(create: (_) => LanguageProvider()),
           ChangeNotifierProvider(
             create: (_) => di.sl<HospitalityStaffProvider>(),
@@ -96,7 +100,7 @@ class MyApp extends StatelessWidget {
             return GlobalNetworkOverlay(child: child!);
           },
 
-          home: const DashboardScreen(),
+          home: const LoginScreen(), 
         );
       },
     );

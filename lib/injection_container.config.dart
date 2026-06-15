@@ -9,11 +9,24 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:firebase_auth/firebase_auth.dart' as _i59;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:http/http.dart' as _i519;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 import 'core/di/register_module.dart' as _i854;
+import 'features/auth/data/datasources/auth_local_data_source.dart' as _i791;
+import 'features/auth/data/datasources/auth_remote_data_source.dart' as _i767;
+import 'features/auth/data/repositories/auth_repository_impl.dart' as _i111;
+import 'features/auth/domain/repositories/auth_repository.dart' as _i1015;
+import 'features/auth/domain/usecases/check_cached_user_usecase.dart' as _i338;
+import 'features/auth/domain/usecases/login_usecase.dart' as _i206;
+import 'features/auth/domain/usecases/logout_usecase.dart' as _i824;
+import 'features/auth/domain/usecases/send_email_verification_usecase.dart'
+    as _i746;
+import 'features/auth/domain/usecases/sign_up_usecase.dart' as _i261;
+import 'features/auth/presentation/providers/auth_provider.dart' as _i220;
 import 'features/hospitality_staff/data/datasources/hospitality_staff_remote_data_source.dart'
     as _i777;
 import 'features/hospitality_staff/data/repositories/hospitality_staff_repository_impl.dart'
@@ -52,19 +65,45 @@ import 'features/tasks/presentation/providers/tasks_provider.dart' as _i789;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
-  _i174.GetIt init({
+  Future<_i174.GetIt> init({
     String? environment,
     _i526.EnvironmentFilter? environmentFilter,
-  }) {
+  }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final registerModule = _$RegisterModule();
     gh.factory<_i789.TasksProvider>(() => _i789.TasksProvider());
     gh.lazySingleton<_i519.Client>(() => registerModule.client);
+    gh.lazySingleton<_i59.FirebaseAuth>(() => registerModule.firebaseAuth);
+    await gh.lazySingletonAsync<_i460.SharedPreferences>(
+      () => registerModule.sharedPreferences,
+      preResolve: true,
+    );
     gh.lazySingleton<_i114.IPeopleLocalDataSource>(
       () => _i114.PeopleLocalDataSourceImpl(),
     );
     gh.lazySingleton<_i765.ITasksLocalDataSource>(
       () => _i765.TasksLocalDataSourceImpl(),
+    );
+    gh.lazySingleton<_i1015.AuthRepository>(
+      () => _i111.AuthRepositoryImpl(
+        remoteDataSource: gh<_i767.AuthRemoteDataSource>(),
+        localDataSource: gh<_i791.AuthLocalDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i338.CheckCachedUserUseCase>(
+      () => _i338.CheckCachedUserUseCase(gh<_i1015.AuthRepository>()),
+    );
+    gh.lazySingleton<_i206.LoginUseCase>(
+      () => _i206.LoginUseCase(gh<_i1015.AuthRepository>()),
+    );
+    gh.lazySingleton<_i824.LogoutUseCase>(
+      () => _i824.LogoutUseCase(gh<_i1015.AuthRepository>()),
+    );
+    gh.lazySingleton<_i746.SendEmailVerificationUseCase>(
+      () => _i746.SendEmailVerificationUseCase(gh<_i1015.AuthRepository>()),
+    );
+    gh.lazySingleton<_i261.SignUpUseCase>(
+      () => _i261.SignUpUseCase(gh<_i1015.AuthRepository>()),
     );
     gh.lazySingleton<_i777.IHospitalityStaffRemoteDataSource>(
       () => _i777.HospitalityStaffRemoteDataSourceImpl(
@@ -88,6 +127,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i448.IHospitalityStaffRepository>(
       () => _i310.HospitalityStaffRepositoryImpl(
         remoteDataSource: gh<_i777.IHospitalityStaffRemoteDataSource>(),
+      ),
+    );
+    gh.factory<_i220.AuthProvider>(
+      () => _i220.AuthProvider(
+        gh<_i206.LoginUseCase>(),
+        gh<_i261.SignUpUseCase>(),
+        gh<_i338.CheckCachedUserUseCase>(),
+        gh<_i746.SendEmailVerificationUseCase>(),
+        gh<_i824.LogoutUseCase>(),
       ),
     );
     gh.lazySingleton<_i193.EditPersonUseCase>(
