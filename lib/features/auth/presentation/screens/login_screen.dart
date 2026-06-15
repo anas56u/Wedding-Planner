@@ -189,7 +189,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       // زر نسيت كلمة المرور الأصلي
                       TextButton(
                         onPressed: () {
-                          // TODO: الانتقال لشاشة استعادة كلمة المرور
                         },
                         child: Text(
                           'هل نسيت كلمة المرور؟',
@@ -204,12 +203,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 24),
                   const SizedBox(height: 24),
 
-                  // --- 5. زر تسجيل الدخول الرئيسي ---
                   SizedBox(
                     height: 56, // ارتفاع ثابت يعطي فخامة للزر
                     child: ElevatedButton(
                       onPressed: authProvider.isLoading ? null : _handleLogin,
-                      // التصميم (الشكل واللون) مأخوذ تلقائياً من AppTheme
                       child: authProvider.isLoading
                           ? const CircularProgressIndicator(color: Colors.white)
                           : const Text('تسجيل الدخول'),

@@ -20,7 +20,6 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final userModel = await remoteDataSource.login(email, password);
       
-      // 🌟 التفكير الهندسي: نحفظ المستخدم محلياً فقط إذا كان rememberMe = true
       if (rememberMe) {
         await localDataSource.cacheUser(userModel);
       }
@@ -35,7 +34,6 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, UserEntity>> signUp(String email, String password) async {
     try {
       final userModel = await remoteDataSource.signUp(email, password);
-      // ملاحظة: عادة لا نحفظ الجلسة في الـ signUp إذا كنا ننتظر التحقق من الإيميل أولاً
       return Right(userModel);
     } catch (e) {
       return Left(ServerFailure( 'حدث خطأ أثناء إنشاء الحساب.'));
@@ -51,12 +49,19 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(ServerFailure( 'فشل في إرسال البريد الإلكتروني.'));
     }
   }
-
- @override
+@override
   Future<Either<Failure, UserEntity>> checkCachedUser() async {
     try {
+      // 1. اقرأ البيانات المحلية أولاً
       final localUser = await localDataSource.getLastCachedUser();
-      return Right(localUser);
+      
+      // 2. تأكد أن Firebase لا يزال يحتفظ بالجلسة النشطة
+final firebaseUser = remoteDataSource.currentUser;      
+      if (firebaseUser != null) {
+        return Right(localUser);
+      } else {
+        throw Exception('انتهت جلسة Firebase');
+      }
     } catch (e) {
       await remoteDataSource.logout(); 
       return Left(CacheFailure('لا يوجد مستخدم مسجل.'));
@@ -66,7 +71,6 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, void>> logout() async {
     try {
-      // نمسح الجلسة من Firebase ومن التخزين المحلي
       await remoteDataSource.logout();
       await localDataSource.clearCachedUser();
       return const Right(null);

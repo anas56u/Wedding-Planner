@@ -1,5 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:provider/provider.dart';
+import 'package:provider_test/features/auth/presentation/providers/auth_provider.dart';
+import 'package:provider_test/features/auth/presentation/screens/login_screen.dart';
+import 'package:provider_test/features/dashboard/presentation/pages/privacy_policy_screen.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/section_title.dart';
 import '../widgets/settings_card.dart';
@@ -36,7 +41,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 32),
 
           // قسم الإعدادات العامة
-          SectionTitle(title: 'settings.general_section'.tr(), theme: theme), 
+          SectionTitle(title: 'settings.general_section'.tr(), theme: theme),
           const SizedBox(height: 12),
           SettingsCard(
             theme: theme,
@@ -47,7 +52,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 onChanged: (String? newValue) async {
                   if (newValue != null && newValue != currentLocale) {
                     await context.setLocale(Locale(newValue));
-                    setState(() {}); 
+                    setState(() {});
                   }
                 },
               ),
@@ -78,17 +83,81 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 title: 'settings.privacy_policy'.tr(),
                 icon: Icons.privacy_tip_outlined,
                 onTap: () {
-                  // سلوك شكلي مستقبلي
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PrivacyPolicyScreen(),
+                    ),
+                  );
                 },
               ),
               SettingsDivider(theme: theme),
-              ActionOption(
+             ActionOption(
                 theme: theme,
                 title: 'settings.logout'.tr(),
                 icon: Icons.logout_rounded,
                 isDestructive: true,
-                onTap: () {
-                  // سلوك شكلي مستقبلي
+                onTap: () async {
+                  // 1. إظهار رسالة تأكيد للمستخدم
+                  final bool? confirmLogout = await showDialog<bool>(
+                    context: context,
+                    builder: (dialogContext) {
+                      return AlertDialog(
+                        backgroundColor: theme.cardTheme.color,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                        title: Row(
+                          children: [
+                            Icon(Icons.logout_rounded, color: Colors.red.shade400),
+                            const SizedBox(width: 12),
+                            Text(
+                              'تسجيل الخروج', // يمكنك تحويلها لـ 'settings.logout'.tr()
+                              style: theme.textTheme.titleLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: theme.colorScheme.primary,
+                              ),
+                            ),
+                          ],
+                        ),
+                        content: Text(
+                          'هل أنت متأكد أنك تريد تسجيل الخروج من حسابك؟',
+                          style: TextStyle(color: Colors.grey.shade700, fontSize: 16),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(dialogContext).pop(false),
+                            child: Text(
+                              'common.cancel'.tr(),
+                              style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red.shade400,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            ),
+                            onPressed: () => Navigator.of(dialogContext).pop(true),
+                            child: const Text('تأكيد الخروج'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+
+                  // 2. إذا وافق المستخدم على الخروج
+                  if (confirmLogout == true && context.mounted) {
+                    // استدعاء دالة تسجيل الخروج من الـ Provider
+                    await context.read<AuthProvider>().logout();
+
+                    // التوجيه إلى شاشة تسجيل الدخول ومسح كل الشاشات السابقة من الذاكرة
+                    if (context.mounted) {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => const LoginScreen()),
+                        (Route<dynamic> route) => false, // مسح السجل بالكامل
+                      );
+                    }
+                  }
                 },
               ),
             ],
@@ -97,5 +166,4 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
     );
   }
-
 }

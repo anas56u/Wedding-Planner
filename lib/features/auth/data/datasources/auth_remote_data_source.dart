@@ -6,11 +6,14 @@ abstract class AuthRemoteDataSource {
   Future<UserModel> signUp(String email, String password);
   Future<void> sendEmailVerification();
   Future<void> logout();
+  User? get currentUser;
 }
 @LazySingleton(as: AuthRemoteDataSource)
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final FirebaseAuth firebaseAuth;
+  @override
+  User? get currentUser => firebaseAuth.currentUser;
 
   AuthRemoteDataSourceImpl({required this.firebaseAuth});
 
