@@ -11,7 +11,6 @@ class LanguageProvider extends ChangeNotifier {
     _fetchSavedLocale();
   }
 
-  // 4. دالة لتغيير اللغة (يتم استدعاؤها عند الضغط على زر التبديل)
   Future<void> changeLanguage(Locale type) async {
     if (_appLocale == type) {
       return;

@@ -1,10 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/core/providers/Language_Provider.dart';
 import 'package:provider_test/features/dashboard/presentation/pages/dashboard_screen.dart';
 import 'package:provider_test/features/hospitality_staff/presentation/providers/hospitality_staff_provider.dart';
 import 'package:provider_test/features/tasks/presentation/providers/tasks_provider.dart';
+import 'package:provider_test/firebase_options.dart';
 import 'package:provider_test/injection_container.dart' as di;
 import 'features/people_management/presentation/providers/people_provider.dart';
 import 'core/theme/app_theme.dart';
@@ -26,7 +28,7 @@ Future<String> fetchDailyWeddingTip() async {
 Stream<int> weddingCountdownStream() async* {
   int daystoleft = 100;
   while (daystoleft >= 0) {
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 1));
     daystoleft--;
     yield daystoleft;
   }
@@ -34,6 +36,9 @@ Stream<int> weddingCountdownStream() async* {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   await EasyLocalization.ensureInitialized();
 

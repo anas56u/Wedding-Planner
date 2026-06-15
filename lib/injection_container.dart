@@ -10,5 +10,5 @@ final sl = GetIt.instance;
   asExtension: true,
 )
 Future<void> configureDependencies() async {
-  sl.init(); // 🌟 هنا سيتم حقن الكود المولد آلياً
+   await sl.init(); // 🌟 هنا سيتم حقن الكود المولد آلياً
 }

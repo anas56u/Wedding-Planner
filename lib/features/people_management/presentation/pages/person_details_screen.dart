@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 // 🌟 استخدام الكيان النقي
 import '../../domain/entities/person_entity.dart';
 import '../providers/people_provider.dart'; 
+import '../widgets/person_info_row.dart';
+import '../widgets/edit_person_dialog.dart';
 
 class PersonDetailsScreen extends StatelessWidget {
   final PersonEntity initialPerson;
@@ -79,13 +81,13 @@ class PersonDetailsScreen extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      _buildInfoRow('guests.id_number'.tr(), '#${person.id}', theme),
+                      PersonInfoRow(label: 'guests.id_number'.tr(), value: '#${person.id}', theme: theme),
                       const Padding(padding: EdgeInsets.symmetric(vertical: 12), child: Divider(height: 1)),
                       
-                      _buildInfoRow('common.name'.tr(), person.name, theme),
+                      PersonInfoRow(label: 'common.name'.tr(), value: person.name, theme: theme),
                       const Padding(padding: EdgeInsets.symmetric(vertical: 12), child: Divider(height: 1)),
                       
-                      _buildInfoRow('guests.age'.tr(), '${person.age} ${'common.year'.tr()}', theme),
+                      PersonInfoRow(label: 'guests.age'.tr(), value: '${person.age} ${'common.year'.tr()}', theme: theme),
                       const Padding(padding: EdgeInsets.symmetric(vertical: 12), child: Divider(height: 1)),
                       
                       // صف الحالة مع لون مميز
@@ -147,144 +149,17 @@ class PersonDetailsScreen extends StatelessWidget {
     );
   }
 
-  // دالة بناء صفوف المعلومات
-  Widget _buildInfoRow(String label, String value, ThemeData theme) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Flexible(
-          child: Text(
-            label,
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: Colors.grey.shade500,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Flexible(
-          child: Text(
-            value,
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: theme.colorScheme.primary,
-            ),
-            textAlign: TextAlign.end,
-          ),
-        ),
-      ],
-    );
-  }
-
   // 🌟 نافذة التعديل بتصميم موحد وعصري
   void _showEditDialog(BuildContext context, PersonEntity currentPerson, ThemeData theme) {
-    final nameController = TextEditingController(text: currentPerson.name);
-    final ageController = TextEditingController(text: currentPerson.age.toString());
-
     showDialog(
       context: context,
       builder: (dialogContext) {
-        return AlertDialog(
-          backgroundColor: theme.cardTheme.color,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-          title: Row(
-            children: [
-              Icon(Icons.edit_document, color: theme.colorScheme.secondary),
-              const SizedBox(width: 12),
-              Text(
-                'common.edit_data'.tr(),
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: theme.colorScheme.primary,
-                ),
-              ),
-            ],
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // حقل الاسم
-              TextField(
-                controller: nameController,
-                style: TextStyle(color: theme.colorScheme.primary),
-                decoration: InputDecoration(
-                  labelText: 'common.name'.tr(),
-                  labelStyle: TextStyle(color: Colors.grey.shade600),
-                  prefixIcon: Icon(Icons.person_outline, color: theme.colorScheme.secondary),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide(color: theme.colorScheme.primary, width: 2),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide(color: Colors.grey.shade300),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              // حقل العمر
-              TextField(
-                controller: ageController,
-                keyboardType: TextInputType.number,
-                style: TextStyle(color: theme.colorScheme.primary),
-                decoration: InputDecoration(
-                  labelText: 'guests.age'.tr(),
-                  labelStyle: TextStyle(color: Colors.grey.shade600),
-                  prefixIcon: Icon(Icons.calendar_today_outlined, color: theme.colorScheme.secondary),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide(color: theme.colorScheme.primary, width: 2),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide(color: Colors.grey.shade300),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: Text(
-                'common.cancel'.tr(),
-                style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
-              ),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: theme.colorScheme.primary,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              onPressed: () {
-                final newName = nameController.text.trim();
-                final newAge = int.tryParse(ageController.text.trim());
-
-                if (newName.isNotEmpty && newAge != null) {
-                  context.read<PeopleProvider>().editPerson(currentPerson.id, newName, newAge);
-                  Navigator.pop(dialogContext); 
-                } else {
-                  // رسالة خطأ عند إدخال بيانات غير صحيحة
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Row(
-                        children: [
-                          const Icon(Icons.error_outline, color: Colors.white),
-                          const SizedBox(width: 12),
-                          const Expanded(child: Text('الرجاء إدخال اسم وعمر صحيحين.')),
-                        ],
-                      ),
-                      backgroundColor: Colors.red.shade400,
-                      behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
-                  );
-                }
-              },
-              child: Text('common.save_changes'.tr()),
-            ),
-          ],
+        return EditPersonDialog(
+          currentPerson: currentPerson,
+          theme: theme,
+          onSave: (newName, newAge) {
+            context.read<PeopleProvider>().editPerson(currentPerson.id, newName, newAge);
+          },
         );
       },
     );

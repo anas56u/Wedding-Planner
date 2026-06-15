@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/features/hospitality_staff/data/models/hospitality_staff_model.dart';
 import '../providers/hospitality_staff_provider.dart';
+import '../widgets/profile_avatar.dart';
+import '../widgets/info_card.dart';
 
 class HospitalityStaffDetailsScreen extends StatelessWidget {
   final HospitalityStaffModel staff;
@@ -33,12 +35,12 @@ class HospitalityStaffDetailsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // 1. الصورة الشخصية (مع معالجة الأخطاء)
-                _buildProfileAvatar(currentStaff, theme),
+                ProfileAvatar(currentStaff: currentStaff, theme: theme),
                 
                 const SizedBox(height: 24),
 
                 // 2. بطاقة المعلومات التفصيلية
-                _buildInfoCard(currentStaff, theme),
+                InfoCard(currentStaff: currentStaff, theme: theme),
 
                 const SizedBox(height: 40),
 
@@ -64,129 +66,6 @@ class HospitalityStaffDetailsScreen extends StatelessWidget {
             ),
           );
         },
-      ),
-    );
-  }
-
-  // ==========================================
-  // دوال بناء الواجهة (UI Builders)
-  // ==========================================
-
-  // تصميم الصورة مع درع واقي (Fallback) ضد أخطاء الروابط
-  Widget _buildProfileAvatar(HospitalityStaffModel currentStaff, ThemeData theme) {
-    final initial = currentStaff.firstName.isNotEmpty 
-        ? currentStaff.firstName[0].toUpperCase() 
-        : '?';
-
-    return Container(
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: theme.colorScheme.secondary, width: 3), // إطار ذهبي
-        boxShadow: [
-          BoxShadow(
-            color: theme.colorScheme.primary.withOpacity(0.1),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: ClipOval(
-        child: Image.network(
-          currentStaff.imageUrl,
-          width: 120,
-          height: 120,
-          fit: BoxFit.cover,
-          // 🌟 الـ ErrorBuilder: بديل احترافي إذا فشل تحميل الصورة
-          errorBuilder: (context, error, stackTrace) {
-            return Container(
-              width: 120,
-              height: 120,
-              color: theme.colorScheme.primary.withOpacity(0.05),
-              child: Center(
-                child: Text(
-                  initial,
-                  style: theme.textTheme.displaySmall?.copyWith(
-                    color: theme.colorScheme.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  // بطاقة عرض المعلومات بطريقة منظمة
-  Widget _buildInfoCard(HospitalityStaffModel currentStaff, ThemeData theme) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: theme.cardTheme.color,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: theme.colorScheme.primary.withOpacity(0.05),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Text(
-            '${currentStaff.firstName} ${currentStaff.lastName}',
-            style: theme.textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: theme.colorScheme.primary,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.secondary.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              'عضو فريق الضيافة',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.secondary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 20),
-            child: Divider(),
-          ),
-          // تفاصيل إضافية (العمر)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Icon(Icons.cake_outlined, color: Colors.grey.shade500, size: 22),
-                  const SizedBox(width: 8),
-                  Text(
-                    'العمر', // أو يمكن جلبها من الترجمة
-                    style: theme.textTheme.titleMedium?.copyWith(color: Colors.grey.shade600),
-                  ),
-                ],
-              ),
-              Text(
-                '${currentStaff.age} سنة',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: theme.colorScheme.primary,
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }
