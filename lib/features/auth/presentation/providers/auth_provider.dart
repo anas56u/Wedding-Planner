@@ -38,12 +38,12 @@ class AuthProvider extends ChangeNotifier {
   // ==========================================
 
   /// دالة تسجيل الدخول
-  Future<bool> login(String email, String password) async {
+  Future<bool> login(String email, String password,bool rememberMe) async {
     _setLoading(true);
     _clearError();
 
     // استدعاء הـ UseCase
-    final result = await _loginUseCase(email, password);
+    final result = await _loginUseCase(email, password, rememberMe);
 
     // التعامل مع النتيجة باستخدام fold الخاصة بحزمة dartz
     return result.fold(

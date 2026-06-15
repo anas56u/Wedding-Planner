@@ -15,17 +15,19 @@ class AuthRepositoryImpl implements AuthRepository {
     required this.localDataSource,
   });
 
-  @override
-  Future<Either<Failure, UserEntity>> login(String email, String password) async {
+ @override
+  Future<Either<Failure, UserEntity>> login(String email, String password, bool rememberMe) async {
     try {
       final userModel = await remoteDataSource.login(email, password);
       
-      await localDataSource.cacheUser(userModel);
+      // 🌟 التفكير الهندسي: نحفظ المستخدم محلياً فقط إذا كان rememberMe = true
+      if (rememberMe) {
+        await localDataSource.cacheUser(userModel);
+      }
       
       return Right(userModel);
     } catch (e) {
-     
-      return Left(ServerFailure( 'فشل في تسجيل الدخول، تأكد من بياناتك.')); 
+      return Left(ServerFailure('فشل في تسجيل الدخول، تأكد من بياناتك.')); 
     }
   }
 
@@ -50,15 +52,14 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
-  @override
+ @override
   Future<Either<Failure, UserEntity>> checkCachedUser() async {
     try {
-      // نحاول جلب المستخدم المحفوظ محلياً عند فتح التطبيق
       final localUser = await localDataSource.getLastCachedUser();
       return Right(localUser);
     } catch (e) {
-      // إذا لم يكن مسجلاً، نرجع فشل يخبرنا أنه لا يوجد بيانات محفوظة
-      return Left(CacheFailure( 'لا يوجد مستخدم مسجل.'));
+      await remoteDataSource.logout(); 
+      return Left(CacheFailure('لا يوجد مستخدم مسجل.'));
     }
   }
 

@@ -18,12 +18,12 @@ class _LoginScreenState extends State<LoginScreen> {
   
   // 2. متحكمات النصوص (Controllers)
   final _emailController = TextEditingController();
+  bool _rememberMe = false;
   final _passwordController = TextEditingController();
   
   // 3. حالة إظهار/إخفاء كلمة المرور
   bool _obscurePassword = true;
 
-  // 🌟 ممارسة هندسية: دائماً قم بتنظيف الذاكرة عند إغلاق الشاشة
   @override
   void dispose() {
     _emailController.dispose();
@@ -43,6 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final success = await authProvider.login(
         _emailController.text.trim(), // trim() تمسح المسافات الزائدة
         _passwordController.text.trim(),
+        _rememberMe, // نمرر حالة تذكرني إلى ال Provider
       );
 
       if (success) {
@@ -158,21 +159,49 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
 
                   // --- 4. زر "نسيت كلمة المرور؟" ---
-                  Align(
-                    alignment: Alignment.centerLeft, // أو centerRight حسب لغة التطبيق
-                    child: TextButton(
-                      onPressed: () {
-                        // TODO: الانتقال لشاشة استعادة كلمة المرور
-                      },
-                      child: Text(
-                        'هل نسيت كلمة المرور؟',
-                        style: TextStyle(
-                          color: theme.colorScheme.secondary, // الذهبي
-                          fontWeight: FontWeight.bold,
+                 // --- 4. زر تذكرني + نسيت كلمة المرور ---
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // قسم "تذكرني"
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 24, // تصغير حجم الـ Checkbox الافتراضي
+                            child: Checkbox(
+                              value: _rememberMe,
+                              activeColor: theme.colorScheme.primary, // لونه كحلي عند التفعيل
+                              onChanged: (value) {
+                                setState(() {
+                                  _rememberMe = value ?? false;
+                                });
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'تذكرني',
+                            style: theme.textTheme.bodyMedium,
+                          ),
+                        ],
+                      ),
+                      
+                      // زر نسيت كلمة المرور الأصلي
+                      TextButton(
+                        onPressed: () {
+                          // TODO: الانتقال لشاشة استعادة كلمة المرور
+                        },
+                        child: Text(
+                          'هل نسيت كلمة المرور؟',
+                          style: TextStyle(
+                            color: theme.colorScheme.secondary,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
+                  const SizedBox(height: 24),
                   const SizedBox(height: 24),
 
                   // --- 5. زر تسجيل الدخول الرئيسي ---

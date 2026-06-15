@@ -9,7 +9,8 @@ class LoginUseCase {
 
   LoginUseCase(this.repository);
 
-  Future<Either<Failure, UserEntity>> call(String email, String password) async {
-    return await repository.login(email, password);
+  // أضفنا bool rememberMe هنا ونمررها للـ repository
+  Future<Either<Failure, UserEntity>> call(String email, String password, bool rememberMe) async {
+    return await repository.login(email, password, rememberMe);
   }
 }
