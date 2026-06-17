@@ -18,12 +18,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  final _nameController = TextEditingController();
+final _ageController = TextEditingController();
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _nameController.dispose();
+  _ageController.dispose();
     super.dispose();
   }
 
@@ -36,6 +40,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final success = await authProvider.signUp(
         _emailController.text.trim(),
         _passwordController.text.trim(),
+        _nameController.text.trim(),
+        int.parse(_ageController.text.trim()),
       );
 
       if (success) {
@@ -106,7 +112,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                   const SizedBox(height: 40),
+// حقل الاسم
+_buildTextField(
+  controller: _nameController,
+  label: 'الاسم الكامل',
+  icon: Icons.person_outline,
+  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'يرجى إدخال الاسم';
+    }
+    return null;
+  },
+),
+const SizedBox(height: 16),
 
+// حقل العمر
+_buildTextField(
+  controller: _ageController,
+  label: 'العمر',
+  icon: Icons.calendar_today_outlined,
+  keyboardType: TextInputType.number, // لإظهار لوحة أرقام فقط
+  validator: (value) {
+    if (value == null || value.isEmpty) {
+      return 'يرجى إدخال العمر';
+    }
+    if (int.tryParse(value) == null) {
+      return 'يرجى إدخال عمر صحيح (أرقام فقط)';
+    }
+    return null;
+  },
+),
+const SizedBox(height: 16),
                   // --- 1. حقل البريد الإلكتروني ---
                   _buildTextField(
                     controller: _emailController,

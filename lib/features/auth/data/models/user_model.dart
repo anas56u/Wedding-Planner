@@ -7,13 +7,17 @@ class UserModel extends UserEntity {
     required super.uid,
     required super.email,
     required super.isEmailVerified,
+    required super.name,
+    required super.age,
   });
 
-  factory UserModel.fromFirebaseUser(User user) {
+  factory UserModel.fromFirebaseUser(User user ,{String? name, int? age}) {
     return UserModel(
       uid: user.uid,
       email: user.email ?? '',
       isEmailVerified: user.emailVerified,
+      name: name ?? '',
+      age: age ?? 0,
     );
   }
 
@@ -22,6 +26,9 @@ class UserModel extends UserEntity {
       uid: json['uid'],
       email: json['email'],
       isEmailVerified: json['isEmailVerified'],
+      name: json['name'] ?? '', // القيمة الافتراضية إذا لم يكن موجودًا
+      age: json['age'] ?? 0,    // القيمة الافتراضية إذا لم
+
     );
   }
 
@@ -30,6 +37,8 @@ class UserModel extends UserEntity {
       'uid': uid,
       'email': email,
       'isEmailVerified': isEmailVerified,
+      'name': name,
+      'age': age, 
     };
   }
 }

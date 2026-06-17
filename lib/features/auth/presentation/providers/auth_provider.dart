@@ -109,11 +109,11 @@ class AuthProvider extends ChangeNotifier {
   }
 
   /// دالة إنشاء الحساب
-  Future<bool> signUp(String email, String password) async {
+  Future<bool> signUp(String email, String password, String name, int age) async {
     _setLoading(true);
     _clearError();
 
-    final result = await _signUpUseCase(email, password);
+    final result = await _signUpUseCase(email, password, name, age);
 
     return result.fold(
       (failure) {

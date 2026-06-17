@@ -5,7 +5,7 @@ import '../models/user_model.dart';
 
 abstract class AuthRemoteDataSource {
   Future<UserModel> login(String email, String password);
-  Future<UserModel> signUp(String email, String password);
+  Future<UserModel> signUp(String email, String password ,String name, int age);
   Future<void> sendEmailVerification();
   Future<void> logout();
   User? get currentUser;
@@ -61,13 +61,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<UserModel> signUp(String email, String password) async {
+  Future<UserModel> signUp(String email, String password, String name, int age) async {
     try {
       final userCredential = await firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
+
       );
-      return UserModel.fromFirebaseUser(userCredential.user!);
+      return UserModel.fromFirebaseUser(userCredential.user! , name: name, age: age);
     } catch (e) {
       throw Exception();
     }

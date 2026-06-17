@@ -34,9 +34,9 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
   @override
-  Future<Either<Failure, UserEntity>> signUp(String email, String password) async {
+  Future<Either<Failure, UserEntity>> signUp(String email, String password ,String name, int age) async {
     try {
-      final userModel = await remoteDataSource.signUp(email, password);
+      final userModel = await remoteDataSource.signUp(email, password ,name, age);
       await remoteDataSource.saveUserDataToFirestore(userModel);
 
       return Right(userModel);
