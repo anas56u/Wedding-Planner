@@ -53,7 +53,19 @@ class AuthRepositoryImpl implements AuthRepository {
     } catch (e) {
       return Left(ServerFailure( 'فشل في إرسال البريد الإلكتروني.'));
     }
-  }@override
+  }
+  @override
+  Future<Either<Failure, void>> sendPasswordResetEmail(String email) async {
+    try {
+      await remoteDataSource.sendPasswordResetEmail(email);
+      return const Right(null); // نجاح العملية
+    } catch (e) {
+      // إرجاع رسالة خطأ واضحة في حال الفشل
+      return Left(ServerFailure('حدث خطأ أثناء إرسال رابط استعادة كلمة المرور. تأكد من صحة البريد الإلكتروني.'));
+    }
+  }
+  
+  @override
   Future<Either<Failure, UserEntity>> checkCachedUser() async {
     try {
       // 1. اقرأ البيانات المحلية أولاً

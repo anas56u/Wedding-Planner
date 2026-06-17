@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:provider_test/features/auth/domain/usecases/check_email_verification_usecase.dart';
+import 'package:provider_test/features/auth/domain/usecases/send_password_reset_usecase.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/sign_up_usecase.dart';
@@ -16,6 +17,7 @@ class AuthProvider extends ChangeNotifier {
   final SendEmailVerificationUseCase _sendEmailVerificationUseCase;
   final LogoutUseCase _logoutUseCase;
   final CheckEmailVerificationUseCase _checkEmailVerificationUseCase;
+  final SendPasswordResetUseCase _sendPasswordResetUseCase; // المتغير الجديد
 
   AuthProvider(
     this._loginUseCase,
@@ -24,6 +26,7 @@ class AuthProvider extends ChangeNotifier {
     this._sendEmailVerificationUseCase,
     this._logoutUseCase,
     this._checkEmailVerificationUseCase,
+    this._sendPasswordResetUseCase, // إضافة المتغير الجديد هنا
   );
 
   bool _isLoading = false;
@@ -39,6 +42,27 @@ class AuthProvider extends ChangeNotifier {
   // ==========================================
   // الدوال التي ستستدعيها واجهة المستخدم (UI)
   // ==========================================
+
+
+  Future<bool> resetPassword(String email) async {
+    _setLoading(true);
+    _clearError();
+
+    final result = await _sendPasswordResetUseCase(email);
+
+    return result.fold(
+      (failure) {
+        _errorMessage = failure.message;
+        _setLoading(false);
+        return false; // فشل الإرسال
+      },
+      (_) {
+        _setLoading(false);
+        return true; // تم الإرسال بنجاح
+      },
+    );
+  }
+
 
 // أضف هذه الدالة داخل الـ AuthProvider
   Future<bool> checkEmailVerification() async {

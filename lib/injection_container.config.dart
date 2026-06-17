@@ -33,6 +33,8 @@ import 'package:provider_test/features/auth/domain/usecases/logout_usecase.dart'
     as _i637;
 import 'package:provider_test/features/auth/domain/usecases/send_email_verification_usecase.dart'
     as _i24;
+import 'package:provider_test/features/auth/domain/usecases/send_password_reset_usecase.dart'
+    as _i828;
 import 'package:provider_test/features/auth/domain/usecases/sign_up_usecase.dart'
     as _i984;
 import 'package:provider_test/features/auth/presentation/providers/auth_provider.dart'
@@ -153,6 +155,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i368.TogglePersonSelectionUseCase>(
       () => _i368.TogglePersonSelectionUseCase(gh<_i446.IPeopleRepository>()),
     );
+    gh.factory<_i828.SendPasswordResetUseCase>(
+      () => _i828.SendPasswordResetUseCase(gh<_i655.AuthRepository>()),
+    );
     gh.lazySingleton<_i944.CheckCachedUserUseCase>(
       () => _i944.CheckCachedUserUseCase(gh<_i655.AuthRepository>()),
     );
@@ -191,6 +196,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i24.SendEmailVerificationUseCase>(),
         gh<_i637.LogoutUseCase>(),
         gh<_i115.CheckEmailVerificationUseCase>(),
+        gh<_i828.SendPasswordResetUseCase>(),
       ),
     );
     gh.lazySingleton<_i1039.AddTaskUseCase>(

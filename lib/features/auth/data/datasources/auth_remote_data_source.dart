@@ -14,6 +14,7 @@ abstract class AuthRemoteDataSource {
     String uid,
     bool isVerified,
   );
+  Future<void> sendPasswordResetEmail(String email);
 }
 
 @LazySingleton(as: AuthRemoteDataSource)
@@ -37,7 +38,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     await  firestore.collection("users").doc(user.uid).set(user.toJson());
     
   }
-
+@override
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await firebaseAuth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      // نمرر الخطأ للـ Repository ليتعامل معه
+      throw Exception(); 
+    }
+  }
   @override
   Future<UserModel> login(String email, String password) async {
     try {

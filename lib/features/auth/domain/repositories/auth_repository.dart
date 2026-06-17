@@ -11,5 +11,6 @@ abstract class AuthRepository {
   Future<Either<Failure, UserEntity>> checkCachedUser();
   
   Future<Either<Failure, void>> logout();
+  Future<Either<Failure, void>> sendPasswordResetEmail(String email);
 Future<Either<Failure, UserEntity>> checkEmailVerification();
 }

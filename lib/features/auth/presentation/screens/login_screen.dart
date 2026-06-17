@@ -31,7 +31,85 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.dispose();
     super.dispose();
   }
+// دالة عرض نافذة استعادة كلمة المرور
+  void _showResetPasswordDialog(BuildContext context) {
+    final TextEditingController resetEmailController = TextEditingController();
+    // نملأ الحقل تلقائياً إذا كان المستخدم قد كتب إيميله بالفعل في شاشة تسجيل الدخول
+    resetEmailController.text = _emailController.text;
 
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Text(
+            'استعادة كلمة المرور',
+            style: TextStyle(color: Theme.of(context).colorScheme.primary),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور.'),
+              const SizedBox(height: 16),
+              TextField(
+                controller: resetEmailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  labelText: 'البريد الإلكتروني',
+                  prefixIcon: const Icon(Icons.email_outlined),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('إلغاء', style: TextStyle(color: Colors.grey)),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final email = resetEmailController.text.trim();
+                if (email.isEmpty || !email.contains('@')) {
+                  // تنبيه بسيط إذا كان الإيميل غير صالح
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('يرجى إدخال بريد إلكتروني صحيح')),
+                  );
+                  return;
+                }
+
+                // إغلاق النافذة المنبثقة أولاً
+                Navigator.pop(dialogContext);
+
+                // استدعاء دالة الـ Provider
+                final authProvider = context.read<AuthProvider>();
+                final success = await authProvider.resetPassword(email);
+
+                if (mounted) {
+                  if (success) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('تم إرسال رابط الاستعادة إلى بريدك بنجاح!'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(authProvider.errorMessage ?? 'حدث خطأ'),
+                        backgroundColor: Colors.redAccent,
+                      ),
+                    );
+                  }
+                }
+              },
+              child: const Text('إرسال الرابط'),
+            ),
+          ],
+        );
+      },
+    );
+  }
   // دالة تنفيذ تسجيل الدخول
  Future<void> _handleLogin() async {
     if (_formKey.currentState!.validate()) {
@@ -197,6 +275,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       // زر نسيت كلمة المرور الأصلي
                       TextButton(
                         onPressed: () {
+                          _showResetPasswordDialog(context);
                         },
                         child: Text(
                           'هل نسيت كلمة المرور؟',
