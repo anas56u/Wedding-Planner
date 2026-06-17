@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:provider_test/features/auth/presentation/screens/email_verification_screen.dart';
 import 'package:provider_test/features/auth/presentation/screens/sign_up_screen.dart';
 // تأكد من صحة هذه المسارات بناءً على هيكل مشروعك
 import '../providers/auth_provider.dart'; 
@@ -32,30 +33,37 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   // دالة تنفيذ تسجيل الدخول
-  Future<void> _handleLogin() async {
-    // التحقق من أن المستخدم أدخل البيانات بشكل صحيح قبل إرسالها للسيرفر
+ Future<void> _handleLogin() async {
     if (_formKey.currentState!.validate()) {
-      // إغلاق لوحة المفاتيح
       FocusScope.of(context).unfocus();
 
       final authProvider = context.read<AuthProvider>();
       
       final success = await authProvider.login(
-        _emailController.text.trim(), // trim() تمسح المسافات الزائدة
+        _emailController.text.trim(),
         _passwordController.text.trim(),
-        _rememberMe, // نمرر حالة تذكرني إلى ال Provider
+        _rememberMe,
       );
 
       if (success) {
-        // إذا نجحنا، ننتقل للداشبورد ونمنع الرجوع لشاشة تسجيل الدخول (pushReplacement)
         if (mounted) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const DashboardScreen()),
-          );
+          // 🌟 التعديل هنا: فحص حالة التوثيق قبل التوجيه
+          final isVerified = authProvider.currentUser?.isEmailVerified ?? false;
+
+          if (isVerified) {
+            // موثق؟ أهلاً بك في الرئيسية
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const DashboardScreen()),
+            );
+          } else {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const EmailVerificationScreen()),
+            );
+          }
         }
       } else {
-        // إذا فشلنا، نظهر رسالة الخطأ القادمة من הـ Provider
         if (mounted && authProvider.errorMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

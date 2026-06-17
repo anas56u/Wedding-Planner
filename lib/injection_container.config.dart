@@ -9,6 +9,7 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:cloud_firestore/cloud_firestore.dart' as _i974;
 import 'package:firebase_auth/firebase_auth.dart' as _i59;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:http/http.dart' as _i519;
@@ -24,6 +25,8 @@ import 'package:provider_test/features/auth/domain/repositories/auth_repository.
     as _i655;
 import 'package:provider_test/features/auth/domain/usecases/check_cached_user_usecase.dart'
     as _i944;
+import 'package:provider_test/features/auth/domain/usecases/check_email_verification_usecase.dart'
+    as _i115;
 import 'package:provider_test/features/auth/domain/usecases/login_usecase.dart'
     as _i1073;
 import 'package:provider_test/features/auth/domain/usecases/logout_usecase.dart'
@@ -89,6 +92,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i1038.TasksProvider>(() => _i1038.TasksProvider());
     gh.lazySingleton<_i519.Client>(() => registerModule.client);
     gh.lazySingleton<_i59.FirebaseAuth>(() => registerModule.firebaseAuth);
+    gh.lazySingleton<_i974.FirebaseFirestore>(() => registerModule.firestore);
     await gh.lazySingletonAsync<_i460.SharedPreferences>(
       () => registerModule.sharedPreferences,
       preResolve: true,
@@ -97,8 +101,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i224.PeopleLocalDataSourceImpl(),
     );
     gh.lazySingleton<_i126.AuthRemoteDataSource>(
-      () =>
-          _i126.AuthRemoteDataSourceImpl(firebaseAuth: gh<_i59.FirebaseAuth>()),
+      () => _i126.AuthRemoteDataSourceImpl(
+        firebaseAuth: gh<_i59.FirebaseAuth>(),
+        firestore: gh<_i974.FirebaseFirestore>(),
+      ),
     );
     gh.lazySingleton<_i299.ITasksLocalDataSource>(
       () => _i299.TasksLocalDataSourceImpl(),
@@ -150,6 +156,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i944.CheckCachedUserUseCase>(
       () => _i944.CheckCachedUserUseCase(gh<_i655.AuthRepository>()),
     );
+    gh.lazySingleton<_i115.CheckEmailVerificationUseCase>(
+      () => _i115.CheckEmailVerificationUseCase(gh<_i655.AuthRepository>()),
+    );
     gh.lazySingleton<_i1073.LoginUseCase>(
       () => _i1073.LoginUseCase(gh<_i655.AuthRepository>()),
     );
@@ -174,6 +183,16 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1019.IHospitalityStaffRepository>(),
       ),
     );
+    gh.factory<_i554.AuthProvider>(
+      () => _i554.AuthProvider(
+        gh<_i1073.LoginUseCase>(),
+        gh<_i984.SignUpUseCase>(),
+        gh<_i944.CheckCachedUserUseCase>(),
+        gh<_i24.SendEmailVerificationUseCase>(),
+        gh<_i637.LogoutUseCase>(),
+        gh<_i115.CheckEmailVerificationUseCase>(),
+      ),
+    );
     gh.lazySingleton<_i1039.AddTaskUseCase>(
       () => _i1039.AddTaskUseCase(gh<_i162.ITasksRepository>()),
     );
@@ -185,15 +204,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i1051.ToggleTaskCompletionUseCase>(
       () => _i1051.ToggleTaskCompletionUseCase(gh<_i162.ITasksRepository>()),
-    );
-    gh.factory<_i554.AuthProvider>(
-      () => _i554.AuthProvider(
-        gh<_i1073.LoginUseCase>(),
-        gh<_i984.SignUpUseCase>(),
-        gh<_i944.CheckCachedUserUseCase>(),
-        gh<_i24.SendEmailVerificationUseCase>(),
-        gh<_i637.LogoutUseCase>(),
-      ),
     );
     gh.factory<_i1031.HospitalityStaffProvider>(
       () => _i1031.HospitalityStaffProvider(

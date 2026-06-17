@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
+import 'package:provider_test/features/auth/domain/usecases/check_email_verification_usecase.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/sign_up_usecase.dart';
@@ -14,6 +15,7 @@ class AuthProvider extends ChangeNotifier {
   final CheckCachedUserUseCase _checkCachedUserUseCase;
   final SendEmailVerificationUseCase _sendEmailVerificationUseCase;
   final LogoutUseCase _logoutUseCase;
+  final CheckEmailVerificationUseCase _checkEmailVerificationUseCase;
 
   AuthProvider(
     this._loginUseCase,
@@ -21,6 +23,7 @@ class AuthProvider extends ChangeNotifier {
     this._checkCachedUserUseCase,
     this._sendEmailVerificationUseCase,
     this._logoutUseCase,
+    this._checkEmailVerificationUseCase,
   );
 
   bool _isLoading = false;
@@ -37,8 +40,27 @@ class AuthProvider extends ChangeNotifier {
   // الدوال التي ستستدعيها واجهة المستخدم (UI)
   // ==========================================
 
-  /// دالة تسجيل الدخول
-  Future<bool> login(String email, String password,bool rememberMe) async {
+// أضف هذه الدالة داخل الـ AuthProvider
+  Future<bool> checkEmailVerification() async {
+    _setLoading(true);
+    _clearError();
+
+    // هنا نحن نستدعي الـ UseCase الجديد (تأكد من إضافته للـ Constructor)
+    final result = await _checkEmailVerificationUseCase(); // اسم المتغير حسب ما تعرفه في الأعلى
+
+    return result.fold(
+      (failure) {
+        _errorMessage = failure.message;
+        _setLoading(false);
+        return false; // الإيميل لم يتأكد بعد
+      },
+      (updatedUser) {
+        _currentUser = updatedUser; // 🌟 هنا يتم تحديث حالة التطبيق بالكامل
+        _setLoading(false);
+        return true; // تم التأكيد بنجاح! يمكن نقله للـ Dashboard
+      },
+    );
+  }  Future<bool> login(String email, String password,bool rememberMe) async {
     _setLoading(true);
     _clearError();
 

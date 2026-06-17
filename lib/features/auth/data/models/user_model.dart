@@ -9,7 +9,6 @@ class UserModel extends UserEntity {
     required super.isEmailVerified,
   });
 
-  // 1. تحويل بيانات Firebase إلى UserModel
   factory UserModel.fromFirebaseUser(User user) {
     return UserModel(
       uid: user.uid,

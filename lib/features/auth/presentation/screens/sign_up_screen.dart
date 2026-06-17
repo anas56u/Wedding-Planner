@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:provider_test/features/auth/presentation/screens/email_verification_screen.dart';
 import '../providers/auth_provider.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -39,24 +40,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       if (success) {
         if (mounted) {
-          // 🌟 ممارسة ممتازة: إجبار المستخدم على قراءة الرسالة وتوجيهه لتفعيل الإيميل
-          showDialog(
-            context: context,
-            barrierDismissible: false, // يمنع إغلاق الدايلوج عند الضغط خارجه
-            builder: (context) => AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              title: const Text('تم إنشاء الحساب بنجاح! 🎉'),
-              content: const Text('لقد أرسلنا رابط تفعيل إلى بريدك الإلكتروني. يرجى الضغط عليه لتتمكن من تسجيل الدخول لتطبيق تخطيط الزفاف.'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context); // إغلاق الدايلوج
-                    Navigator.pop(context); // إرجاع المستخدم لشاشة تسجيل الدخول
-                  },
-                  child: const Text('حسناً، سأقوم بالتفعيل'),
-                ),
-              ],
-            ),
+          // 🌟 التعديل هنا: قمنا بحذف الـ showDialog القديم
+          // ووضعنا كود التوجيه إلى شاشة التحقق الجديدة
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const EmailVerificationScreen()),
           );
         }
       } else {

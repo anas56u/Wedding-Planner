@@ -38,9 +38,7 @@ Stream<int> weddingCountdownStream() async* {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await EasyLocalization.ensureInitialized();
 
@@ -55,7 +53,8 @@ void main() async {
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(
-      create: (_) => di.sl<AuthProvider>()..checkAuthStatus(),),
+            create: (_) => di.sl<AuthProvider>()..checkAuthStatus(),
+          ),
           ChangeNotifierProvider(create: (_) => LanguageProvider()),
           ChangeNotifierProvider(
             create: (_) => di.sl<HospitalityStaffProvider>(),
@@ -93,7 +92,7 @@ class MyApp extends StatelessWidget {
 
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
-          locale: context.locale,
+          locale: languageProvider.appLocale,
           theme: AppTheme.lightTheme,
 
           builder: (context, child) {
@@ -101,13 +100,13 @@ class MyApp extends StatelessWidget {
           },
 
           home: Consumer<AuthProvider>(
-  builder: (context, authProvider, _) {
-    if (authProvider.isAuthenticated) {
-      return const DashboardScreen();
-    }
-    return const LoginScreen();
-  },
-),
+            builder: (context, authProvider, _) {
+              if (authProvider.isAuthenticated) {
+                return const DashboardScreen();
+              }
+              return const LoginScreen();
+            },
+          ),
         );
       },
     );
