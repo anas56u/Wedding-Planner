@@ -100,7 +100,14 @@ class MyApp extends StatelessWidget {
             return GlobalNetworkOverlay(child: child!);
           },
 
-          home: const LoginScreen(), 
+          home: Consumer<AuthProvider>(
+  builder: (context, authProvider, _) {
+    if (authProvider.isAuthenticated) {
+      return const DashboardScreen();
+    }
+    return const LoginScreen();
+  },
+),
         );
       },
     );
