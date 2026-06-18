@@ -16,6 +16,7 @@ abstract class AuthRemoteDataSource {
   );
   Future<void> sendPasswordResetEmail(String email);
   Future<void> updateUserData(String uid, String name, int age);
+  Future<void> deleteAccount( String password);
 }
 
 @LazySingleton(as: AuthRemoteDataSource)
@@ -27,6 +28,35 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   AuthRemoteDataSourceImpl({required this.firebaseAuth, required this.firestore});
 
+@override
+  Future<void> deleteAccount(String password) async {
+    try {
+      final user = firebaseAuth.currentUser;
+      if (user != null && user.email != null) {
+        // 1. إعادة التحقق من الهوية (Re-authentication) لمنع خطأ فايربيس
+        AuthCredential credential = EmailAuthProvider.credential(
+          email: user.email!,
+          password: password,
+        );
+        // إذا كانت كلمة المرور خطأ، سيتوقف الكود هنا ويرمي Exception
+        await user.reauthenticateWithCredential(credential);
+
+        // 2. الآن نحن متأكدون 100% أن الجلسة صالحة، نحذف من Firestore
+        await firestore.collection('users').doc(user.uid).delete();
+        
+        // 3. ثم نحذف الحساب من Firebase Auth ولن يرفض العملية أبداً
+        await user.delete();
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'wrong-password' || e.code == 'invalid-credential') {
+        throw Exception('كلمة المرور غير صحيحة.');
+      } else {
+        throw Exception('حدث خطأ من الخادم: ${e.message}');
+      }
+    } catch (e) {
+      throw Exception('حدث خطأ غير متوقع أثناء الحذف.');
+    }
+  }
   @override
   Future<void> updateUserData(String uid, String name, int age) async {
     try {

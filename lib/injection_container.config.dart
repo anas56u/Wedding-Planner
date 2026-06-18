@@ -27,6 +27,8 @@ import 'package:provider_test/features/auth/domain/usecases/check_cached_user_us
     as _i944;
 import 'package:provider_test/features/auth/domain/usecases/check_email_verification_usecase.dart'
     as _i115;
+import 'package:provider_test/features/auth/domain/usecases/delete_account_usecase.dart'
+    as _i1031;
 import 'package:provider_test/features/auth/domain/usecases/login_usecase.dart'
     as _i1073;
 import 'package:provider_test/features/auth/domain/usecases/logout_usecase.dart'
@@ -50,7 +52,7 @@ import 'package:provider_test/features/hospitality_staff/domain/repositories/hos
 import 'package:provider_test/features/hospitality_staff/domain/usecases/get_hospitality_staff_usecase.dart'
     as _i914;
 import 'package:provider_test/features/hospitality_staff/presentation/providers/hospitality_staff_provider.dart'
-    as _i1031;
+    as _i1032;
 import 'package:provider_test/features/people_management/data/datasources/people_local_data_source.dart'
     as _i224;
 import 'package:provider_test/features/people_management/data/datasources/people_remote_data_source.dart'
@@ -166,6 +168,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i115.CheckEmailVerificationUseCase>(
       () => _i115.CheckEmailVerificationUseCase(gh<_i655.AuthRepository>()),
     );
+    gh.lazySingleton<_i1031.DeleteAccountUseCase>(
+      () => _i1031.DeleteAccountUseCase(gh<_i655.AuthRepository>()),
+    );
     gh.lazySingleton<_i1073.LoginUseCase>(
       () => _i1073.LoginUseCase(gh<_i655.AuthRepository>()),
     );
@@ -193,6 +198,19 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1019.IHospitalityStaffRepository>(),
       ),
     );
+    gh.factory<_i554.AuthProvider>(
+      () => _i554.AuthProvider(
+        gh<_i1073.LoginUseCase>(),
+        gh<_i984.SignUpUseCase>(),
+        gh<_i944.CheckCachedUserUseCase>(),
+        gh<_i24.SendEmailVerificationUseCase>(),
+        gh<_i637.LogoutUseCase>(),
+        gh<_i115.CheckEmailVerificationUseCase>(),
+        gh<_i828.SendPasswordResetUseCase>(),
+        gh<_i341.UpdateUserInfoUseCase>(),
+        gh<_i1031.DeleteAccountUseCase>(),
+      ),
+    );
     gh.lazySingleton<_i1039.AddTaskUseCase>(
       () => _i1039.AddTaskUseCase(gh<_i162.ITasksRepository>()),
     );
@@ -205,20 +223,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1051.ToggleTaskCompletionUseCase>(
       () => _i1051.ToggleTaskCompletionUseCase(gh<_i162.ITasksRepository>()),
     );
-    gh.factory<_i554.AuthProvider>(
-      () => _i554.AuthProvider(
-        gh<_i1073.LoginUseCase>(),
-        gh<_i984.SignUpUseCase>(),
-        gh<_i944.CheckCachedUserUseCase>(),
-        gh<_i24.SendEmailVerificationUseCase>(),
-        gh<_i637.LogoutUseCase>(),
-        gh<_i115.CheckEmailVerificationUseCase>(),
-        gh<_i828.SendPasswordResetUseCase>(),
-        gh<_i341.UpdateUserInfoUseCase>(),
-      ),
-    );
-    gh.factory<_i1031.HospitalityStaffProvider>(
-      () => _i1031.HospitalityStaffProvider(
+    gh.factory<_i1032.HospitalityStaffProvider>(
+      () => _i1032.HospitalityStaffProvider(
         getHospitalityStaffUseCase: gh<_i914.GetHospitalityStaffUseCase>(),
       ),
     );

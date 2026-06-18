@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:provider_test/features/auth/domain/usecases/check_email_verification_usecase.dart';
+import 'package:provider_test/features/auth/domain/usecases/delete_account_usecase.dart';
 import 'package:provider_test/features/auth/domain/usecases/send_password_reset_usecase.dart';
 import 'package:provider_test/features/auth/domain/usecases/update_user_info_usecase.dart';
 import '../../domain/entities/user_entity.dart';
@@ -20,6 +21,7 @@ class AuthProvider extends ChangeNotifier {
   final CheckEmailVerificationUseCase _checkEmailVerificationUseCase;
   final SendPasswordResetUseCase _sendPasswordResetUseCase; 
   final UpdateUserInfoUseCase _updateUserInfoUseCase;
+  final DeleteAccountUseCase _deleteAccountUseCase;
 
   AuthProvider(
     this._loginUseCase,
@@ -30,6 +32,7 @@ class AuthProvider extends ChangeNotifier {
     this._checkEmailVerificationUseCase,
     this._sendPasswordResetUseCase,
     this._updateUserInfoUseCase,
+    this._deleteAccountUseCase,
   );
 
   bool _isLoading = false;
@@ -45,7 +48,26 @@ class AuthProvider extends ChangeNotifier {
   // ==========================================
   // الدوال التي ستستدعيها واجهة المستخدم (UI)
   // ==========================================
+/// دالة حذف الحساب نهائياً
+  Future<bool> deleteAccount(String password) async {
+    _setLoading(true);
+    _clearError();
 
+    final result = await _deleteAccountUseCase(password); // تمرير كلمة المرور هنا
+
+    return result.fold(
+      (failure) {
+        _errorMessage = failure.message;
+        _setLoading(false);
+        return false;
+      },
+      (_) {
+        _currentUser = null;
+        _setLoading(false);
+        return true;
+      },
+    );
+  }
 /// دالة تحديث بيانات المستخدم (الاسم والعمر)
   Future<bool> updateUserProfile(String name, int age) async {
     // نتأكد أولاً أن هناك مستخدم مسجل دخول

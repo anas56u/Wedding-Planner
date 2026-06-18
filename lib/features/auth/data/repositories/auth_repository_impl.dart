@@ -16,6 +16,22 @@ class AuthRepositoryImpl implements AuthRepository {
     required this.localDataSource,
   });
 
+
+  @override
+  Future<Either<Failure, void>> deleteAccount(String password) async {
+    try {
+      await remoteDataSource.deleteAccount(password);
+      // مسح المستخدم من الذاكرة المحلية
+      await localDataSource.clearCachedUser();
+      return const Right(null);
+    } catch (e) {
+      if (e.toString().contains('requires-recent-login')) {
+        return Left(ServerFailure('لأسباب أمنية، يرجى تسجيل الخروج ثم تسجيل الدخول مجدداً قبل محاولة حذف حسابك.'));
+      }
+      return Left(ServerFailure('حدث خطأ أثناء محاولة حذف الحساب.'));
+    }
+  }
+
   @override
   Future<Either<Failure, void>> updateUserData(String uid, String name, int age) async {
     try {

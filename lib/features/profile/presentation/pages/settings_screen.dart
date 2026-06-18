@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/features/auth/presentation/providers/auth_provider.dart';
 import 'package:provider_test/features/auth/presentation/pages/login_screen.dart';
@@ -21,7 +20,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  // مفتاح الإشعارات يعمل شكلياً فقط بـ setState على مستوى الشاشة
   bool _notificationsEnabled = true;
 
   @override
@@ -63,7 +61,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 icon: Icons.notifications_active_outlined,
                 value: _notificationsEnabled,
                 onChanged: (val) {
-                  // تحديث الواجهة بشكل موضعي فقط دون عمليات خلفية
                   setState(() => _notificationsEnabled = val);
                 },
               ),
@@ -72,7 +69,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           const SizedBox(height: 24),
 
-          // قسم عن التطبيق
           SectionTitle(title: 'settings.about_section'.tr(), theme: theme),
           const SizedBox(height: 12),
           SettingsCard(
@@ -91,8 +87,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   );
                 },
               ),
+              ListTile(
+                leading: const Icon(
+                  Icons.delete_forever_rounded,
+                  color: Colors.red,
+                ),
+                title: const Text(
+                  'حذف الحساب نهائياً',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                onTap: () => _showDeleteAccountDialog(context),
+              ),
               SettingsDivider(theme: theme),
-             ActionOption(
+              ActionOption(
                 theme: theme,
                 title: 'settings.logout'.tr(),
                 icon: Icons.logout_rounded,
@@ -104,10 +114,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     builder: (dialogContext) {
                       return AlertDialog(
                         backgroundColor: theme.cardTheme.color,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
                         title: Row(
                           children: [
-                            Icon(Icons.logout_rounded, color: Colors.red.shade400),
+                            Icon(
+                              Icons.logout_rounded,
+                              color: Colors.red.shade400,
+                            ),
                             const SizedBox(width: 12),
                             Text(
                               'تسجيل الخروج', // يمكنك تحويلها لـ 'settings.logout'.tr()
@@ -120,23 +135,33 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                         content: Text(
                           'هل أنت متأكد أنك تريد تسجيل الخروج من حسابك؟',
-                          style: TextStyle(color: Colors.grey.shade700, fontSize: 16),
+                          style: TextStyle(
+                            color: Colors.grey.shade700,
+                            fontSize: 16,
+                          ),
                         ),
                         actions: [
                           TextButton(
-                            onPressed: () => Navigator.of(dialogContext).pop(false),
+                            onPressed: () =>
+                                Navigator.of(dialogContext).pop(false),
                             child: Text(
                               'common.cancel'.tr(),
-                              style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.red.shade400,
                               foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                             ),
-                            onPressed: () => Navigator.of(dialogContext).pop(true),
+                            onPressed: () =>
+                                Navigator.of(dialogContext).pop(true),
                             child: const Text('تأكيد الخروج'),
                           ),
                         ],
@@ -153,7 +178,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     if (context.mounted) {
                       Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => const LoginScreen()),
+                        MaterialPageRoute(
+                          builder: (context) => const LoginScreen(),
+                        ),
                         (Route<dynamic> route) => false, // مسح السجل بالكامل
                       );
                     }
@@ -164,6 +191,125 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showDeleteAccountDialog(BuildContext context) {
+    final passwordController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false, // لمنع إغلاق النافذة بالنقر خارجها
+      builder: (dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Row(
+            children: [
+              const Icon(Icons.warning_amber_rounded, color: Colors.red),
+              const SizedBox(width: 8),
+              Text('حذف الحساب', style: TextStyle(color: Colors.red.shade700)),
+            ],
+          ),
+          content: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'سيتم مسح بياناتك نهائياً. يرجى إدخال كلمة المرور لتأكيد هويتك وإتمام الحذف.',
+                  style: TextStyle(height: 1.5),
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: passwordController,
+                  obscureText: true, // إخفاء كلمة المرور
+                  decoration: InputDecoration(
+                    labelText: 'كلمة المرور',
+                    prefixIcon: const Icon(Icons.lock_outline),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'يرجى إدخال كلمة المرور';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('تراجع', style: TextStyle(color: Colors.grey)),
+            ),
+            Consumer<AuthProvider>(
+              builder: (context, authProvider, child) {
+                return ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                  ),
+                  onPressed: authProvider.isLoading
+                      ? null
+                      : () async {
+                          if (formKey.currentState!.validate()) {
+                            // إرسال كلمة المرور للـ Provider
+                            final success = await authProvider.deleteAccount(
+                              passwordController.text.trim(),
+                            );
+
+                            if (context.mounted) {
+                              if (success) {
+                                Navigator.pop(dialogContext);
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const LoginScreen(),
+                                  ),
+                                  (route) => false,
+                                );
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('تم حذف الحساب نهائياً.'),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                              } else {
+                                // سيعرض هنا "كلمة المرور غير صحيحة" إذا أخطأ المستخدم
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      authProvider.errorMessage ?? 'حدث خطأ',
+                                    ),
+                                    backgroundColor: Colors.redAccent,
+                                  ),
+                                );
+                              }
+                            }
+                          }
+                        },
+                  child: authProvider.isLoading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Text('تأكيد الحذف'),
+                );
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
