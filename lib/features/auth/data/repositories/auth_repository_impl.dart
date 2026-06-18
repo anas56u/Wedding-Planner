@@ -15,6 +15,34 @@ class AuthRepositoryImpl implements AuthRepository {
     required this.remoteDataSource,
     required this.localDataSource,
   });
+
+  @override
+  Future<Either<Failure, void>> updateUserData(String uid, String name, int age) async {
+    try {
+      // 1. تحديث البيانات في فايربيس
+      await remoteDataSource.updateUserData(uid, name, age);
+
+      // 2. تحديث الكاش المحلي (أفضل ممارسة لتجنب إعادة تحميل البيانات)
+      try {
+        final cachedUser = await localDataSource.getLastCachedUser();
+        // إنشاء كائن جديد بنفس البيانات القديمة ولكن مع الاسم والعمر الجديدين
+        final updatedUserModel = UserModel(
+          uid: cachedUser.uid,
+          email: cachedUser.email,
+          isEmailVerified: cachedUser.isEmailVerified,
+          name: name,
+          age: age,
+        );
+        await localDataSource.cacheUser(updatedUserModel);
+      } catch (e) {
+        // إذا فشل تحديث الكاش لسبب ما، نتجاهله لأن البيانات الأساسية تم حفظها
+      }
+
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure('حدث خطأ أثناء محاولة تحديث البيانات.'));
+    }
+  }
 @override
   Future<Either<Failure, UserEntity>> login(String email, String password, bool rememberMe) async {
     try {

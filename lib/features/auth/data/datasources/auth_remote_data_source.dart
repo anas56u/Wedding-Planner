@@ -15,6 +15,7 @@ abstract class AuthRemoteDataSource {
     bool isVerified,
   );
   Future<void> sendPasswordResetEmail(String email);
+  Future<void> updateUserData(String uid, String name, int age);
 }
 
 @LazySingleton(as: AuthRemoteDataSource)
@@ -25,6 +26,19 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   User? get currentUser => firebaseAuth.currentUser;
 
   AuthRemoteDataSourceImpl({required this.firebaseAuth, required this.firestore});
+
+  @override
+  Future<void> updateUserData(String uid, String name, int age) async {
+    try {
+      // نستخدم update لتعديل حقول محددة فقط في الوثيقة
+      await firestore.collection('users').doc(uid).update({
+        'name': name,
+        'age': age,
+      });
+    } catch (e) {
+      throw Exception(); // سيلتقط الـ Repository هذا الخطأ
+    }
+  }
 // 2. دالة تحديث حالة التحقق فقط
   @override
   Future<void> updateUserVerificationStatusInFirestore(String uid, bool isVerified) async {

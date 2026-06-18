@@ -37,6 +37,8 @@ import 'package:provider_test/features/auth/domain/usecases/send_password_reset_
     as _i828;
 import 'package:provider_test/features/auth/domain/usecases/sign_up_usecase.dart'
     as _i984;
+import 'package:provider_test/features/auth/domain/usecases/update_user_info_usecase.dart'
+    as _i341;
 import 'package:provider_test/features/auth/presentation/providers/auth_provider.dart'
     as _i554;
 import 'package:provider_test/features/hospitality_staff/data/datasources/hospitality_staff_remote_data_source.dart'
@@ -176,6 +178,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i984.SignUpUseCase>(
       () => _i984.SignUpUseCase(gh<_i655.AuthRepository>()),
     );
+    gh.lazySingleton<_i341.UpdateUserInfoUseCase>(
+      () => _i341.UpdateUserInfoUseCase(gh<_i655.AuthRepository>()),
+    );
     gh.factory<_i795.PeopleProvider>(
       () => _i795.PeopleProvider(
         getPeopleUseCase: gh<_i881.GetPeopleUseCase>(),
@@ -186,17 +191,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i914.GetHospitalityStaffUseCase>(
       () => _i914.GetHospitalityStaffUseCase(
         gh<_i1019.IHospitalityStaffRepository>(),
-      ),
-    );
-    gh.factory<_i554.AuthProvider>(
-      () => _i554.AuthProvider(
-        gh<_i1073.LoginUseCase>(),
-        gh<_i984.SignUpUseCase>(),
-        gh<_i944.CheckCachedUserUseCase>(),
-        gh<_i24.SendEmailVerificationUseCase>(),
-        gh<_i637.LogoutUseCase>(),
-        gh<_i115.CheckEmailVerificationUseCase>(),
-        gh<_i828.SendPasswordResetUseCase>(),
       ),
     );
     gh.lazySingleton<_i1039.AddTaskUseCase>(
@@ -210,6 +204,18 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i1051.ToggleTaskCompletionUseCase>(
       () => _i1051.ToggleTaskCompletionUseCase(gh<_i162.ITasksRepository>()),
+    );
+    gh.factory<_i554.AuthProvider>(
+      () => _i554.AuthProvider(
+        gh<_i1073.LoginUseCase>(),
+        gh<_i984.SignUpUseCase>(),
+        gh<_i944.CheckCachedUserUseCase>(),
+        gh<_i24.SendEmailVerificationUseCase>(),
+        gh<_i637.LogoutUseCase>(),
+        gh<_i115.CheckEmailVerificationUseCase>(),
+        gh<_i828.SendPasswordResetUseCase>(),
+        gh<_i341.UpdateUserInfoUseCase>(),
+      ),
     );
     gh.factory<_i1031.HospitalityStaffProvider>(
       () => _i1031.HospitalityStaffProvider(

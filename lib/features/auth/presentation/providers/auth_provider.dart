@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:provider_test/features/auth/domain/usecases/check_email_verification_usecase.dart';
 import 'package:provider_test/features/auth/domain/usecases/send_password_reset_usecase.dart';
+import 'package:provider_test/features/auth/domain/usecases/update_user_info_usecase.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/sign_up_usecase.dart';
@@ -17,7 +18,8 @@ class AuthProvider extends ChangeNotifier {
   final SendEmailVerificationUseCase _sendEmailVerificationUseCase;
   final LogoutUseCase _logoutUseCase;
   final CheckEmailVerificationUseCase _checkEmailVerificationUseCase;
-  final SendPasswordResetUseCase _sendPasswordResetUseCase; // المتغير الجديد
+  final SendPasswordResetUseCase _sendPasswordResetUseCase; 
+  final UpdateUserInfoUseCase _updateUserInfoUseCase;
 
   AuthProvider(
     this._loginUseCase,
@@ -26,7 +28,8 @@ class AuthProvider extends ChangeNotifier {
     this._sendEmailVerificationUseCase,
     this._logoutUseCase,
     this._checkEmailVerificationUseCase,
-    this._sendPasswordResetUseCase, // إضافة المتغير الجديد هنا
+    this._sendPasswordResetUseCase,
+    this._updateUserInfoUseCase,
   );
 
   bool _isLoading = false;
@@ -43,7 +46,41 @@ class AuthProvider extends ChangeNotifier {
   // الدوال التي ستستدعيها واجهة المستخدم (UI)
   // ==========================================
 
+/// دالة تحديث بيانات المستخدم (الاسم والعمر)
+  Future<bool> updateUserProfile(String name, int age) async {
+    // نتأكد أولاً أن هناك مستخدم مسجل دخول
+    if (_currentUser == null) return false;
 
+    _setLoading(true);
+    _clearError();
+
+    // نستدعي الـ UseCase ونمرر له الـ uid الخاص بالمستخدم الحالي
+    final result = await _updateUserInfoUseCase(_currentUser!.uid, name, age);
+
+    return result.fold(
+      (failure) {
+        _errorMessage = failure.message;
+        _setLoading(false);
+        return false; // فشل التحديث
+      },
+      (_) {
+        // 🌟 أفضل الممارسات (Best Practice): التحديث التفاعلي (Reactive UI)
+        // بدلاً من استدعاء البيانات من فايربيس مرة أخرى، نقوم بتحديث كائن المستخدم المحلي
+        // هذا سيجعل الاسم الجديد يظهر في الشاشة فوراً دون أي تأخير
+        
+        _currentUser = UserEntity(
+          uid: _currentUser!.uid,
+          email: _currentUser!.email,
+          isEmailVerified: _currentUser!.isEmailVerified,
+          name: name, // الاسم الجديد
+          age: age,   // العمر الجديد
+        );
+        
+        _setLoading(false); // الدالة هذه تحتوي على notifyListeners() بداخلها فستحدث الواجهة
+        return true; // نجح التحديث
+      },
+    );
+  }
   Future<bool> resetPassword(String email) async {
     _setLoading(true);
     _clearError();

@@ -2,9 +2,8 @@ class UserEntity {
   final String uid;
   final String email;
   final bool isEmailVerified;
-  final String name; // الحقل الجديد
-  final int age;     // الحقل الجديد
-
+  final String name;
+  final int age;     
   UserEntity({
     required this.uid,
     required this.email,
