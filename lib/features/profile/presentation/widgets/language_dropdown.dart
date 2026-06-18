@@ -1,8 +1,8 @@
-import 'package:easy_localization/easy_localization.dart';
+﻿import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:provider_test/core/providers/Language_Provider.dart';
-import 'icon_background.dart';
+import 'package:provider_test/core/providers/language_provider.dart';
+import 'package:provider_test/features/dashboard/presentation/widgets/icon_background.dart';
 
 class LanguageDropdown extends StatelessWidget {
   final ThemeData theme;

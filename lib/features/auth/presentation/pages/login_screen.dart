@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:provider_test/features/auth/presentation/screens/email_verification_screen.dart';
-import 'package:provider_test/features/auth/presentation/screens/sign_up_screen.dart';
+import 'package:provider_test/features/auth/presentation/pages/email_verification_screen.dart';
+import 'package:provider_test/features/auth/presentation/pages/sign_up_screen.dart';
 // تأكد من صحة هذه المسارات بناءً على هيكل مشروعك
 import '../providers/auth_provider.dart'; 
 import '../../../dashboard/presentation/pages/dashboard_screen.dart';

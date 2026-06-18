@@ -1,4 +1,4 @@
-// مسار الملف: lib/features/dashboard/presentation/provider/network_provider.dart
+﻿// مسار الملف: lib/features/dashboard/presentation/providers/network_provider.dart
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';

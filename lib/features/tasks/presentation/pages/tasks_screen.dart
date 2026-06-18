@@ -1,4 +1,4 @@
-import 'package:easy_localization/easy_localization.dart' hide TextDirection;
+﻿import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/features/people_management/domain/entities/person_entity.dart';

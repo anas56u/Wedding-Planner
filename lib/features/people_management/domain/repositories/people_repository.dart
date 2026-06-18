@@ -1,5 +1,5 @@
-import 'package:dartz/dartz.dart';
-import 'package:provider_test/core/errors/Failure.dart' show Failure;
+﻿import 'package:dartz/dartz.dart';
+import 'package:provider_test/core/errors/failure.dart' show Failure;
 import '../entities/person_entity.dart';
 
 abstract class IPeopleRepository {

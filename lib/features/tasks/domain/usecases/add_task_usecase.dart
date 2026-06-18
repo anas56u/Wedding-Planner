@@ -1,6 +1,6 @@
-import 'package:dartz/dartz.dart';
+﻿import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
-import 'package:provider_test/core/errors/Failure.dart';
+import 'package:provider_test/core/errors/failure.dart';
 import '../entities/task_entity.dart';
 import '../repositories/tasks_repository.dart';
 

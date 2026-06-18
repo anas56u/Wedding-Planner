@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:lottie/lottie.dart';
-import '../../features/dashboard/presentation/provider/network_provider.dart';
+import '../../features/dashboard/presentation/providers/network_provider.dart';
 
 class GlobalNetworkOverlay extends StatelessWidget {
   final Widget child; 

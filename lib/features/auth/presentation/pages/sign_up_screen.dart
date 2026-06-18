@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:provider_test/features/auth/presentation/screens/email_verification_screen.dart';
+import 'package:provider_test/features/auth/presentation/pages/email_verification_screen.dart';
 import '../providers/auth_provider.dart';
 
 class SignUpScreen extends StatefulWidget {

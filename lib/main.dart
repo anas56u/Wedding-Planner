@@ -1,10 +1,10 @@
-import 'package:easy_localization/easy_localization.dart';
+﻿import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:provider_test/core/providers/Language_Provider.dart';
+import 'package:provider_test/core/providers/language_provider.dart';
 import 'package:provider_test/features/auth/presentation/providers/auth_provider.dart';
-import 'package:provider_test/features/auth/presentation/screens/login_screen.dart';
+import 'package:provider_test/features/auth/presentation/pages/login_screen.dart';
 import 'package:provider_test/features/dashboard/presentation/pages/dashboard_screen.dart';
 import 'package:provider_test/features/hospitality_staff/presentation/providers/hospitality_staff_provider.dart';
 import 'package:provider_test/features/tasks/presentation/providers/tasks_provider.dart';
@@ -13,7 +13,7 @@ import 'package:provider_test/injection_container.dart' as di;
 import 'features/people_management/presentation/providers/people_provider.dart';
 import 'core/theme/app_theme.dart';
 import 'core/widgets/global_network_overlay.dart';
-import 'features/dashboard/presentation/provider/network_provider.dart';
+import 'features/dashboard/presentation/providers/network_provider.dart';
 
 Future<String> fetchDailyWeddingTip() async {
   await Future.delayed(const Duration(seconds: 2));

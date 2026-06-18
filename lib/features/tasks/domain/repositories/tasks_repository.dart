@@ -1,5 +1,5 @@
-import 'package:dartz/dartz.dart';
-import 'package:provider_test/core/errors/Failure.dart';
+﻿import 'package:dartz/dartz.dart';
+import 'package:provider_test/core/errors/failure.dart';
 import '../entities/task_entity.dart';
 
 

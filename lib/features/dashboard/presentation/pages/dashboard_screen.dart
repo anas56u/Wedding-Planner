@@ -1,8 +1,8 @@
-import 'package:easy_localization/easy_localization.dart';
+﻿import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:provider_test/features/dashboard/presentation/pages/settings_screen.dart';
+import 'package:provider_test/features/profile/presentation/pages/settings_screen.dart';
 import 'package:provider_test/features/people_management/presentation/pages/home_screen.dart';
 import 'package:provider_test/features/tasks/presentation/pages/tasks_screen.dart';
 import 'package:provider_test/features/hospitality_staff/presentation/pages/hospitality_staff_screen.dart';

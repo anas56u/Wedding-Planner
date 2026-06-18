@@ -3,16 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/features/auth/presentation/providers/auth_provider.dart';
-import 'package:provider_test/features/auth/presentation/screens/login_screen.dart';
-import 'package:provider_test/features/dashboard/presentation/pages/privacy_policy_screen.dart';
-import 'package:provider_test/features/dashboard/presentation/widgets/action_option.dart';
-import 'package:provider_test/features/dashboard/presentation/widgets/language_dropdown.dart';
-import 'package:provider_test/features/dashboard/presentation/widgets/profile_header.dart';
+import 'package:provider_test/features/auth/presentation/pages/login_screen.dart';
+import 'package:provider_test/features/profile/presentation/pages/privacy_policy_screen.dart';
+import '../widgets/profile_header.dart';
 import 'package:provider_test/features/dashboard/presentation/widgets/section_title.dart';
-import 'package:provider_test/features/dashboard/presentation/widgets/settings_card.dart';
-import 'package:provider_test/features/dashboard/presentation/widgets/settings_divider.dart';
-import 'package:provider_test/features/dashboard/presentation/widgets/switch_option.dart';
-
+import '../widgets/settings_card.dart';
+import '../widgets/language_dropdown.dart';
+import '../widgets/switch_option.dart';
+import 'package:provider_test/features/dashboard/presentation/widgets/action_option.dart';
+import '../widgets/settings_divider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});

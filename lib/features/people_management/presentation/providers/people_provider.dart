@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
-import 'package:provider_test/core/errors/Failure.dart';
+import 'package:provider_test/core/errors/failure.dart';
 import '../../domain/entities/person_entity.dart';
 import '../../domain/usecases/edit_person_usecase.dart';
 import '../../domain/usecases/get_people_usecase.dart';

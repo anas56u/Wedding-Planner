@@ -1,6 +1,6 @@
-import 'package:dartz/dartz.dart';
+﻿import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
-import 'package:provider_test/core/errors/Failure.dart';
+import 'package:provider_test/core/errors/failure.dart';
 import '../../domain/entities/hospitality_staff_entity.dart';
 import '../../domain/repositories/hospitality_staff_repository.dart';
 import '../datasources/hospitality_staff_remote_data_source.dart';

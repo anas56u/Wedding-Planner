@@ -1,6 +1,6 @@
-import 'package:dartz/dartz.dart';
+﻿import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
-import 'package:provider_test/core/errors/Failure.dart';
+import 'package:provider_test/core/errors/failure.dart';
 import 'package:provider_test/features/auth/data/models/user_model.dart';
 import 'package:provider_test/features/auth/domain/entities/user_entity.dart';
 import 'package:provider_test/features/auth/domain/repositories/auth_repository.dart';

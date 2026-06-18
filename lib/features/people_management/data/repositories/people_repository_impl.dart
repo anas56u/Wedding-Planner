@@ -1,6 +1,6 @@
-import 'package:dartz/dartz.dart';
+﻿import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
-import 'package:provider_test/core/errors/Failure.dart';
+import 'package:provider_test/core/errors/failure.dart';
 import '../../domain/entities/person_entity.dart';
 import '../../domain/repositories/people_repository.dart';
 import '../datasources/people_local_data_source.dart';
