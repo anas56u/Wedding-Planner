@@ -1,4 +1,4 @@
-﻿import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../domain/entities/person_entity.dart';
@@ -66,11 +66,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       DropdownMenuItem(
                         value: SortType.ageAscending,
-                        child: Text('العمر (تصاعدي)', style: TextStyle(color: theme.colorScheme.primary)), // يمكن إضافتها للترجمة لاحقاً
+                        child: Text('guests.sort_age_asc'.tr(), style: TextStyle(color: theme.colorScheme.primary)),
                       ),
                       DropdownMenuItem(
                         value: SortType.ageDescending,
-                        child: Text('العمر (تنازلي)', style: TextStyle(color: theme.colorScheme.primary)),
+                        child: Text('guests.sort_age_desc'.tr(), style: TextStyle(color: theme.colorScheme.primary)),
                       ),
                     ],
                   ),

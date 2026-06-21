@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/features/auth/presentation/providers/auth_provider.dart';
@@ -49,12 +50,12 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
         if (success) {
           Navigator.pop(context); // إغلاق النافذة عند النجاح
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('تم تحديث البيانات بنجاح!'), backgroundColor: Colors.green),
+            SnackBar(content: Text('settings.profile_updated_success'.tr()), backgroundColor: Colors.green),
           );
         } else {
           // عرض رسالة الخطأ القادمة من الـ Provider
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(authProvider.errorMessage ?? 'حدث خطأ'), backgroundColor: Colors.red),
+            SnackBar(content: Text(authProvider.errorMessage ?? 'common.error_occurred'.tr()), backgroundColor: Colors.red),
           );
         }
       }
@@ -68,7 +69,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
       backgroundColor: widget.theme.cardTheme.color,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       title: Text(
-        'تعديل الملف الشخصي',
+        'settings.edit_profile_title'.tr(),
         style: widget.theme.textTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.bold,
           color: widget.theme.colorScheme.primary,
@@ -82,13 +83,13 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
             TextFormField(
               controller: _nameController,
               decoration: InputDecoration(
-                labelText: 'الاسم',
+                labelText: 'common.name'.tr(),
                 prefixIcon: const Icon(Icons.person_outline),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'يرجى إدخال الاسم';
+                  return 'settings.name_required'.tr();
                 }
                 return null;
               },
@@ -98,16 +99,16 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
               controller: _ageController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
-                labelText: 'العمر',
+                labelText: 'guests.age'.tr(),
                 prefixIcon: const Icon(Icons.calendar_today_outlined),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return 'يرجى إدخال العمر';
+                  return 'settings.age_required'.tr();
                 }
                 if (int.tryParse(value) == null) {
-                  return 'يرجى إدخال رقم صحيح';
+                  return 'settings.invalid_number'.tr();
                 }
                 return null;
               },
@@ -118,7 +119,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('إلغاء', style: TextStyle(color: Colors.grey)),
+          child: Text('common.cancel'.tr(), style: const TextStyle(color: Colors.grey)),
         ),
         Consumer<AuthProvider>(
           builder: (context, provider, child) {
@@ -134,7 +135,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
                       width: 20, height: 20, 
                       child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)
                     )
-                  : const Text('حفظ'),
+                  : Text('common.save'.tr()),
             );
           },
         ),

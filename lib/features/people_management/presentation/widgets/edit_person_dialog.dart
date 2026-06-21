@@ -123,7 +123,7 @@ class _EditPersonDialogState extends State<EditPersonDialog> {
                     children: [
                       const Icon(Icons.error_outline, color: Colors.white),
                       const SizedBox(width: 12),
-                      const Expanded(child: Text('الرجاء إدخال اسم وعمر صحيحين.')),
+                      Expanded(child: Text('guests.edit_invalid_input'.tr())),
                     ],
                   ),
                   backgroundColor: Colors.red.shade400,

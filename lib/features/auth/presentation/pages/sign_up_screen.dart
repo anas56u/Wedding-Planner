@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/features/auth/presentation/pages/email_verification_screen.dart';
 import '../providers/auth_provider.dart';
@@ -105,7 +106,7 @@ final _ageController = TextEditingController();
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'إنشاء حساب جديد',
+                    'auth.signup_title'.tr(),
                     textAlign: TextAlign.center,
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
@@ -114,7 +115,7 @@ final _ageController = TextEditingController();
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'ابدأ رحلة التخطيط لزفافك بكل سهولة',
+                    'auth.signup_subtitle'.tr(),
                     textAlign: TextAlign.center,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: Colors.grey[600],
@@ -124,11 +125,11 @@ final _ageController = TextEditingController();
 // حقل الاسم
 _buildTextField(
   controller: _nameController,
-  label: 'الاسم الكامل',
+  label: 'auth.signup_full_name_label'.tr(),
   icon: Icons.person_outline,
   validator: (value) {
     if (value == null || value.isEmpty) {
-      return 'يرجى إدخال الاسم';
+      return 'auth.signup_name_required'.tr();
     }
     return null;
   },
@@ -139,7 +140,7 @@ const SizedBox(height: 16),
 // حقل تاريخ الميلاد بدلاً من إدخال العمر يدوياً
 _buildTextField(
   controller: _ageController, // سنستخدمه فقط لعرض التاريخ كنص للمستخدم
-  label: 'تاريخ الميلاد',
+  label: 'auth.signup_birthdate_label'.tr(),
   icon: Icons.calendar_today_outlined,
   readOnly: true, // 🌟 يمنع ظهور الكيبورد
   onTap: () async {
@@ -163,7 +164,7 @@ _buildTextField(
   },
   validator: (value) {
     if (value == null || value.isEmpty || _selectedDate == null) {
-      return 'يرجى اختيار تاريخ الميلاد';
+      return 'auth.signup_birthdate_required'.tr();
     }
     return null;
   },
@@ -173,13 +174,13 @@ const SizedBox(height: 16),
                   // --- 1. حقل البريد الإلكتروني ---
                   _buildTextField(
                     controller: _emailController,
-                    label: 'البريد الإلكتروني',
+                    label: 'auth.email_label'.tr(),
                     icon: Icons.email_outlined,
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
-                      if (value == null || value.isEmpty) return 'يرجى إدخال البريد الإلكتروني';
+                      if (value == null || value.isEmpty) return 'auth.email_required'.tr();
                       if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                        return 'صيغة البريد الإلكتروني غير صحيحة';
+                        return 'auth.email_invalid'.tr();
                       }
                       return null;
                     },
@@ -189,7 +190,7 @@ const SizedBox(height: 16),
                   // --- 2. حقل كلمة المرور ---
                   _buildTextField(
                     controller: _passwordController,
-                    label: 'كلمة المرور',
+                    label: 'auth.password_label'.tr(),
                     icon: Icons.lock_outline_rounded,
                     obscureText: _obscurePassword,
                     suffixIcon: IconButton(
@@ -197,8 +198,8 @@ const SizedBox(height: 16),
                       onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                     ),
                     validator: (value) {
-                      if (value == null || value.isEmpty) return 'يرجى إدخال كلمة المرور';
-                      if (value.length < 6) return 'يجب أن لا تقل عن 6 أحرف';
+                      if (value == null || value.isEmpty) return 'auth.password_required'.tr();
+                      if (value.length < 6) return 'auth.signup_password_too_short'.tr();
                       return null;
                     },
                   ),
@@ -207,7 +208,7 @@ const SizedBox(height: 16),
                   // --- 3. حقل تأكيد كلمة المرور ---
                   _buildTextField(
                     controller: _confirmPasswordController,
-                    label: 'تأكيد كلمة المرور',
+                    label: 'auth.signup_confirm_password_label'.tr(),
                     icon: Icons.lock_reset_rounded,
                     obscureText: _obscureConfirmPassword,
                     suffixIcon: IconButton(
@@ -215,9 +216,9 @@ const SizedBox(height: 16),
                       onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
                     ),
                     validator: (value) {
-                      if (value == null || value.isEmpty) return 'يرجى تأكيد كلمة المرور';
+                      if (value == null || value.isEmpty) return 'auth.signup_confirm_password_required'.tr();
                       // 🌟 التحقق من التطابق هندسياً
-                      if (value != _passwordController.text) return 'كلمتا المرور غير متطابقتين';
+                      if (value != _passwordController.text) return 'auth.signup_passwords_mismatch'.tr();
                       return null;
                     },
                   ),
@@ -230,7 +231,7 @@ const SizedBox(height: 16),
                       onPressed: authProvider.isLoading ? null : _handleSignUp,
                       child: authProvider.isLoading
                           ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text('إنشاء الحساب'),
+                          : Text('auth.signup_button'.tr()),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -239,11 +240,11 @@ const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('لديك حساب بالفعل؟', style: theme.textTheme.bodyMedium),
+                      Text('auth.signup_already_have_account'.tr(), style: theme.textTheme.bodyMedium),
                       TextButton(
                         onPressed: () => Navigator.pop(context),
                         child: Text(
-                          'تسجيل الدخول',
+                          'auth.signup_login_link'.tr(),
                           style: TextStyle(
                             color: theme.colorScheme.primary,
                             fontWeight: FontWeight.bold,

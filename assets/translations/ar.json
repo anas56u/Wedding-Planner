@@ -10,7 +10,13 @@
     "hospitality": "فريق الضيافة",
     "settings_card": "الإعدادات",
     "days_remaining": "متبقي للزفاف: {days} يوم",
-    "wedding_approaching": "يوم الزفاف يقترب! 🎉"
+    "wedding_approaching": "يوم الزفاف يقترب! 🎉",
+    "welcome_prefix": "مرحباً بك،",
+    "user_age": "العمر: {age} سنة",
+    "essential_services": "الخدمات الأساسية",
+    "exit_confirm_title": "تأكيد الخروج",
+    "exit_confirm_message": "هل أنت متأكد أنك تريد الخروج من التطبيق؟",
+    "exit_button": "خروج"
   },
   "settings": {
     "title": "الإعدادات",
@@ -21,7 +27,22 @@
     "notifications": "الإشعارات",
     "about_section": "عن التطبيق",
     "privacy_policy": "سياسة الخصوصية",
-    "logout": "تسجيل الخروج"
+    "logout": "تسجيل الخروج",
+    "enable_biometric": "تفعيل الدخول بالبصمة",
+    "biometric_disabled": "تم إيقاف الدخول بالبصمة.",
+    "delete_account": "حذف الحساب نهائياً",
+    "logout_confirm_message": "هل أنت متأكد أنك تريد تسجيل الخروج من حسابك؟",
+    "logout_confirm_button": "تأكيد الخروج",
+    "default_user_name": "مستخدم",
+    "user_age_years": "{age} سنة",
+    "account_verified": "حساب موثق",
+    "account_unverified": "غير مؤكد",
+    "edit_profile_tooltip": "تعديل الملف الشخصي",
+    "profile_updated_success": "تم تحديث البيانات بنجاح!",
+    "edit_profile_title": "تعديل الملف الشخصي",
+    "name_required": "يرجى إدخال الاسم",
+    "age_required": "يرجى إدخال العمر",
+    "invalid_number": "يرجى إدخال رقم صحيح"
   },
   "guests": {
     "title": "إدارة المعازيم",
@@ -46,7 +67,10 @@
     "reminder_task": "إنشاء مهمة تذكير",
     "call_confirmation": "الاتصال بـ {name} لتأكيد الحضور",
     "reminder_created": "تم إضافة مهمة تذكير لـ {name} بنجاح 🔔",
-    "hidden_list": "تم إخفاء القائمة"
+    "hidden_list": "تم إخفاء القائمة",
+    "sort_age_asc": "العمر (تصاعدي)",
+    "sort_age_desc": "العمر (تنازلي)",
+    "edit_invalid_input": "الرجاء إدخال اسم وعمر صحيحين."
   },
   "tasks": {
     "title": "تجهيزات الزفاف",
@@ -64,7 +88,51 @@
     "first_name": "الاسم الأول",
     "last_name": "الاسم الأخير",
     "age": "العمر",
-    "edit_name": "تعديل الاسم"
+    "edit_name": "تعديل الاسم",
+    "member_role": "عضو فريق الضيافة",
+    "age_years": "{age} سنة",
+    "empty_message": "لم يتم إضافة أي أعضاء لفريق الضيافة بعد.",
+    "error_title": "عذراً، حدث خطأ!"
+  },
+  "auth": {
+    "email_label": "البريد الإلكتروني",
+    "email_required": "يرجى إدخال البريد الإلكتروني",
+    "email_invalid": "صيغة البريد الإلكتروني غير صحيحة",
+    "password_label": "كلمة المرور",
+    "password_required": "يرجى إدخال كلمة المرور",
+    "login_title": "مرحباً بك مجدداً",
+    "login_subtitle": "قم بتسجيل الدخول لمتابعة تخطيط زفافك",
+    "login_password_min_length": "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+    "login_remember_me": "تذكرني",
+    "login_forgot_password": "هل نسيت كلمة المرور؟",
+    "login_button": "تسجيل الدخول",
+    "login_no_account": "ليس لديك حساب؟",
+    "login_create_account": "إنشاء حساب",
+    "login_reset_title": "استعادة كلمة المرور",
+    "login_reset_body": "أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور.",
+    "login_reset_send": "إرسال الرابط",
+    "login_reset_invalid_email": "يرجى إدخال بريد إلكتروني صحيح",
+    "login_reset_success": "تم إرسال رابط الاستعادة إلى بريدك بنجاح!",
+    "signup_title": "إنشاء حساب جديد",
+    "signup_subtitle": "ابدأ رحلة التخطيط لزفافك بكل سهولة",
+    "signup_full_name_label": "الاسم الكامل",
+    "signup_name_required": "يرجى إدخال الاسم",
+    "signup_birthdate_label": "تاريخ الميلاد",
+    "signup_birthdate_required": "يرجى اختيار تاريخ الميلاد",
+    "signup_password_too_short": "يجب أن لا تقل عن 6 أحرف",
+    "signup_confirm_password_label": "تأكيد كلمة المرور",
+    "signup_confirm_password_required": "يرجى تأكيد كلمة المرور",
+    "signup_passwords_mismatch": "كلمتا المرور غير متطابقتين",
+    "signup_button": "إنشاء الحساب",
+    "signup_already_have_account": "لديك حساب بالفعل؟",
+    "signup_login_link": "تسجيل الدخول",
+    "verify_title": "تأكيد الحساب",
+    "verify_sent_message": "لقد أرسلنا رابط التأكيد إلى بريدك الإلكتروني.",
+    "verify_instruction": "يرجى فتح الإيميل والضغط على الرابط، ثم العودة والضغط على الزر أدناه.",
+    "verify_confirmed_button": "نعم، لقد وثقت حسابي",
+    "verify_not_verified": "لم يتم التأكيد بعد. تحقق من صندوق الوارد أو البريد المزعج (Spam).",
+    "verify_resend_link": "لم يصلك الرابط؟ إعادة إرسال",
+    "verify_resend_success": "تم إعادة إرسال الرابط بنجاح!"
   },
   "common": {
     "edit": "تعديل",
@@ -76,6 +144,16 @@
     "edit_data": "تعديل البيانات",
     "save_changes": "حفظ التعديلات",
     "name": "الاسم",
-    "year": "سنة"
+    "year": "سنة",
+    "error_occurred": "حدث خطأ"
+  },
+  "core": {
+    "network_offline": "يبدو أن الاتصال بالإنترنت مقطوع",
+    "network_online": "عاد الاتصال بنجاح!",
+    "biometric_reason": "يرجى المصادقة للوصول إلى حسابك"
+  },
+  "splash": {
+    "app_title": "مساعد الزفاف",
+    "app_subtitle": "لتخطيط زفافك بكل حب"
   }
 }

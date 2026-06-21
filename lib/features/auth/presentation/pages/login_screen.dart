@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/features/auth/presentation/pages/email_verification_screen.dart';
 import 'package:provider_test/features/auth/presentation/pages/sign_up_screen.dart';
@@ -43,19 +44,19 @@ class _LoginScreenState extends State<LoginScreen> {
         return AlertDialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           title: Text(
-            'استعادة كلمة المرور',
+            'auth.login_reset_title'.tr(),
             style: TextStyle(color: Theme.of(context).colorScheme.primary),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور.'),
+              Text('auth.login_reset_body'.tr()),
               const SizedBox(height: 16),
               TextField(
                 controller: resetEmailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                  labelText: 'البريد الإلكتروني',
+                  labelText: 'auth.email_label'.tr(),
                   prefixIcon: const Icon(Icons.email_outlined),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 ),
@@ -65,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('إلغاء', style: TextStyle(color: Colors.grey)),
+              child: Text('common.cancel'.tr(), style: const TextStyle(color: Colors.grey)),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -73,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 if (email.isEmpty || !email.contains('@')) {
                   // تنبيه بسيط إذا كان الإيميل غير صالح
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('يرجى إدخال بريد إلكتروني صحيح')),
+                    SnackBar(content: Text('auth.login_reset_invalid_email'.tr())),
                   );
                   return;
                 }
@@ -88,22 +89,22 @@ class _LoginScreenState extends State<LoginScreen> {
                 if (mounted) {
                   if (success) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('تم إرسال رابط الاستعادة إلى بريدك بنجاح!'),
+                      SnackBar(
+                        content: Text('auth.login_reset_success'.tr()),
                         backgroundColor: Colors.green,
                       ),
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text(authProvider.errorMessage ?? 'حدث خطأ'),
+                        content: Text(authProvider.errorMessage ?? 'common.error_occurred'.tr()),
                         backgroundColor: Colors.redAccent,
                       ),
                     );
                   }
                 }
               },
-              child: const Text('إرسال الرابط'),
+              child: Text('auth.login_reset_send'.tr()),
             ),
           ],
         );
@@ -180,7 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'مرحباً بك مجدداً',
+                    'auth.login_title'.tr(),
                     textAlign: TextAlign.center,
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
@@ -189,7 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'قم بتسجيل الدخول لمتابعة تخطيط زفافك',
+                    'auth.login_subtitle'.tr(),
                     textAlign: TextAlign.center,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: Colors.grey[600],
@@ -200,16 +201,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   // --- 2. حقل البريد الإلكتروني ---
                   _buildTextField(
                     controller: _emailController,
-                    label: 'البريد الإلكتروني',
+                    label: 'auth.email_label'.tr(),
                     icon: Icons.email_outlined,
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'يرجى إدخال البريد الإلكتروني';
+                        return 'auth.email_required'.tr();
                       }
                       // Regex بسيط للتحقق من صيغة الإيميل
                       if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                        return 'صيغة البريد الإلكتروني غير صحيحة';
+                        return 'auth.email_invalid'.tr();
                       }
                       return null;
                     },
@@ -219,7 +220,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   // --- 3. حقل كلمة المرور ---
                   _buildTextField(
                     controller: _passwordController,
-                    label: 'كلمة المرور',
+                    label: 'auth.password_label'.tr(),
                     icon: Icons.lock_outline_rounded,
                     obscureText: _obscurePassword,
                     suffixIcon: IconButton(
@@ -235,10 +236,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'يرجى إدخال كلمة المرور';
+                        return 'auth.password_required'.tr();
                       }
                       if (value.length < 6) {
-                        return 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+                        return 'auth.login_password_min_length'.tr();
                       }
                       return null;
                     },
@@ -266,7 +267,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            'تذكرني',
+                            'auth.login_remember_me'.tr(),
                             style: theme.textTheme.bodyMedium,
                           ),
                         ],
@@ -278,7 +279,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           _showResetPasswordDialog(context);
                         },
                         child: Text(
-                          'هل نسيت كلمة المرور؟',
+                          'auth.login_forgot_password'.tr(),
                           style: TextStyle(
                             color: theme.colorScheme.secondary,
                             fontWeight: FontWeight.bold,
@@ -296,7 +297,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: authProvider.isLoading ? null : _handleLogin,
                       child: authProvider.isLoading
                           ? const CircularProgressIndicator(color: Colors.white)
-                          : const Text('تسجيل الدخول'),
+                          : Text('auth.login_button'.tr()),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -306,7 +307,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'ليس لديك حساب؟',
+                        'auth.login_no_account'.tr(),
                         style: theme.textTheme.bodyMedium,
                       ),
                       TextButton(
@@ -319,7 +320,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           
                         },
                         child: Text(
-                          'إنشاء حساب',
+                          'auth.login_create_account'.tr(),
                           style: TextStyle(
                             color: theme.colorScheme.primary, // الكحلي
                             fontWeight: FontWeight.bold,

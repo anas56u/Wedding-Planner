@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/features/auth/presentation/providers/auth_provider.dart';
@@ -55,7 +56,7 @@ class ProfileHeader extends StatelessWidget {
             
             // 2. اسم المستخدم
             Text(
-              user.name.isNotEmpty ? user.name : 'مستخدم',
+              user.name.isNotEmpty ? user.name : 'settings.default_user_name'.tr(),
               style: theme.textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: theme.colorScheme.primary,
@@ -69,14 +70,14 @@ class ProfileHeader extends StatelessWidget {
               children: [
                 _buildProfileTag(
                   icon: Icons.cake_outlined,
-                  label: '${user.age} سنة',
+                  label: 'settings.user_age_years'.tr(namedArgs: {'age': user.age.toString()}),
                   color: theme.colorScheme.secondary.withOpacity(0.2),
                   textColor: theme.colorScheme.primary,
                 ),
                 const SizedBox(width: 8),
                 _buildProfileTag(
                   icon: user.isEmailVerified ? Icons.verified_user_rounded : Icons.info_outline,
-                  label: user.isEmailVerified ? 'حساب موثق' : 'غير مؤكد',
+                  label: user.isEmailVerified ? 'settings.account_verified'.tr() : 'settings.account_unverified'.tr(),
                   color: user.isEmailVerified ? Colors.green.shade50 : Colors.orange.shade50,
                   textColor: user.isEmailVerified ? Colors.green.shade700 : Colors.orange.shade700,
                 ),
@@ -91,7 +92,7 @@ class ProfileHeader extends StatelessWidget {
           right: 0,
           child: IconButton(
             icon: Icon(Icons.edit_outlined, color: theme.colorScheme.primary),
-            tooltip: 'تعديل الملف الشخصي',
+            tooltip: 'settings.edit_profile_tooltip'.tr(),
             onPressed: () {
               // فتح نافذة التعديل المنبثقة
               showDialog(

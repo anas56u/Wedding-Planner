@@ -1,4 +1,4 @@
-﻿import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -109,9 +109,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'مرحباً بك،',
-                              style: TextStyle(
+                            Text(
+                              'dashboard.welcome_prefix'.tr(),
+                              style: const TextStyle(
                                 color: Colors.white70,
                                 fontSize: 14,
                               ),
@@ -144,7 +144,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
-                                    'العمر: ${user.age} سنة',
+                                    'dashboard.user_age'.tr(namedArgs: {'age': user.age.toString()}),
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 12,
@@ -170,7 +170,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       
               // 3. عنوان قسم الخدمات
               Text(
-                'الخدمات الأساسية', // يفضل إضافتها لملف الترجمة لاحقاً
+                'dashboard.essential_services'.tr(),
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: theme.colorScheme.primary, // الكحلي الملكي
@@ -236,20 +236,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
           backgroundColor: theme.cardTheme.color,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
           title: Text(
-            'تأكيد الخروج',
+            'dashboard.exit_confirm_title'.tr(),
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
               color: theme.colorScheme.primary,
             ),
           ),
           content: Text(
-            'هل أنت متأكد أنك تريد الخروج من التطبيق؟',
+            'dashboard.exit_confirm_message'.tr(),
             style: TextStyle(color: Colors.grey.shade700, fontSize: 16),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('إلغاء', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
+              child: Text('common.cancel'.tr(), style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -258,7 +258,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('خروج'),
+              child: Text('dashboard.exit_button'.tr()),
             ),
           ],
         );

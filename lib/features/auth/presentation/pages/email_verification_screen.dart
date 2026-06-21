@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 // 🌟 استورد شاشة الـ Dashboard الخاصة بك هنا
@@ -11,7 +12,7 @@ class EmailVerificationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('تأكيد الحساب'),
+        title: Text('auth.verify_title'.tr()),
         centerTitle: true,
       ),
       // نستخدم Consumer لكي نجعل الزر يظهر مؤشر تحميل (Loading) أثناء مخاطبة فايربيس
@@ -25,16 +26,16 @@ class EmailVerificationScreen extends StatelessWidget {
               children: [
                 const Icon(Icons.mark_email_unread_rounded, size: 80, color: Colors.blue),
                 const SizedBox(height: 24),
-                const Text(
-                  'لقد أرسلنا رابط التأكيد إلى بريدك الإلكتروني.',
+                Text(
+                  'auth.verify_sent_message'.tr(),
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 12),
-                const Text(
-                  'يرجى فتح الإيميل والضغط على الرابط، ثم العودة والضغط على الزر أدناه.',
+                Text(
+                  'auth.verify_instruction'.tr(),
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                  style: const TextStyle(fontSize: 16, color: Colors.grey),
                 ),
                 const SizedBox(height: 40),
                 
@@ -62,7 +63,7 @@ class EmailVerificationScreen extends StatelessWidget {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: const Text('لم يتم التأكيد بعد. تحقق من صندوق الوارد أو البريد المزعج (Spam).'),
+                            content: Text('auth.verify_not_verified'.tr()),
                             backgroundColor: Colors.red.shade400,
                             behavior: SnackBarBehavior.floating,
                           ),
@@ -72,7 +73,7 @@ class EmailVerificationScreen extends StatelessWidget {
                   },
                   child: authProvider.isLoading 
                       ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text('نعم، لقد وثقت حسابي', style: TextStyle(fontSize: 18)),
+                      : Text('auth.verify_confirmed_button'.tr(), style: const TextStyle(fontSize: 18)),
                 ),
 
                 const SizedBox(height: 16),
@@ -83,14 +84,14 @@ class EmailVerificationScreen extends StatelessWidget {
                     final sent = await authProvider.resendEmailVerification();
                     if (sent && context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('تم إعادة إرسال الرابط بنجاح!'),
+                        SnackBar(
+                          content: Text('auth.verify_resend_success'.tr()),
                           backgroundColor: Colors.green,
                         ),
                       );
                     }
                   },
-                  child: const Text('لم يصلك الرابط؟ إعادة إرسال', style: TextStyle(color: Colors.grey)),
+                  child: Text('auth.verify_resend_link'.tr(), style: const TextStyle(color: Colors.grey)),
                 ),
               ],
             ),

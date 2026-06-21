@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:lottie/lottie.dart';
 import '../../features/dashboard/presentation/providers/network_provider.dart';
@@ -62,7 +63,7 @@ class GlobalNetworkOverlay extends StatelessWidget {
                       ),
                       const SizedBox(width: 12),
                       Text(
-                        isOffline ? 'يبدو أن الاتصال بالإنترنت مقطوع' : 'عاد الاتصال بنجاح!',
+                        isOffline ? 'core.network_offline'.tr() : 'core.network_online'.tr(),
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

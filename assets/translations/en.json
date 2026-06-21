@@ -10,7 +10,13 @@
     "hospitality": "Hospitality Team",
     "settings_card": "Settings",
     "days_remaining": "{days} Days Left",
-    "wedding_approaching": "Wedding day is approaching! 🎉"
+    "wedding_approaching": "Wedding day is approaching! 🎉",
+    "welcome_prefix": "Welcome,",
+    "user_age": "Age: {age} years",
+    "essential_services": "Essential Services",
+    "exit_confirm_title": "Confirm Exit",
+    "exit_confirm_message": "Are you sure you want to exit the app?",
+    "exit_button": "Exit"
   },
   "settings": {
     "title": "Settings",
@@ -21,7 +27,22 @@
     "notifications": "Notifications",
     "about_section": "About App",
     "privacy_policy": "Privacy Policy",
-    "logout": "Log Out"
+    "logout": "Log Out",
+    "enable_biometric": "Enable Biometric Login",
+    "biometric_disabled": "Biometric login disabled.",
+    "delete_account": "Permanently Delete Account",
+    "logout_confirm_message": "Are you sure you want to log out of your account?",
+    "logout_confirm_button": "Confirm Logout",
+    "default_user_name": "User",
+    "user_age_years": "{age} Years",
+    "account_verified": "Verified Account",
+    "account_unverified": "Unverified",
+    "edit_profile_tooltip": "Edit Profile",
+    "profile_updated_success": "Profile updated successfully!",
+    "edit_profile_title": "Edit Profile",
+    "name_required": "Please enter a name",
+    "age_required": "Please enter an age",
+    "invalid_number": "Please enter a valid number"
   },
   "guests": {
     "title": "Guests Management",
@@ -46,7 +67,10 @@
     "reminder_task": "Create Reminder Task",
     "call_confirmation": "Call {name} to confirm attendance",
     "reminder_created": "Reminder task for {name} added successfully 🔔",
-    "hidden_list": "List is hidden"
+    "hidden_list": "List is hidden",
+    "sort_age_asc": "Age (Ascending)",
+    "sort_age_desc": "Age (Descending)",
+    "edit_invalid_input": "Please enter a valid name and age."
   },
   "tasks": {
     "title": "Wedding Preparations",
@@ -64,7 +88,51 @@
     "first_name": "First Name",
     "last_name": "Last Name",
     "age": "Age",
-    "edit_name": "Edit Name"
+    "edit_name": "Edit Name",
+    "member_role": "Hospitality Team Member",
+    "age_years": "{age} Years",
+    "empty_message": "No hospitality team members added yet.",
+    "error_title": "Sorry, an error occurred!"
+  },
+  "auth": {
+    "email_label": "Email",
+    "email_required": "Please enter your email",
+    "email_invalid": "Invalid email format",
+    "password_label": "Password",
+    "password_required": "Please enter your password",
+    "login_title": "Welcome Back",
+    "login_subtitle": "Log in to continue planning your wedding",
+    "login_password_min_length": "Password must be at least 6 characters",
+    "login_remember_me": "Remember me",
+    "login_forgot_password": "Forgot your password?",
+    "login_button": "Log In",
+    "login_no_account": "Don't have an account?",
+    "login_create_account": "Create Account",
+    "login_reset_title": "Reset Password",
+    "login_reset_body": "Enter your email and we'll send you a password reset link.",
+    "login_reset_send": "Send Link",
+    "login_reset_invalid_email": "Please enter a valid email",
+    "login_reset_success": "Recovery link sent to your email successfully!",
+    "signup_title": "Create New Account",
+    "signup_subtitle": "Start planning your wedding with ease",
+    "signup_full_name_label": "Full Name",
+    "signup_name_required": "Please enter your name",
+    "signup_birthdate_label": "Date of Birth",
+    "signup_birthdate_required": "Please select your date of birth",
+    "signup_password_too_short": "Must be at least 6 characters",
+    "signup_confirm_password_label": "Confirm Password",
+    "signup_confirm_password_required": "Please confirm your password",
+    "signup_passwords_mismatch": "Passwords do not match",
+    "signup_button": "Create Account",
+    "signup_already_have_account": "Already have an account?",
+    "signup_login_link": "Log In",
+    "verify_title": "Verify Account",
+    "verify_sent_message": "We've sent a verification link to your email.",
+    "verify_instruction": "Please open your email, click the link, then come back and press the button below.",
+    "verify_confirmed_button": "Yes, I have verified my account",
+    "verify_not_verified": "Not verified yet. Check your inbox or spam folder.",
+    "verify_resend_link": "Didn't receive the link? Resend",
+    "verify_resend_success": "Verification link resent successfully!"
   },
   "common": {
     "edit": "Edit",
@@ -76,6 +144,16 @@
     "edit_data": "Edit Data",
     "save_changes": "Save Changes",
     "name": "Name",
-    "year": "Year"
+    "year": "Year",
+    "error_occurred": "An error occurred"
+  },
+  "core": {
+    "network_offline": "It looks like the internet connection is lost",
+    "network_online": "Connection restored successfully!",
+    "biometric_reason": "Please authenticate to access your account"
+  },
+  "splash": {
+    "app_title": "Wedding Planner",
+    "app_subtitle": "Planning your wedding with love"
   }
 }

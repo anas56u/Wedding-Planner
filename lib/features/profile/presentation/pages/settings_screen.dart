@@ -84,7 +84,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 builder: (context, authProvider, child) {
                   return SwitchOption(
                     theme: theme,
-                    title: 'تفعيل الدخول بالبصمة',
+                    title: 'settings.enable_biometric'.tr(),
                     icon: Icons.fingerprint_rounded,
                     value: authProvider.isBiometricEnabled,
                     onChanged: (val) async {
@@ -96,8 +96,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         final success = await authProvider.toggleDisableBiometric();
                         if (success && context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('تم إيقاف الدخول بالبصمة.'),
+                            SnackBar(
+                              content: Text('settings.biometric_disabled'.tr()),
                               backgroundColor: Colors.orange,
                             ),
                           );
@@ -136,8 +136,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Icons.delete_forever_rounded,
                   color: Colors.red,
                 ),
-                title: const Text(
-                  'حذف الحساب نهائياً',
+                title: Text(
+                  'settings.delete_account'.tr(),
                   style: TextStyle(
                     color: Colors.red,
                     fontWeight: FontWeight.bold,
@@ -165,7 +165,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             Icon(Icons.logout_rounded, color: Colors.red.shade400),
                             const SizedBox(width: 12),
                             Text(
-                              'تسجيل الخروج',
+                              'settings.logout'.tr(),
                               style: theme.textTheme.titleLarge?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: theme.colorScheme.primary,
@@ -174,7 +174,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ],
                         ),
                         content: Text(
-                          'هل أنت متأكد أنك تريد تسجيل الخروج من حسابك؟',
+                          'settings.logout_confirm_message'.tr(),
                           style: TextStyle(color: Colors.grey.shade700, fontSize: 16),
                         ),
                         actions: [
@@ -194,7 +194,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                             ),
                             onPressed: () => Navigator.of(dialogContext).pop(true),
-                            child: const Text('تأكيد الخروج'),
+                            child: Text('settings.logout_confirm_button'.tr()),
                           ),
                         ],
                       );

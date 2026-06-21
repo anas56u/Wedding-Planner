@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class HospitalityErrorState extends StatelessWidget {
@@ -21,7 +22,7 @@ class HospitalityErrorState extends StatelessWidget {
             Icon(Icons.error_outline_rounded, size: 64, color: Colors.red.shade400),
             const SizedBox(height: 16),
             Text(
-              'عذراً، حدث خطأ!',
+              'hospitality.error_title'.tr(),
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: Colors.red.shade400,

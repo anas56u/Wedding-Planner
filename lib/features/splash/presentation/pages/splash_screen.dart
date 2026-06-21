@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/core/theme/app_theme.dart';
@@ -85,7 +86,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               ),
               const SizedBox(height: 20),
               Text(
-                'مساعد الزفاف',
+                'splash.app_title'.tr(),
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
@@ -93,8 +94,8 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 ),
               ),
               const SizedBox(height: 10),
-              const Text(
-                'لتخطيط زفافك بكل حب',
+              Text(
+                'splash.app_subtitle'.tr(),
                 style: TextStyle(
                   fontSize: 16,
                   color: AppTheme.accentRoseGold,

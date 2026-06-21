@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:local_auth/local_auth.dart';
 
 class BiometricHelper {
@@ -21,7 +22,7 @@ class BiometricHelper {
 
       // التعديل هنا: نمرر الخصائص مباشرة بدون AuthenticationOptions
       return await _auth.authenticate(
-        localizedReason: 'يرجى المصادقة للوصول إلى حسابك',
+        localizedReason: 'core.biometric_reason'.tr(),
         persistAcrossBackgrounding: true, // (stickyAuth سابقاً) تبقي الواجهة مفتوحة إذا التطبيق ذهب للخلفية
         biometricOnly: true,              // إجبار النظام على طلب البصمة ومنع استخدام الرقم السري للجهاز
       );

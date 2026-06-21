@@ -37,7 +37,7 @@ class HospitalityEmptyState extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'لم يتم إضافة أي أعضاء لفريق الضيافة بعد.',
+            'hospitality.empty_message'.tr(),
             style: theme.textTheme.bodyMedium?.copyWith(
               color: Colors.grey.shade600,
             ),

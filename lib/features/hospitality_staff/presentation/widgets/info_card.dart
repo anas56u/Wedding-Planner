@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider_test/features/hospitality_staff/data/models/hospitality_staff_model.dart';
 
@@ -44,7 +45,7 @@ class InfoCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
-              'عضو فريق الضيافة',
+              'hospitality.member_role'.tr(),
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.secondary,
                 fontWeight: FontWeight.w600,
@@ -63,13 +64,13 @@ class InfoCard extends StatelessWidget {
                   Icon(Icons.cake_outlined, color: Colors.grey.shade500, size: 22),
                   const SizedBox(width: 8),
                   Text(
-                    'العمر',
+                    'guests.age'.tr(),
                     style: theme.textTheme.titleMedium?.copyWith(color: Colors.grey.shade600),
                   ),
                 ],
               ),
               Text(
-                '${currentStaff.age} سنة',
+                'hospitality.age_years'.tr(namedArgs: {'age': currentStaff.age.toString()}),
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: theme.colorScheme.primary,

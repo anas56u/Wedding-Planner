@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider_test/features/hospitality_staff/data/models/hospitality_staff_model.dart';
 import 'package:provider_test/features/hospitality_staff/presentation/pages/hospitality_staff_details_screen.dart';
@@ -71,7 +72,7 @@ class StaffCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'عضو فريق الضيافة',
+                        'hospitality.member_role'.tr(),
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: Colors.grey.shade600,
                         ),
