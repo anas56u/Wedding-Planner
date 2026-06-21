@@ -7,6 +7,7 @@ import 'package:provider_test/features/auth/presentation/providers/auth_provider
 import 'package:provider_test/features/auth/presentation/pages/login_screen.dart';
 import 'package:provider_test/features/dashboard/presentation/pages/dashboard_screen.dart';
 import 'package:provider_test/features/hospitality_staff/presentation/providers/hospitality_staff_provider.dart';
+import 'package:provider_test/features/splash/presentation/pages/splash_screen.dart';
 import 'package:provider_test/features/tasks/presentation/providers/tasks_provider.dart';
 import 'package:provider_test/firebase_options.dart';
 import 'package:provider_test/injection_container.dart' as di;
@@ -49,9 +50,8 @@ void main() async {
       startLocale: const Locale('ar'),
       child: MultiProvider(
         providers: [
-          ChangeNotifierProvider(
-            create: (_) => di.sl<AuthProvider>()..checkAuthStatus(),
-          ),
+          ChangeNotifierProvider(create: (_) => di.sl<AuthProvider>()),
+         
           ChangeNotifierProvider(create: (_) => LanguageProvider()),
           ChangeNotifierProvider(
             create: (_) => di.sl<HospitalityStaffProvider>(),
@@ -96,14 +96,7 @@ class MyApp extends StatelessWidget {
             return GlobalNetworkOverlay(child: child!);
           },
 
-          home: Consumer<AuthProvider>(
-            builder: (context, authProvider, _) {
-              if (authProvider.isAuthenticated) {
-                return const DashboardScreen();
-              }
-              return const LoginScreen();
-            },
-          ),
+          home: const SplashScreen()
         );
       },
     );
