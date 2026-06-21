@@ -11,10 +11,13 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:cloud_firestore/cloud_firestore.dart' as _i974;
 import 'package:firebase_auth/firebase_auth.dart' as _i59;
+import 'package:firebase_messaging/firebase_messaging.dart' as _i892;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:http/http.dart' as _i519;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:provider_test/core/di/register_module.dart' as _i285;
+import 'package:provider_test/core/services/push_notification_service.dart'
+    as _i287;
 import 'package:provider_test/features/auth/data/datasources/auth_local_data_source.dart'
     as _i602;
 import 'package:provider_test/features/auth/data/datasources/auth_remote_data_source.dart'
@@ -107,6 +110,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i519.Client>(() => registerModule.client);
     gh.lazySingleton<_i59.FirebaseAuth>(() => registerModule.firebaseAuth);
     gh.lazySingleton<_i974.FirebaseFirestore>(() => registerModule.firestore);
+    gh.lazySingleton<_i892.FirebaseMessaging>(
+      () => registerModule.firebaseMessaging,
+    );
     await gh.lazySingletonAsync<_i460.SharedPreferences>(
       () => registerModule.sharedPreferences,
       preResolve: true,
@@ -122,6 +128,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i299.ITasksLocalDataSource>(
       () => _i299.TasksLocalDataSourceImpl(),
+    );
+    gh.lazySingleton<_i287.PushNotificationService>(
+      () => _i287.PushNotificationService(gh<_i892.FirebaseMessaging>()),
     );
     gh.lazySingleton<_i602.AuthLocalDataSource>(
       () => _i602.AuthLocalDataSourceImpl(
