@@ -91,15 +91,41 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       throw Exception(); 
     }
   }
-  @override
+ @override
   Future<UserModel> login(String email, String password) async {
     try {
+      // 1. التحقق من الهوية عبر Firebase Auth
       final userCredential = await firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return UserModel.fromFirebaseUser(userCredential.user!);
+
+      final user = userCredential.user;
+      
+      if (user != null) {
+        // 🌟 2. جلب بيانات المستخدم (الاسم والعمر) من Firestore
+        final userDoc = await firestore.collection('users').doc(user.uid).get();
+        
+        String fetchedName = '';
+        int fetchedAge = 0;
+        
+        // التأكد من أن الوثيقة موجودة وتحتوي على بيانات
+        if (userDoc.exists && userDoc.data() != null) {
+          fetchedName = userDoc.data()!['name'] ?? '';
+          fetchedAge = userDoc.data()!['age'] ?? 0;
+        }
+
+        // 🌟 3. إرجاع الـ UserModel وهو يحتوي على البيانات الكاملة
+        return UserModel.fromFirebaseUser(
+          user, 
+          name: fetchedName, 
+          age: fetchedAge,
+        );
+      } else {
+        throw Exception('فشل في استرداد بيانات المستخدم.');
+      }
     } catch (e) {
+      // يفضل في بيئة العمل الحقيقية طباعة e لمعرفة نوع الخطأ (Debugging)
       throw Exception();
     }
   }
@@ -112,6 +138,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         password: password,
 
       );
+      
       return UserModel.fromFirebaseUser(userCredential.user! , name: name, age: age);
     } catch (e) {
       throw Exception();
