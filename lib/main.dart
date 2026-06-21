@@ -38,10 +38,11 @@ Stream<int> weddingCountdownStream() async* {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-await di.sl<PushNotificationService>().initNotifications();
-  await EasyLocalization.ensureInitialized();
 
   await di.configureDependencies();
+  await di.sl<PushNotificationService>().initNotifications();
+
+  await EasyLocalization.ensureInitialized();
 
   runApp(
     EasyLocalization(
