@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:provider_test/features/auth/presentation/providers/auth_provider.dart';
 import 'package:provider_test/features/profile/presentation/pages/settings_screen.dart';
 import 'package:provider_test/features/people_management/presentation/pages/home_screen.dart';
 import 'package:provider_test/features/tasks/presentation/pages/tasks_screen.dart';
@@ -24,6 +25,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     // استخدام الـ Theme للوصول للألوان الموحدة بدلاً من Hardcoding
     final theme = Theme.of(context);
+    
+    // 🌟 جلب بيانات المستخدم لعرض الاسم والعمر
+    final authProvider = context.watch<AuthProvider>();
+    final user = authProvider.currentUser;
 
     return PopScope(
       canPop: false, // نمنع الخروج التلقائي الفوري
@@ -61,12 +66,109 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 1. البطاقة الترحيبية (تدمج العداد والنصيحة)
+              // 🌟 1. البطاقة الشخصية (الاسم والعمر)
+              if (user != null) ...[
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        theme.colorScheme.primary,
+                        theme.colorScheme.primary.withOpacity(0.85),
+                      ],
+                      begin: Alignment.topRight,
+                      end: Alignment.bottomLeft,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: theme.colorScheme.primary.withOpacity(0.2),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      // صورة البروفايل (الحرف الأول)
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundColor: theme.colorScheme.secondary,
+                        child: Text(
+                          user.name.isNotEmpty ? user.name[0].toUpperCase() : 'U',
+                          style: TextStyle(
+                            color: theme.colorScheme.primary,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      // النصوص (الاسم والعمر)
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'مرحباً بك،',
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              user.name,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.auto_awesome_rounded,
+                                    size: 14,
+                                    color: Colors.amber,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    'العمر: ${user.age} سنة',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+              ],
+
+              // 2. البطاقة الترحيبية (تدمج العداد والنصيحة)
               WelcomeBanner(dailyTip: dailyTip, theme: theme),
       
               const SizedBox(height: 24),
       
-              // 2. عنوان قسم الخدمات
+              // 3. عنوان قسم الخدمات
               Text(
                 'الخدمات الأساسية', // يفضل إضافتها لملف الترجمة لاحقاً
                 style: theme.textTheme.titleLarge?.copyWith(
@@ -76,14 +178,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
               const SizedBox(height: 16),
       
+              // 4. شبكة الخدمات (GridView)
               GridView.count(
                 crossAxisCount: 2,
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
                 childAspectRatio: 1.0, // جعل البطاقات مربعة ومتناسقة
                 shrinkWrap: true,
-                physics:
-                    const NeverScrollableScrollPhysics(), // إيقاف التمرير الداخلي للشبكة
+                physics: const NeverScrollableScrollPhysics(), // إيقاف التمرير الداخلي للشبكة
                 children: [
                   ServiceCard(
                     title: 'dashboard.guests'.tr(),
@@ -124,6 +226,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
+
   Future<bool?> _showExitDialog(BuildContext context) {
     final theme = Theme.of(context);
     return showDialog<bool>(

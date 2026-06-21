@@ -14,6 +14,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  DateTime? _selectedDate;
   final _confirmPasswordController = TextEditingController(); // 🌟 حقل التأكيد
 
   bool _obscurePassword = true;
@@ -31,23 +32,31 @@ final _ageController = TextEditingController();
     super.dispose();
   }
 
-  Future<void> _handleSignUp() async {
-    if (_formKey.currentState!.validate()) {
+ Future<void> _handleSignUp() async {
+    // 🌟 أضفنا شرط التأكد من أن المستخدم اختار تاريخاً
+    if (_formKey.currentState!.validate() && _selectedDate != null) {
       FocusScope.of(context).unfocus();
 
       final authProvider = context.read<AuthProvider>();
+
+      // 🌟 هندسياً: كيفية حساب العمر الفعلي بدقة
+      final today = DateTime.now();
+      int calculatedAge = today.year - _selectedDate!.year;
+      // إذا لم يأتِ شهر ميلاده بعد في هذه السنة، أو نحن في نفس الشهر لكن لم يأتِ اليوم بعد، ننقص سنة
+      if (today.month < _selectedDate!.month ||
+          (today.month == _selectedDate!.month && today.day < _selectedDate!.day)) {
+        calculatedAge--; 
+      }
 
       final success = await authProvider.signUp(
         _emailController.text.trim(),
         _passwordController.text.trim(),
         _nameController.text.trim(),
-        int.parse(_ageController.text.trim()),
+        calculatedAge, // 🌟 نمرر العمر الذي حسبناه برمجياً
       );
 
       if (success) {
         if (mounted) {
-          // 🌟 التعديل هنا: قمنا بحذف الـ showDialog القديم
-          // ووضعنا كود التوجيه إلى شاشة التحقق الجديدة
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const EmailVerificationScreen()),
@@ -127,21 +136,39 @@ _buildTextField(
 const SizedBox(height: 16),
 
 // حقل العمر
+// حقل تاريخ الميلاد بدلاً من إدخال العمر يدوياً
 _buildTextField(
-  controller: _ageController,
-  label: 'العمر',
+  controller: _ageController, // سنستخدمه فقط لعرض التاريخ كنص للمستخدم
+  label: 'تاريخ الميلاد',
   icon: Icons.calendar_today_outlined,
-  keyboardType: TextInputType.number, // لإظهار لوحة أرقام فقط
-  validator: (value) {
-    if (value == null || value.isEmpty) {
-      return 'يرجى إدخال العمر';
+  readOnly: true, // 🌟 يمنع ظهور الكيبورد
+  onTap: () async {
+    // 🌟 فتح نافذة التقويم عند الضغط على الحقل
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      // العمر الافتراضي عند فتح التقويم (مثلاً نرجعه 18 سنة للوراء)
+      initialDate: DateTime.now().subtract(const Duration(days: 365 * 18)), 
+      firstDate: DateTime(1900), // أقدم تاريخ ممكن اختياره
+      lastDate: DateTime.now(),  // أحدث تاريخ (اليوم)
+    );
+
+    // إذا قام المستخدم باختيار تاريخ ولم يضغط إلغاء
+    if (pickedDate != null) {
+      setState(() {
+        _selectedDate = pickedDate; // حفظ التاريخ الفعلي
+        // عرض التاريخ للمستخدم بصيغة YYYY-MM-DD
+        _ageController.text = "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
+      });
     }
-    if (int.tryParse(value) == null) {
-      return 'يرجى إدخال عمر صحيح (أرقام فقط)';
+  },
+  validator: (value) {
+    if (value == null || value.isEmpty || _selectedDate == null) {
+      return 'يرجى اختيار تاريخ الميلاد';
     }
     return null;
   },
 ),
+const SizedBox(height: 16),
 const SizedBox(height: 16),
                   // --- 1. حقل البريد الإلكتروني ---
                   _buildTextField(
@@ -243,12 +270,16 @@ const SizedBox(height: 16),
     Widget? suffixIcon,
     TextInputType? keyboardType,
     String? Function(String?)? validator,
+    bool readOnly = false, // 🌟 إضافة جديدة لمنع الكتابة
+    VoidCallback? onTap,   // 🌟 إضافة جديدة لالتقاط الضغطة
   }) {
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
       validator: validator,
+      readOnly: readOnly, // 🌟 تمرير القيمة للـ TextFormField
+      onTap: onTap,       // 🌟 تمرير الدالة للـ TextFormField
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon, color: Theme.of(context).colorScheme.primary),
