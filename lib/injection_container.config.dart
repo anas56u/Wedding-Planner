@@ -29,8 +29,16 @@ import 'package:provider_test/features/auth/domain/usecases/check_email_verifica
     as _i115;
 import 'package:provider_test/features/auth/domain/usecases/delete_account_usecase.dart'
     as _i1031;
+import 'package:provider_test/features/auth/domain/usecases/disable_biometric_usecase.dart'
+    as _i650;
+import 'package:provider_test/features/auth/domain/usecases/enable_biometric_usecase.dart'
+    as _i330;
+import 'package:provider_test/features/auth/domain/usecases/is_biometric_enabled_usecase.dart'
+    as _i835;
 import 'package:provider_test/features/auth/domain/usecases/login_usecase.dart'
     as _i1073;
+import 'package:provider_test/features/auth/domain/usecases/login_with_biometric_usecase.dart'
+    as _i265;
 import 'package:provider_test/features/auth/domain/usecases/logout_usecase.dart'
     as _i637;
 import 'package:provider_test/features/auth/domain/usecases/send_email_verification_usecase.dart'
@@ -159,6 +167,18 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i368.TogglePersonSelectionUseCase>(
       () => _i368.TogglePersonSelectionUseCase(gh<_i446.IPeopleRepository>()),
     );
+    gh.factory<_i650.DisableBiometricUseCase>(
+      () => _i650.DisableBiometricUseCase(gh<_i655.AuthRepository>()),
+    );
+    gh.factory<_i330.EnableBiometricUseCase>(
+      () => _i330.EnableBiometricUseCase(gh<_i655.AuthRepository>()),
+    );
+    gh.factory<_i835.IsBiometricEnabledUseCase>(
+      () => _i835.IsBiometricEnabledUseCase(gh<_i655.AuthRepository>()),
+    );
+    gh.factory<_i265.LoginWithBiometricUseCase>(
+      () => _i265.LoginWithBiometricUseCase(gh<_i655.AuthRepository>()),
+    );
     gh.factory<_i828.SendPasswordResetUseCase>(
       () => _i828.SendPasswordResetUseCase(gh<_i655.AuthRepository>()),
     );
@@ -198,19 +218,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1019.IHospitalityStaffRepository>(),
       ),
     );
-    gh.factory<_i554.AuthProvider>(
-      () => _i554.AuthProvider(
-        gh<_i1073.LoginUseCase>(),
-        gh<_i984.SignUpUseCase>(),
-        gh<_i944.CheckCachedUserUseCase>(),
-        gh<_i24.SendEmailVerificationUseCase>(),
-        gh<_i637.LogoutUseCase>(),
-        gh<_i115.CheckEmailVerificationUseCase>(),
-        gh<_i828.SendPasswordResetUseCase>(),
-        gh<_i341.UpdateUserInfoUseCase>(),
-        gh<_i1031.DeleteAccountUseCase>(),
-      ),
-    );
     gh.lazySingleton<_i1039.AddTaskUseCase>(
       () => _i1039.AddTaskUseCase(gh<_i162.ITasksRepository>()),
     );
@@ -222,6 +229,23 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i1051.ToggleTaskCompletionUseCase>(
       () => _i1051.ToggleTaskCompletionUseCase(gh<_i162.ITasksRepository>()),
+    );
+    gh.factory<_i554.AuthProvider>(
+      () => _i554.AuthProvider(
+        gh<_i1073.LoginUseCase>(),
+        gh<_i984.SignUpUseCase>(),
+        gh<_i944.CheckCachedUserUseCase>(),
+        gh<_i24.SendEmailVerificationUseCase>(),
+        gh<_i637.LogoutUseCase>(),
+        gh<_i115.CheckEmailVerificationUseCase>(),
+        gh<_i828.SendPasswordResetUseCase>(),
+        gh<_i341.UpdateUserInfoUseCase>(),
+        gh<_i1031.DeleteAccountUseCase>(),
+        gh<_i330.EnableBiometricUseCase>(),
+        gh<_i650.DisableBiometricUseCase>(),
+        gh<_i265.LoginWithBiometricUseCase>(),
+        gh<_i835.IsBiometricEnabledUseCase>(),
+      ),
     );
     gh.factory<_i1032.HospitalityStaffProvider>(
       () => _i1032.HospitalityStaffProvider(

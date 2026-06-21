@@ -18,10 +18,7 @@ import 'features/dashboard/presentation/providers/network_provider.dart';
 Future<String> fetchDailyWeddingTip() async {
   await Future.delayed(const Duration(seconds: 2));
   final tips = [
-    "لا تنسَ تأكيد حجز القاعة قبل شهر من الموعد!",
-    "ابتسم دائماً، صور الزفاف تدوم للأبد.",
-    "تأكد من توزيع المهام ولا تحمل كل العبء وحدك.",
-    "خصص وقتاً للراحة قبل يوم الزفاف لتكون بكامل نشاطك.",
+   "الحقونا "
   ];
   tips.shuffle();
   return tips.first;

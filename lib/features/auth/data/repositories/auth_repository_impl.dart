@@ -15,8 +15,69 @@ class AuthRepositoryImpl implements AuthRepository {
     required this.remoteDataSource,
     required this.localDataSource,
   });
+@override
+Future<Either<Failure, bool>> isBiometricEnabled() async {
+  try {
+    final result = await localDataSource.isBiometricEnabled();
+    return Right(result);
+  } catch (e) {
+    return Left(CacheFailure('فشل في قراءة حالة البصمة من التخزين الآمن.'));
+  }
+}
+@override
+  Future<Either<Failure, void>> enableBiometric(String email, String password) async {
+    try {
+      // 1. نتأكد أولاً أن الإيميل والباسورد صحيحان (تسجيل دخول وهمي للتحقق)
+      // هذه الخطوة مهمة جداً أمنياً حتى لا نحفظ باسورد خاطئ في التخزين الآمن
+      await remoteDataSource.login(email, password);
+      
+      // 2. إذا نجح، نقوم بمسح بيانات "تذكرني" العادية
+      await localDataSource.clearCachedUser();
+      
+      // 3. نحفظ البيانات في التخزين الآمن
+      await localDataSource.saveSecureCredentials(email, password);
+      
+      // 4. نفعل حالة البصمة
+      await localDataSource.setBiometricEnabled(true);
+      
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure('فشل تفعيل البصمة، تأكد من كلمة المرور.'));
+    }
+  }
 
+  @override
+  Future<Either<Failure, void>> disableBiometric() async {
+    try {
+      // مسح البيانات من التخزين الآمن وتعطيل الحالة
+      await localDataSource.clearSecureCredentials();
+      await localDataSource.setBiometricEnabled(false);
+      return const Right(null);
+    } catch (e) {
+      return Left(CacheFailure('حدث خطأ أثناء تعطيل البصمة.'));
+    }
+  }
 
+  @override
+  Future<Either<Failure, UserEntity>> loginWithBiometric() async {
+    try {
+      // 1. نجلب البيانات المشفرة
+      final credentials = await localDataSource.getSecureCredentials();
+      
+      if (credentials != null) {
+        final email = credentials['email']!;
+        final password = credentials['password']!;
+        
+        // 2. نسجل الدخول في فايربيس باستخدامها
+        final userModel = await remoteDataSource.login(email, password);
+        return Right(userModel);
+      } else {
+        return Left(CacheFailure('لا توجد بيانات محفوظة للبصمة.'));
+      }
+    } catch (e) {
+      return Left(ServerFailure('فشل تسجيل الدخول بالبصمة.'));
+    }
+  }
   @override
   Future<Either<Failure, void>> deleteAccount(String password) async {
     try {
