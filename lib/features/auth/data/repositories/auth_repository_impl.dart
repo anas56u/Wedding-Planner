@@ -186,17 +186,24 @@ Future<Either<Failure, bool>> isBiometricEnabled() async {
     }
   }
 
-  @override
+ @override
   Future<Either<Failure, void>> logout() async {
     try {
+      // 1. تسجيل الخروج من جلسة فايربيس
       await remoteDataSource.logout();
+      
+      // 2. مسح بيانات "تذكرني" العادية من SharedPreferences
       await localDataSource.clearCachedUser();
+
+      // 3. 🔥 الحل المضاف: مسح بيانات البصمة والتخزين الآمن
+      await localDataSource.clearSecureCredentials();
+      await localDataSource.setBiometricEnabled(false);
+
       return const Right(null);
     } catch (e) {
-      return Left(ServerFailure( 'فشل في تسجيل الخروج.'));
+      return Left(ServerFailure('فشل في تسجيل الخروج.'));
     }
   }
-  @override
     @override
   Future<Either<Failure, UserEntity>> checkEmailVerification() async {
     try {

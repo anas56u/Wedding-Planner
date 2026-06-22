@@ -238,8 +238,16 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> logout() async {
     _setLoading(true);
+    
+    // استدعاء الـ UseCase الذي سيقوم بتنظيف التخزين بالكامل
     await _logoutUseCase();
+    
+    // تصفير بيانات المستخدم الحالي
     _currentUser = null;
+    
+    // 🔥 الحل المضاف: تصفير حالة البصمة في الذاكرة الحية (RAM)
+    _isBiometricEnabled = false;
+    
     _setLoading(false);
   }
 
