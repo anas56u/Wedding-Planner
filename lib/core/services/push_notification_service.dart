@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
 
 /// دالة الخلفية (Background Handler)
@@ -15,6 +16,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 class PushNotificationService {
   final FirebaseMessaging _fcm;
   final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+  static const String _notifKey = 'notifications_enabled';
 
   PushNotificationService(this._fcm);
 
@@ -27,19 +30,19 @@ class PushNotificationService {
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       debugPrint('User granted permission');
-      await _fcm.subscribeToTopic('all_users');
-      await _initLocalNotifications();
+bool isEnabled = await isNotificationsEnabled();
+      if (isEnabled) {
+        await _fcm.subscribeToTopic('all_users');
+      }      await _initLocalNotifications();
       _setupMessageHandlers();
     }
   }
   Future<void> _initLocalNotifications() async {
     const AndroidInitializationSettings androidInitSettings = 
         AndroidInitializationSettings('@mipmap/ic_launcher');
-    const DarwinInitializationSettings iosInitSettings = DarwinInitializationSettings();
 
     const InitializationSettings initSettings = InitializationSettings(
       android: androidInitSettings,
-      iOS: iosInitSettings,
     );
     await _localNotifications.initialize(
       settings: initSettings, 
@@ -48,7 +51,25 @@ class PushNotificationService {
       },
     );
   }
-
+  Future<bool> isNotificationsEnabled() async {
+    String? value = await _storage.read(key: _notifKey);
+    return value != 'false';
+  }
+Future<void> toggleNotifications(bool enable) async {
+    try {
+      if (enable) {
+        await _fcm.subscribeToTopic('all_users');
+        await _storage.write(key: _notifKey, value: 'true');
+        debugPrint('تم تفعيل الإشعارات والاشتراك في all_users');
+      } else {
+        await _fcm.unsubscribeFromTopic('all_users');
+        await _storage.write(key: _notifKey, value: 'false');
+        debugPrint('تم إيقاف الإشعارات وإلغاء الاشتراك من all_users');
+      }
+    } catch (e) {
+      debugPrint('خطأ أثناء تغيير حالة الإشعارات: $e');
+    }
+  }
   void _setupMessageHandlers() {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       debugPrint('Got a message whilst in the foreground!');

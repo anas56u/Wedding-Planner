@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
+import 'package:provider_test/core/services/push_notification_service.dart';
 import 'package:provider_test/core/utlis/biometric_helper.dart';
 
 import 'package:provider_test/features/auth/presentation/providers/auth_provider.dart';
@@ -23,35 +25,37 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _notificationsEnabled = true;
-void _onDeleteAccountPressed(BuildContext context) async {
-  final authProvider = context.read<AuthProvider>();
+  void _onDeleteAccountPressed(BuildContext context) async {
+    final authProvider = context.read<AuthProvider>();
 
+    if (authProvider.isBiometricEnabled) {
+      final success = await authProvider.deleteAccountWithBiometric();
 
-  if (authProvider.isBiometricEnabled) {
-    
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('تم حذف الحساب بنجاح.'),
+            backgroundColor: Colors.green,
+          ),
+        );
 
-    final success = await authProvider.deleteAccountWithBiometric();
-    
-    if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('تم حذف الحساب بنجاح.'), backgroundColor: Colors.green),
-      );
-
-Navigator.of(context).pushAndRemoveUntil(
-  MaterialPageRoute(builder: (context) => const LoginScreen()),
-  (Route<dynamic> route) => false,
-);    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(authProvider.errorMessage ?? 'حدث خطأ ما'), backgroundColor: Colors.redAccent),
-      );
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+          (Route<dynamic> route) => false,
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(authProvider.errorMessage ?? 'حدث خطأ ما'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+    } else {
+      _showDeleteAccountDialog(context);
     }
-    
-  } else {
-
-    _showDeleteAccountDialog(context);
   }
-  
-}
+
   @override
   void initState() {
     super.initState();
@@ -61,6 +65,17 @@ Navigator.of(context).pushAndRemoveUntil(
         context.read<AuthProvider>().loadBiometricSettingsStatus();
       }
     });
+    _loadNotificationState();
+  }
+
+  Future<void> _loadNotificationState() async {
+    final pushService = GetIt.instance<PushNotificationService>();
+    final isEnabled = await pushService.isNotificationsEnabled();
+    if (mounted) {
+      setState(() {
+        _notificationsEnabled = isEnabled;
+      });
+    }
   }
 
   @override
@@ -70,9 +85,7 @@ Navigator.of(context).pushAndRemoveUntil(
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: AppBar(
-        title: Text('settings.title'.tr()),
-      ),
+      appBar: AppBar(title: Text('settings.title'.tr())),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
@@ -100,12 +113,14 @@ Navigator.of(context).pushAndRemoveUntil(
                 title: 'settings.notifications'.tr(),
                 icon: Icons.notifications_active_outlined,
                 value: _notificationsEnabled,
-                onChanged: (val) {
+                onChanged: (val) async {
                   setState(() => _notificationsEnabled = val);
+
+                  final pushService = GetIt.instance<PushNotificationService>();
+                  await pushService.toggleNotifications(val);
                 },
               ),
               SettingsDivider(theme: theme),
-              
 
               Consumer<AuthProvider>(
                 builder: (context, authProvider, child) {
@@ -116,11 +131,10 @@ Navigator.of(context).pushAndRemoveUntil(
                     value: authProvider.isBiometricEnabled,
                     onChanged: (val) async {
                       if (val) {
-
                         _showEnableBiometricDialog(context, authProvider);
                       } else {
-
-                        final success = await authProvider.toggleDisableBiometric();
+                        final success = await authProvider
+                            .toggleDisableBiometric();
                         if (success && context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -189,7 +203,10 @@ Navigator.of(context).pushAndRemoveUntil(
                         ),
                         title: Row(
                           children: [
-                            Icon(Icons.logout_rounded, color: Colors.red.shade400),
+                            Icon(
+                              Icons.logout_rounded,
+                              color: Colors.red.shade400,
+                            ),
                             const SizedBox(width: 12),
                             Text(
                               'settings.logout'.tr(),
@@ -202,14 +219,21 @@ Navigator.of(context).pushAndRemoveUntil(
                         ),
                         content: Text(
                           'settings.logout_confirm_message'.tr(),
-                          style: TextStyle(color: Colors.grey.shade700, fontSize: 16),
+                          style: TextStyle(
+                            color: Colors.grey.shade700,
+                            fontSize: 16,
+                          ),
                         ),
                         actions: [
                           TextButton(
-                            onPressed: () => Navigator.of(dialogContext).pop(false),
+                            onPressed: () =>
+                                Navigator.of(dialogContext).pop(false),
                             child: Text(
                               'common.cancel'.tr(),
-                              style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                           ElevatedButton(
@@ -220,7 +244,8 @@ Navigator.of(context).pushAndRemoveUntil(
                                 borderRadius: BorderRadius.circular(12),
                               ),
                             ),
-                            onPressed: () => Navigator.of(dialogContext).pop(true),
+                            onPressed: () =>
+                                Navigator.of(dialogContext).pop(true),
                             child: Text('settings.logout_confirm_button'.tr()),
                           ),
                         ],
@@ -233,7 +258,9 @@ Navigator.of(context).pushAndRemoveUntil(
                     if (context.mounted) {
                       Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => const LoginScreen()),
+                        MaterialPageRoute(
+                          builder: (context) => const LoginScreen(),
+                        ),
                         (Route<dynamic> route) => false,
                       );
                     }
@@ -247,8 +274,10 @@ Navigator.of(context).pushAndRemoveUntil(
     );
   }
 
-
-  void _showEnableBiometricDialog(BuildContext context, AuthProvider authProvider) {
+  void _showEnableBiometricDialog(
+    BuildContext context,
+    AuthProvider authProvider,
+  ) {
     final passwordController = TextEditingController();
     final formKey = GlobalKey<FormState>();
 
@@ -257,7 +286,9 @@ Navigator.of(context).pushAndRemoveUntil(
       barrierDismissible: false,
       builder: (dialogContext) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           title: const Row(
             children: [
               Icon(Icons.fingerprint_rounded, color: Colors.blue),
@@ -300,7 +331,7 @@ Navigator.of(context).pushAndRemoveUntil(
               onPressed: () => Navigator.pop(dialogContext),
               child: const Text('إلغاء', style: TextStyle(color: Colors.grey)),
             ),
-        
+
             Consumer<AuthProvider>(
               builder: (context, provider, child) {
                 return ElevatedButton(
@@ -312,17 +343,18 @@ Navigator.of(context).pushAndRemoveUntil(
                       ? null
                       : () async {
                           if (formKey.currentState!.validate()) {
-
                             Navigator.pop(dialogContext);
 
                             final biometricHelper = BiometricHelper();
-                            final isAuthenticated = await biometricHelper.authenticate();
+                            final isAuthenticated = await biometricHelper
+                                .authenticate();
 
                             if (isAuthenticated) {
                               final email = provider.currentUser?.email ?? '';
                               final password = passwordController.text.trim();
-                              
-                              final success = await provider.toggleEnableBiometric(email, password);
+
+                              final success = await provider
+                                  .toggleEnableBiometric(email, password);
 
                               if (context.mounted) {
                                 if (success) {
@@ -333,17 +365,18 @@ Navigator.of(context).pushAndRemoveUntil(
                                     ),
                                   );
                                 } else {
-
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text(provider.errorMessage ?? 'كلمة المرور غير صحيحة.'),
+                                      content: Text(
+                                        provider.errorMessage ??
+                                            'كلمة المرور غير صحيحة.',
+                                      ),
                                       backgroundColor: Colors.redAccent,
                                     ),
                                   );
                                 }
                               }
                             } else {
-
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
@@ -357,8 +390,12 @@ Navigator.of(context).pushAndRemoveUntil(
                         },
                   child: provider.isLoading
                       ? const SizedBox(
-                          width: 20, height: 20,
-                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
                         )
                       : const Text('تأكيد ومتابعة'),
                 );
@@ -379,7 +416,9 @@ Navigator.of(context).pushAndRemoveUntil(
       barrierDismissible: false,
       builder: (dialogContext) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           title: Row(
             children: [
               const Icon(Icons.warning_amber_rounded, color: Colors.red),
@@ -403,10 +442,13 @@ Navigator.of(context).pushAndRemoveUntil(
                   decoration: InputDecoration(
                     labelText: 'كلمة المرور',
                     prefixIcon: const Icon(Icons.lock_outline),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) return 'يرجى إدخال كلمة المرور';
+                    if (value == null || value.isEmpty)
+                      return 'يرجى إدخال كلمة المرور';
                     return null;
                   },
                 ),
@@ -421,33 +463,55 @@ Navigator.of(context).pushAndRemoveUntil(
             Consumer<AuthProvider>(
               builder: (context, authProvider, child) {
                 return ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                  ),
                   onPressed: authProvider.isLoading
                       ? null
                       : () async {
                           if (formKey.currentState!.validate()) {
-                            final success = await authProvider.deleteAccount(passwordController.text.trim());
+                            final success = await authProvider.deleteAccount(
+                              passwordController.text.trim(),
+                            );
                             if (context.mounted) {
                               if (success) {
                                 Navigator.pop(dialogContext);
                                 Navigator.pushAndRemoveUntil(
                                   context,
-                                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                                  MaterialPageRoute(
+                                    builder: (_) => const LoginScreen(),
+                                  ),
                                   (route) => false,
                                 );
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('تم حذف الحساب نهائياً.'), backgroundColor: Colors.green),
+                                  const SnackBar(
+                                    content: Text('تم حذف الحساب نهائياً.'),
+                                    backgroundColor: Colors.green,
+                                  ),
                                 );
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(authProvider.errorMessage ?? 'حدث خطأ'), backgroundColor: Colors.redAccent),
+                                  SnackBar(
+                                    content: Text(
+                                      authProvider.errorMessage ?? 'حدث خطأ',
+                                    ),
+                                    backgroundColor: Colors.redAccent,
+                                  ),
                                 );
                               }
                             }
                           }
                         },
                   child: authProvider.isLoading
-                      ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
                       : const Text('تأكيد الحذف'),
                 );
               },
