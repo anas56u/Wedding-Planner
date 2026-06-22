@@ -11,14 +11,9 @@ class GlobalNetworkOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 🌟 الحل الهندسي: لقد أزلنا الـ Directionality تماماً.
-    // التطبيق الآن سيتنفس بحرية ويأخذ اتجاهه من MaterialApp تلقائياً.
     return Stack(
       children: [
-        // 1. التطبيق (الشاشات)
         child,
-
-        // 2. إشعار الإنترنت
         Consumer<NetworkProvider>(
           builder: (context, network, _) {
             if (network.state == NetworkState.normal) {

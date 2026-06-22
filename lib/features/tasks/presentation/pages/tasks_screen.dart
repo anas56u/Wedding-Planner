@@ -1,4 +1,4 @@
-﻿import 'package:easy_localization/easy_localization.dart' hide TextDirection;
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/features/people_management/domain/entities/person_entity.dart';
@@ -19,11 +19,9 @@ class TasksScreen extends StatelessWidget {
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text('tasks.title'.tr()),
-        // تم الاستغناء عن الألوان الثابتة للاعتماد على الـ AppTheme
       ),
-      // تصميم حديث لزر الإضافة العائم (FAB)
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: theme.colorScheme.secondary, // اللون الذهبي
+        backgroundColor: theme.colorScheme.secondary,
         foregroundColor: Colors.white,
         elevation: 4,
         icon: const Icon(Icons.add_task_rounded),
@@ -36,15 +34,11 @@ class TasksScreen extends StatelessWidget {
       body: Consumer<TasksProvider>(
         builder: (context, provider, child) {
           final tasks = provider.tasks;
-
-          // 1. حالة عدم وجود مهام (Empty State)
           if (tasks.isEmpty) {
             return TasksEmptyState(theme: theme);
           }
-
-          // 2. حالة عرض المهام
           return ListView.separated(
-            padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 80), // bottom 80 لكي لا يغطي الزر العائم على آخر مهمة
+            padding: const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 80),
             itemCount: tasks.length,
             separatorBuilder: (context, index) => const SizedBox(height: 12),
             itemBuilder: (context, index) {
@@ -65,10 +59,6 @@ class TasksScreen extends StatelessWidget {
       ),
     );
   }
-
-  // ==========================================
-  // منطق واجهة إضافة مهمة (Dialog)
-  // ==========================================
 
   void _showAddTaskDialog(BuildContext context, ThemeData theme) {
     final allPeople = context.read<PeopleProvider>().allPeople;

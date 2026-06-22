@@ -21,32 +21,32 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   void initState() {
     super.initState();
     
-    // إعداد أنيميشن (Fade In) لظهور العناصر بشكل ناعم
+
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500), // مدة الأنيميشن ثانية ونصف
+      duration: const Duration(milliseconds: 1500),
     );
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(_controller);
     _controller.forward();
 
-    // تشغيل دالة التحقق من التوجيه
+
     _initializeAppAndNavigate();
   }
 
   Future<void> _initializeAppAndNavigate() async {
-    // 1. إعطاء وقت للأنيميشن ليكتمل ولإظهار الشاشة بشكل جميل للمستخدم
+
     await Future.delayed(const Duration(seconds: 2));
 
-    // تأكد أن الشاشة ما زالت موجودة في شجرة الـ Widgets لتجنب أخطاء الـ Context
+
     if (!mounted) return;
 
-    // 2. فحص حالة المصادقة (هل المستخدم مسجل دخول أم لا)
+
     final authProvider = context.read<AuthProvider>();
-    await authProvider.checkAuthStatus(); 
+    await authProvider.checkAuthStatus();
 
     if (!mounted) return;
 
-    // 3. التوجيه بناءً على حالة تسجيل الدخول
+
     if (authProvider.isAuthenticated) {
       Navigator.pushReplacement(
         context,
@@ -62,26 +62,26 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   @override
   void dispose() {
-    // أفضل الممارسات: يجب دائماً التخلص من الـ AnimationController لمنع تسريب الذاكرة (Memory Leak)
+
     _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // استخدام الألوان المتناسقة من AppTheme
+
     return Scaffold(
-      backgroundColor: AppTheme.primaryNavy, 
+      backgroundColor: AppTheme.primaryNavy,
       body: Center(
         child: FadeTransition(
           opacity: _fadeAnimation,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // يمكنك لاحقاً استبدال الأيقونة بـ Image.asset إذا توفر لديك لوجو
+
               const Icon(
-                Icons.favorite_rounded, 
-                size: 80, 
+                Icons.favorite_rounded,
+                size: 80,
                 color: AppTheme.accentRoseGold,
               ),
               const SizedBox(height: 20),
@@ -90,7 +90,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
-                  color: AppTheme.backgroundCream, // لون يتناسب مع الكحلي
+                  color: AppTheme.backgroundCream,
                 ),
               ),
               const SizedBox(height: 10),
@@ -101,10 +101,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                   color: AppTheme.accentRoseGold,
                 ),
               ),
-              const SizedBox(height: 40), // مسافة فاصلة
-              // مؤشر التحميل
+              const SizedBox(height: 40),
+
               const CircularProgressIndicator(
-                color: AppTheme.accentRoseGold, // استخدام لون متناسق من الثيم الخاص بك
+                color: AppTheme.accentRoseGold,
               ),
             ],
           ),

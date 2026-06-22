@@ -1,9 +1,8 @@
-﻿import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-// 🌟 استخدام الكيان النقي
 import '../../domain/entities/person_entity.dart';
-import '../providers/people_provider.dart'; 
+import '../providers/people_provider.dart';
 import '../widgets/person_info_row.dart';
 import '../widgets/edit_person_dialog.dart';
 
@@ -14,7 +13,7 @@ class PersonDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // جلب الثيم لتوحيد الألوان
+
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -24,17 +23,17 @@ class PersonDetailsScreen extends StatelessWidget {
           'guests.details'.tr(),
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        // تم إزالة زر التعديل من هنا لنقله إلى الأسفل (UX Best Practice)
+
       ),
       body: Consumer<PeopleProvider>(
         builder: (context, provider, child) {
-          // التحديث الفوري للبيانات
+
           final person = provider.allPeople.firstWhere(
             (p) => p.id == initialPerson.id,
-            orElse: () => initialPerson, 
+            orElse: () => initialPerson,
           );
 
-          // تحديد الألوان بناءً على حالة الحضور
+
           final statusColor = person.isSelected ? Colors.green.shade600 : theme.colorScheme.primary;
           final statusBgColor = person.isSelected ? Colors.green.shade50 : theme.colorScheme.primary.withOpacity(0.05);
           final statusIcon = person.isSelected ? Icons.how_to_reg_rounded : Icons.person_outline_rounded;
@@ -44,7 +43,7 @@ class PersonDetailsScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // 1. الصورة الرمزية (Avatar) بتصميم حديث
+
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
@@ -65,7 +64,7 @@ class PersonDetailsScreen extends StatelessWidget {
                 
                 const SizedBox(height: 24),
                 
-                // 2. بطاقة المعلومات (Info Card)
+
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
@@ -90,7 +89,7 @@ class PersonDetailsScreen extends StatelessWidget {
                       PersonInfoRow(label: 'guests.age'.tr(), value: '${person.age} ${'common.year'.tr()}', theme: theme),
                       const Padding(padding: EdgeInsets.symmetric(vertical: 12), child: Divider(height: 1)),
                       
-                      // صف الحالة مع لون مميز
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -120,7 +119,7 @@ class PersonDetailsScreen extends StatelessWidget {
 
                 const SizedBox(height: 40),
 
-                // 3. زر التعديل الرئيسي (Primary Action Button)
+
                 SizedBox(
                   width: double.infinity,
                   height: 54,
@@ -149,7 +148,7 @@ class PersonDetailsScreen extends StatelessWidget {
     );
   }
 
-  // 🌟 نافذة التعديل بتصميم موحد وعصري
+
   void _showEditDialog(BuildContext context, PersonEntity currentPerson, ThemeData theme) {
     showDialog(
       context: context,

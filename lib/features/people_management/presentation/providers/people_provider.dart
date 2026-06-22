@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:provider_test/core/errors/failure.dart';
 import '../../domain/entities/person_entity.dart';
@@ -19,8 +19,6 @@ class PeopleProvider extends ChangeNotifier {
     required this.editPersonUseCase,
     required this.togglePersonSelectionUseCase,
   });
-
-  // 🌟 القائمة الآن نقية وتستخدم Entity
   List<PersonEntity> _allPeople = [];
   bool _isLoading = true;
   String? _errorMessage;
@@ -36,8 +34,6 @@ class PeopleProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   SortType get currentSort => _currentSort;
-
-  // 🌟 دالة الجلب الموحدة (الـ Repository سيتصرف داخلياً)
   Future<void> loadData() async {
     _isLoading = true;
     _errorMessage = null;
@@ -76,7 +72,6 @@ class PeopleProvider extends ChangeNotifier {
   }
 
   Future<void> toggleSelection(int personId) async {
-    // 1. استدعاء دالة execute كما هي معرفة في الـ UseCase
     final result = await togglePersonSelectionUseCase.execute(personId);
     
     result.fold(
@@ -85,13 +80,10 @@ class PeopleProvider extends ChangeNotifier {
         notifyListeners();
       },
       (_) {
-        // 2. تحديث الذاكرة المحلية باستخدام copyWith السحرية الموجودة لديك
         final index = _allPeople.indexWhere((p) => p.id == personId);
         if (index != -1) {
           final current = _allPeople[index];
           _allPeople[index] = current.copyWith(isSelected: !current.isSelected);
-          
-          // 3. إخبار واجهة المستخدم بتحديث نفسها فوراً
           notifyListeners();
         }
       },

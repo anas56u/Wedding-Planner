@@ -20,18 +20,18 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
-    // جلب البيانات من الـ Providers
+
     final dailyTip = context.watch<String>();
 
-    // استخدام الـ Theme للوصول للألوان الموحدة بدلاً من Hardcoding
+
     final theme = Theme.of(context);
     
-    // 🌟 جلب بيانات المستخدم لعرض الاسم والعمر
+
     final authProvider = context.watch<AuthProvider>();
     final user = authProvider.currentUser;
 
     return PopScope(
-      canPop: false, // نمنع الخروج التلقائي الفوري
+      canPop: false,
       onPopInvoked: (bool didPop) async {
         if (didPop) {
           return;
@@ -39,13 +39,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
         
         final bool shouldExit = await _showExitDialog(context) ?? false;
         
-        // الخروج إذا وافق المستخدم
+
         if (shouldExit) {
           SystemNavigator.pop();
         }
       },
       child: Scaffold(
-        // نعتمد على لون الخلفية المحدد في AppTheme
+
         appBar: AppBar(
           title: Text('dashboard.home'.tr()),
           actions: [
@@ -60,13 +60,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ],
         ),
-        // استخدمنا SingleChildScrollView لمنع مشاكل الـ Overflow في الشاشات الصغيرة
+
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 🌟 1. البطاقة الشخصية (الاسم والعمر)
+
               if (user != null) ...[
                 Container(
                   padding: const EdgeInsets.all(20),
@@ -90,7 +90,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   child: Row(
                     children: [
-                      // صورة البروفايل (الحرف الأول)
+
                       CircleAvatar(
                         radius: 30,
                         backgroundColor: theme.colorScheme.secondary,
@@ -104,7 +104,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                       ),
                       const SizedBox(width: 16),
-                      // النصوص (الاسم والعمر)
+
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -163,29 +163,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 const SizedBox(height: 24),
               ],
 
-              // 2. البطاقة الترحيبية (تدمج العداد والنصيحة)
+
               WelcomeBanner(dailyTip: dailyTip, theme: theme),
       
               const SizedBox(height: 24),
       
-              // 3. عنوان قسم الخدمات
+
               Text(
                 'dashboard.essential_services'.tr(),
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: theme.colorScheme.primary, // الكحلي الملكي
+                  color: theme.colorScheme.primary,
                 ),
               ),
               const SizedBox(height: 16),
       
-              // 4. شبكة الخدمات (GridView)
+
               GridView.count(
                 crossAxisCount: 2,
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
-                childAspectRatio: 1.0, // جعل البطاقات مربعة ومتناسقة
+                childAspectRatio: 1.0,
                 shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(), // إيقاف التمرير الداخلي للشبكة
+                physics: const NeverScrollableScrollPhysics(),
                 children: [
                   ServiceCard(
                     title: 'dashboard.guests'.tr(),

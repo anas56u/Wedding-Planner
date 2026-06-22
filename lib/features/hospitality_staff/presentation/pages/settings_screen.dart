@@ -1,4 +1,4 @@
-﻿import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +22,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  // مفتاح الإشعارات يعمل شكلياً فقط بـ setState على مستوى الشاشة
   bool _notificationsEnabled = true;
 
   @override
@@ -33,15 +32,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('settings.title'.tr()), // مترجم بالكامل
+        title: Text('settings.title'.tr()),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
           ProfileHeader(theme: theme),
           const SizedBox(height: 32),
-
-          // قسم الإعدادات العامة
           SectionTitle(title: 'settings.general_section'.tr(), theme: theme),
           const SizedBox(height: 12),
           SettingsCard(
@@ -64,7 +61,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 icon: Icons.notifications_active_outlined,
                 value: _notificationsEnabled,
                 onChanged: (val) {
-                  // تحديث الواجهة بشكل موضعي فقط دون عمليات خلفية
                   setState(() => _notificationsEnabled = val);
                 },
               ),
@@ -72,8 +68,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
 
           const SizedBox(height: 24),
-
-          // قسم عن التطبيق
           SectionTitle(title: 'settings.about_section'.tr(), theme: theme),
           const SizedBox(height: 12),
           SettingsCard(
@@ -99,7 +93,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 icon: Icons.logout_rounded,
                 isDestructive: true,
                 onTap: () async {
-                  // 1. إظهار رسالة تأكيد للمستخدم
                   final bool? confirmLogout = await showDialog<bool>(
                     context: context,
                     builder: (dialogContext) {
@@ -111,7 +104,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             Icon(Icons.logout_rounded, color: Colors.red.shade400),
                             const SizedBox(width: 12),
                             Text(
-                              'تسجيل الخروج', // يمكنك تحويلها لـ 'settings.logout'.tr()
+                              'تسجيل الخروج',
                               style: theme.textTheme.titleLarge?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: theme.colorScheme.primary,
@@ -144,18 +137,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       );
                     },
                   );
-
-                  // 2. إذا وافق المستخدم على الخروج
                   if (confirmLogout == true && context.mounted) {
-                    // استدعاء دالة تسجيل الخروج من الـ Provider
                     await context.read<AuthProvider>().logout();
-
-                    // التوجيه إلى شاشة تسجيل الدخول ومسح كل الشاشات السابقة من الذاكرة
                     if (context.mounted) {
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => const LoginScreen()),
-                        (Route<dynamic> route) => false, // مسح السجل بالكامل
+                        (Route<dynamic> route) => false,
                       );
                     }
                   }

@@ -38,14 +38,12 @@ class _HomeScreenState extends State<HomeScreen> {
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           actions: [
-            // زر التحديث بتصميم أنيق
             IconButton(
               icon: Icon(Icons.refresh_rounded, color: theme.colorScheme.primary),
               onPressed: () {
                 context.read<PeopleProvider>().loadData();
               },
             ),
-            // قائمة الفرز (Sorting) - تم إصلاح خطأ النصوص هنا!
             Consumer<PeopleProvider>(
               builder: (context, provider, child) {
                 return DropdownButtonHideUnderline(
@@ -79,9 +77,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(width: 8),
           ],
-          // تصميم عصري للـ TabBar
           bottom: TabBar(
-            indicatorColor: theme.colorScheme.secondary, // الخط السفلي باللون الذهبي
+            indicatorColor: theme.colorScheme.secondary,
             indicatorWeight: 4,
             indicatorSize: TabBarIndicatorSize.tab,
             labelColor: theme.colorScheme.secondary,
@@ -112,7 +109,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
             return Column(
               children: [
-                // شريط البحث المطور (Modern Search Bar)
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TextField(
@@ -125,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       fillColor: theme.cardTheme.color,
                       contentPadding: const EdgeInsets.symmetric(vertical: 0),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20), // حواف دائرية بالكامل
+                        borderRadius: BorderRadius.circular(20),
                         borderSide: BorderSide.none,
                       ),
                       focusedBorder: OutlineInputBorder(
@@ -138,8 +134,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                   ),
                 ),
-
-                // عرض القوائم بناءً على الـ Tab المختار
                 Expanded(
                   child: TabBarView(
                     children: [
@@ -209,8 +203,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  // دالة عرض الديالوج (Dialog) بتصميم حديث
   Future<void> _confirmAction(BuildContext context, PersonEntity person, bool isCompletedTab, ThemeData theme) async {
     final bool? userConfirmed = await showDialog<bool>(
       context: context,

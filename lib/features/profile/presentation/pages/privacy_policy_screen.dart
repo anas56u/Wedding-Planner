@@ -11,14 +11,14 @@ class PrivacyPolicyScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('settings.privacy_policy'.tr()), // سيأخذ الترجمة الموجودة عندك
+        title: Text('settings.privacy_policy'.tr()),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Container(
           padding: const EdgeInsets.all(24.0),
           decoration: BoxDecoration(
-            color: theme.cardTheme.color, // لون الكارد من الثيم
+            color: theme.cardTheme.color,
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
@@ -52,10 +52,10 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
 4. التحديثات:
 نحتفظ بالحق في تعديل هذه الشروط في أي وقت. استمرارك في استخدام التطبيق يعني موافقتك على التعديلات.
-                ''', // يمكنك تعديل هذا النص لاحقاً أو ربطه بـ easy_localization
+                ''',
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: Colors.grey.shade700,
-                  height: 1.8, // تباعد الأسطر لسهولة القراءة
+                  height: 1.8,
                 ),
               ),
             ],

@@ -16,7 +16,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   DateTime? _selectedDate;
-  final _confirmPasswordController = TextEditingController(); // 🌟 حقل التأكيد
+  final _confirmPasswordController = TextEditingController();
 
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
@@ -34,26 +34,26 @@ final _ageController = TextEditingController();
   }
 
  Future<void> _handleSignUp() async {
-    // 🌟 أضفنا شرط التأكد من أن المستخدم اختار تاريخاً
+
     if (_formKey.currentState!.validate() && _selectedDate != null) {
       FocusScope.of(context).unfocus();
 
       final authProvider = context.read<AuthProvider>();
 
-      // 🌟 هندسياً: كيفية حساب العمر الفعلي بدقة
+
       final today = DateTime.now();
       int calculatedAge = today.year - _selectedDate!.year;
-      // إذا لم يأتِ شهر ميلاده بعد في هذه السنة، أو نحن في نفس الشهر لكن لم يأتِ اليوم بعد، ننقص سنة
+
       if (today.month < _selectedDate!.month ||
           (today.month == _selectedDate!.month && today.day < _selectedDate!.day)) {
-        calculatedAge--; 
+        calculatedAge--;
       }
 
       final success = await authProvider.signUp(
         _emailController.text.trim(),
         _passwordController.text.trim(),
         _nameController.text.trim(),
-        calculatedAge, // 🌟 نمرر العمر الذي حسبناه برمجياً
+        calculatedAge,
       );
 
       if (success) {
@@ -86,7 +86,7 @@ final _ageController = TextEditingController();
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        // زر الرجوع يأخذ لون الكحلي الأساسي
+
         iconTheme: IconThemeData(color: theme.colorScheme.primary),
       ),
       body: SafeArea(
@@ -102,7 +102,7 @@ final _ageController = TextEditingController();
                   Icon(
                     Icons.person_add_alt_1_rounded,
                     size: 80,
-                    color: theme.colorScheme.secondary, // الذهبي/روز جولد
+                    color: theme.colorScheme.secondary,
                   ),
                   const SizedBox(height: 16),
                   Text(
@@ -122,7 +122,7 @@ final _ageController = TextEditingController();
                     ),
                   ),
                   const SizedBox(height: 40),
-// حقل الاسم
+
 _buildTextField(
   controller: _nameController,
   label: 'auth.signup_full_name_label'.tr(),
@@ -136,28 +136,27 @@ _buildTextField(
 ),
 const SizedBox(height: 16),
 
-// حقل العمر
-// حقل تاريخ الميلاد بدلاً من إدخال العمر يدوياً
+
 _buildTextField(
-  controller: _ageController, // سنستخدمه فقط لعرض التاريخ كنص للمستخدم
+  controller: _ageController,
   label: 'auth.signup_birthdate_label'.tr(),
   icon: Icons.calendar_today_outlined,
-  readOnly: true, // 🌟 يمنع ظهور الكيبورد
+  readOnly: true,
   onTap: () async {
-    // 🌟 فتح نافذة التقويم عند الضغط على الحقل
+
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      // العمر الافتراضي عند فتح التقويم (مثلاً نرجعه 18 سنة للوراء)
-      initialDate: DateTime.now().subtract(const Duration(days: 365 * 18)), 
-      firstDate: DateTime(1900), // أقدم تاريخ ممكن اختياره
-      lastDate: DateTime.now(),  // أحدث تاريخ (اليوم)
+
+      initialDate: DateTime.now().subtract(const Duration(days: 365 * 18)),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
     );
 
-    // إذا قام المستخدم باختيار تاريخ ولم يضغط إلغاء
+
     if (pickedDate != null) {
       setState(() {
-        _selectedDate = pickedDate; // حفظ التاريخ الفعلي
-        // عرض التاريخ للمستخدم بصيغة YYYY-MM-DD
+        _selectedDate = pickedDate;
+
         _ageController.text = "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
       });
     }
@@ -171,7 +170,7 @@ _buildTextField(
 ),
 const SizedBox(height: 16),
 const SizedBox(height: 16),
-                  // --- 1. حقل البريد الإلكتروني ---
+
                   _buildTextField(
                     controller: _emailController,
                     label: 'auth.email_label'.tr(),
@@ -187,7 +186,7 @@ const SizedBox(height: 16),
                   ),
                   const SizedBox(height: 16),
 
-                  // --- 2. حقل كلمة المرور ---
+
                   _buildTextField(
                     controller: _passwordController,
                     label: 'auth.password_label'.tr(),
@@ -205,7 +204,7 @@ const SizedBox(height: 16),
                   ),
                   const SizedBox(height: 16),
 
-                  // --- 3. حقل تأكيد كلمة المرور ---
+
                   _buildTextField(
                     controller: _confirmPasswordController,
                     label: 'auth.signup_confirm_password_label'.tr(),
@@ -217,14 +216,14 @@ const SizedBox(height: 16),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) return 'auth.signup_confirm_password_required'.tr();
-                      // 🌟 التحقق من التطابق هندسياً
+
                       if (value != _passwordController.text) return 'auth.signup_passwords_mismatch'.tr();
                       return null;
                     },
                   ),
                   const SizedBox(height: 32),
 
-                  // --- 4. زر إنشاء الحساب ---
+
                   SizedBox(
                     height: 56,
                     child: ElevatedButton(
@@ -236,7 +235,7 @@ const SizedBox(height: 16),
                   ),
                   const SizedBox(height: 24),
 
-                  // --- 5. زر العودة لتسجيل الدخول ---
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -262,7 +261,7 @@ const SizedBox(height: 16),
     );
   }
 
-  // نفس دالة بناء الحقول المساعدة التي استخدمناها في شاشة تسجيل الدخول
+
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
@@ -271,16 +270,16 @@ const SizedBox(height: 16),
     Widget? suffixIcon,
     TextInputType? keyboardType,
     String? Function(String?)? validator,
-    bool readOnly = false, // 🌟 إضافة جديدة لمنع الكتابة
-    VoidCallback? onTap,   // 🌟 إضافة جديدة لالتقاط الضغطة
+    bool readOnly = false,
+    VoidCallback? onTap,
   }) {
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
       validator: validator,
-      readOnly: readOnly, // 🌟 تمرير القيمة للـ TextFormField
-      onTap: onTap,       // 🌟 تمرير الدالة للـ TextFormField
+      readOnly: readOnly,
+      onTap: onTap,
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon, color: Theme.of(context).colorScheme.primary),

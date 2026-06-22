@@ -5,10 +5,10 @@ import 'injection_container.config.dart';
 final sl = GetIt.instance;
 
 @InjectableInit(
-  initializerName: 'init', // اسم الدالة التي سيولدها الروبوت
+  initializerName: 'init',
   preferRelativeImports: false, 
   asExtension: true,
 )
 Future<void> configureDependencies() async {
-   await sl.init(); // 🌟 هنا سيتم حقن الكود المولد آلياً
+   await sl.init();
 }

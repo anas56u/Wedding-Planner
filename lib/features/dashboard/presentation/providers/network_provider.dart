@@ -1,12 +1,11 @@
-﻿// مسار الملف: lib/features/dashboard/presentation/providers/network_provider.dart
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 enum NetworkState { 
-  normal,      // الإنترنت يعمل (لا تظهر أي Lottie)
-  offline,     // لا يوجد إنترنت (أظهر Lottie الانقطاع)
-  reconnected  // عاد الإنترنت للتو (أظهر Lottie النجاح لثوانٍ)
+  normal,
+  offline,
+  reconnected
 }
 
 class NetworkProvider extends ChangeNotifier {
@@ -37,7 +36,6 @@ class NetworkProvider extends ChangeNotifier {
             notifyListeners();
           });
         } else {
-          // المرة الأولى لفتح التطبيق والإنترنت يعمل، لا نفعل شيئاً
           _state = NetworkState.normal;
           _isFirstCheck = false;
           notifyListeners();

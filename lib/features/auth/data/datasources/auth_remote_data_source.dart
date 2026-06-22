@@ -33,18 +33,18 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       final user = firebaseAuth.currentUser;
       if (user != null && user.email != null) {
-        // 1. إعادة التحقق من الهوية (Re-authentication) لمنع خطأ فايربيس
+
         AuthCredential credential = EmailAuthProvider.credential(
           email: user.email!,
           password: password,
         );
-        // إذا كانت كلمة المرور خطأ، سيتوقف الكود هنا ويرمي Exception
+
         await user.reauthenticateWithCredential(credential);
 
-        // 2. الآن نحن متأكدون 100% أن الجلسة صالحة، نحذف من Firestore
+
         await firestore.collection('users').doc(user.uid).delete();
         
-        // 3. ثم نحذف الحساب من Firebase Auth ولن يرفض العملية أبداً
+
         await user.delete();
       }
     } on FirebaseAuthException catch (e) {
@@ -60,19 +60,19 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> updateUserData(String uid, String name, int age) async {
     try {
-      // نستخدم update لتعديل حقول محددة فقط في الوثيقة
+
       await firestore.collection('users').doc(uid).update({
         'name': name,
         'age': age,
       });
     } catch (e) {
-      throw Exception(); // سيلتقط الـ Repository هذا الخطأ
+      throw Exception();
     }
   }
-// 2. دالة تحديث حالة التحقق فقط
+
   @override
   Future<void> updateUserVerificationStatusInFirestore(String uid, bool isVerified) async {
-    // نستخدم update بدلاً من set لكي لا نمسح باقي بيانات المستخدم
+
     await firestore.collection('users').doc(uid).update({
       'isEmailVerified': isVerified,
     });
@@ -87,14 +87,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       await firebaseAuth.sendPasswordResetEmail(email: email);
     } catch (e) {
-      // نمرر الخطأ للـ Repository ليتعامل معه
-      throw Exception(); 
+
+      throw Exception();
     }
   }
  @override
   Future<UserModel> login(String email, String password) async {
     try {
-      // 1. التحقق من الهوية عبر Firebase Auth
+
       final userCredential = await firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
@@ -103,19 +103,19 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final user = userCredential.user;
       
       if (user != null) {
-        // 🌟 2. جلب بيانات المستخدم (الاسم والعمر) من Firestore
+
         final userDoc = await firestore.collection('users').doc(user.uid).get();
         
         String fetchedName = '';
         int fetchedAge = 0;
         
-        // التأكد من أن الوثيقة موجودة وتحتوي على بيانات
+
         if (userDoc.exists && userDoc.data() != null) {
           fetchedName = userDoc.data()!['name'] ?? '';
           fetchedAge = userDoc.data()!['age'] ?? 0;
         }
 
-        // 🌟 3. إرجاع الـ UserModel وهو يحتوي على البيانات الكاملة
+
         return UserModel.fromFirebaseUser(
           user, 
           name: fetchedName, 
@@ -125,7 +125,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         throw Exception('فشل في استرداد بيانات المستخدم.');
       }
     } catch (e) {
-      // يفضل في بيئة العمل الحقيقية طباعة e لمعرفة نوع الخطأ (Debugging)
+
       throw Exception();
     }
   }

@@ -29,7 +29,7 @@ class AuthProvider extends ChangeNotifier {
   final UpdateUserInfoUseCase _updateUserInfoUseCase;
   final DeleteAccountUseCase _deleteAccountUseCase;
   
-  // الـ Use Cases الجديدة
+
   final EnableBiometricUseCase _enableBiometricUseCase;
   final DisableBiometricUseCase _disableBiometricUseCase;
   final LoginWithBiometricUseCase _loginWithBiometricUseCase;
@@ -56,7 +56,7 @@ class AuthProvider extends ChangeNotifier {
   bool _isLoading = false;
   UserEntity? _currentUser;
   String? _errorMessage;
-  bool _isBiometricEnabled = false; // متغير لحفظ حالة زر البصمة في الإعدادات
+  bool _isBiometricEnabled = false;
 
   bool get isLoading => _isLoading;
   UserEntity? get currentUser => _currentUser;
@@ -69,7 +69,7 @@ class AuthProvider extends ChangeNotifier {
   Future<void> checkAuthStatus() async {
     _clearError();
 
-    // 1. نفحص أولاً: هل ميزة البصمة مفعلة محلياً في الـ Secure Storage؟
+
     final bioStatusResult = await _isBiometricEnabledUseCase();
     _isBiometricEnabled = bioStatusResult.fold((_) => false, (enabled) => enabled);
 
@@ -78,12 +78,12 @@ class AuthProvider extends ChangeNotifier {
       final hasHardware = await biometricHelper.hasBiometrics();
 
       if (hasHardware) {
-        // نطلب البصمة من المستخدم فوراً
+
         final authenticated = await biometricHelper.authenticate();
         
         if (authenticated) {
           _setLoading(true);
-          // إذا نجحت البصمة، نسجل الدخول بالبيانات المشفرة في الخلفية
+
           final loginResult = await _loginWithBiometricUseCase();
           
           loginResult.fold(
@@ -96,9 +96,9 @@ class AuthProvider extends ChangeNotifier {
             },
           );
           _setLoading(false);
-          return; // ننهي الدالة هنا لأن الدخول تم بنجاح بالبصمة
+          return;
         } else {
-          // إذا ألغى المستخدم البصمة أو فشلت، نتركه في شاشة تسجيل الدخول
+
           _currentUser = null;
           notifyListeners();
           return;
@@ -106,7 +106,7 @@ class AuthProvider extends ChangeNotifier {
       }
     }
 
-    // 2. إذا لم تكن البصمة مفعلة أصلاً، نتراجع للفلو القديم (تذكرني عبر SharedPreferences)
+
     final result = await _checkCachedUserUseCase();
 
     result.fold(
@@ -124,7 +124,7 @@ Future<bool> deleteAccountWithBiometric() async {
     _setLoading(true);
     _clearError();
 
-    // 1. التحقق من وجود عتاد البصمة في الجهاز
+
     final BiometricHelper biometricHelper = BiometricHelper();
     final hasHardware = await biometricHelper.hasBiometrics();
 
@@ -134,7 +134,7 @@ Future<bool> deleteAccountWithBiometric() async {
       return false;
     }
 
-    // 2. إظهار نافذة النظام للبصمة وانتظار رد المستخدم
+
     final authenticated = await biometricHelper.authenticate();
     
     if (!authenticated) {
@@ -143,7 +143,7 @@ Future<bool> deleteAccountWithBiometric() async {
       return false;
     }
 
-    // 3. إذا نجحت البصمة، نستدعي الـ Use Case ليقوم بالعملية في الخلفية
+
     final result = await _deleteAccountWithBiometricUseCase();
 
     return result.fold(
@@ -209,9 +209,7 @@ Future<bool> deleteAccountWithBiometric() async {
     notifyListeners();
   }
 
-  // ========================================================
-  // الدوال القديمة الخاصة بك (بدون أي تعديل لتجنب كسر الـ UI)
-  // ========================================================
+
 
   Future<bool> deleteAccount(String password) async {
     _setLoading(true);
@@ -281,13 +279,13 @@ Future<bool> deleteAccountWithBiometric() async {
   Future<void> logout() async {
     _setLoading(true);
     
-    // استدعاء الـ UseCase الذي سيقوم بتنظيف التخزين بالكامل
+
     await _logoutUseCase();
     
-    // تصفير بيانات المستخدم الحالي
+
     _currentUser = null;
     
-    // 🔥 الحل المضاف: تصفير حالة البصمة في الذاكرة الحية (RAM)
+
     _isBiometricEnabled = false;
     
     _setLoading(false);

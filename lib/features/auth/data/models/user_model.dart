@@ -26,8 +26,8 @@ class UserModel extends UserEntity {
       uid: json['uid'],
       email: json['email'],
       isEmailVerified: json['isEmailVerified'],
-      name: json['name'] ?? '', // القيمة الافتراضية إذا لم يكن موجودًا
-      age: json['age'] ?? 0,    // القيمة الافتراضية إذا لم
+      name: json['name'] ?? '',
+      age: json['age'] ?? 0,
 
     );
   }

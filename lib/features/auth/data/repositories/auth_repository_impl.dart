@@ -1,4 +1,4 @@
-﻿import 'package:dartz/dartz.dart';
+import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:provider_test/core/errors/failure.dart';
 import 'package:provider_test/features/auth/data/models/user_model.dart';
@@ -32,17 +32,16 @@ class AuthRepositoryImpl implements AuthRepository {
     String password,
   ) async {
     try {
-      // 1. نتأكد أولاً أن الإيميل والباسورد صحيحان (تسجيل دخول وهمي للتحقق)
-      // هذه الخطوة مهمة جداً أمنياً حتى لا نحفظ باسورد خاطئ في التخزين الآمن
+
       await remoteDataSource.login(email, password);
 
-      // 2. إذا نجح، نقوم بمسح بيانات "تذكرني" العادية
+
       await localDataSource.clearCachedUser();
 
-      // 3. نحفظ البيانات في التخزين الآمن
+
       await localDataSource.saveSecureCredentials(email, password);
 
-      // 4. نفعل حالة البصمة
+
       await localDataSource.setBiometricEnabled(true);
 
       return const Right(null);
@@ -54,7 +53,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, void>> disableBiometric() async {
     try {
-      // مسح البيانات من التخزين الآمن وتعطيل الحالة
+
       await localDataSource.clearSecureCredentials();
       await localDataSource.setBiometricEnabled(false);
       return const Right(null);
@@ -66,14 +65,14 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, UserEntity>> loginWithBiometric() async {
     try {
-      // 1. نجلب البيانات المشفرة
+
       final credentials = await localDataSource.getSecureCredentials();
 
       if (credentials != null) {
         final email = credentials['email']!;
         final password = credentials['password']!;
 
-        // 2. نسجل الدخول في فايربيس باستخدامها
+
         final userModel = await remoteDataSource.login(email, password);
         return Right(userModel);
       } else {
@@ -88,7 +87,7 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, void>> deleteAccount(String password) async {
     try {
       await remoteDataSource.deleteAccount(password);
-      // مسح المستخدم من الذاكرة المحلية
+
       await localDataSource.clearCachedUser();
       return const Right(null);
     } catch (e) {
@@ -110,13 +109,13 @@ class AuthRepositoryImpl implements AuthRepository {
     int age,
   ) async {
     try {
-      // 1. تحديث البيانات في فايربيس
+
       await remoteDataSource.updateUserData(uid, name, age);
 
-      // 2. تحديث الكاش المحلي (أفضل ممارسة لتجنب إعادة تحميل البيانات)
+
       try {
         final cachedUser = await localDataSource.getLastCachedUser();
-        // إنشاء كائن جديد بنفس البيانات القديمة ولكن مع الاسم والعمر الجديدين
+
         final updatedUserModel = UserModel(
           uid: cachedUser.uid,
           email: cachedUser.email,
@@ -126,7 +125,7 @@ class AuthRepositoryImpl implements AuthRepository {
         );
         await localDataSource.cacheUser(updatedUserModel);
       } catch (e) {
-        // إذا فشل تحديث الكاش لسبب ما، نتجاهله لأن البيانات الأساسية تم حفظها
+
       }
 
       return const Right(null);
@@ -145,10 +144,10 @@ class AuthRepositoryImpl implements AuthRepository {
       final userModel = await remoteDataSource.login(email, password);
 
       if (rememberMe) {
-        // إذا اختار تذكرني، نحفظه
+
         await localDataSource.cacheUser(userModel);
       } else {
-        // إذا لم يختر تذكرني، نمسح أي كاش قديم حتى لا يتذكره بالخطأ
+
         await localDataSource.clearCachedUser();
       }
 
@@ -194,9 +193,9 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, void>> sendPasswordResetEmail(String email) async {
     try {
       await remoteDataSource.sendPasswordResetEmail(email);
-      return const Right(null); // نجاح العملية
+      return const Right(null);
     } catch (e) {
-      // إرجاع رسالة خطأ واضحة في حال الفشل
+
       return Left(
         ServerFailure(
           'حدث خطأ أثناء إرسال رابط استعادة كلمة المرور. تأكد من صحة البريد الإلكتروني.',
@@ -208,11 +207,10 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, UserEntity>> checkCachedUser() async {
     try {
-      // 1. اقرأ البيانات المحلية أولاً
+
       final localUser = await localDataSource.getLastCachedUser();
 
-      // 2. إذا وجدنا المستخدم في التخزين المحلي، نرجعه مباشرة دون انتظار Firebase
-      // (لأن Firebase سيعيد الاتصال بالجلسة في الخلفية تلقائياً)
+
       return Right(localUser);
     } catch (e) {
       await remoteDataSource.logout();
@@ -223,13 +221,13 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, void>> logout() async {
     try {
-      // 1. تسجيل الخروج من جلسة فايربيس
+
       await remoteDataSource.logout();
 
-      // 2. مسح بيانات "تذكرني" العادية من SharedPreferences
+
       await localDataSource.clearCachedUser();
 
-      // 3. 🔥 الحل المضاف: مسح بيانات البصمة والتخزين الآمن
+
       await localDataSource.clearSecureCredentials();
       await localDataSource.setBiometricEnabled(false);
 
@@ -242,17 +240,16 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, void>> deleteAccountWithBiometric() async {
     try {
-      // 1. جلب البيانات المشفرة (الإيميل والباسورد) من التخزين الآمن
+
       final credentials = await localDataSource.getSecureCredentials();
 
       if (credentials != null) {
         final password = credentials['password']!;
 
-        // 2. استدعاء دالة الحذف من Firebase Remote DataSource باستخدام الباسورد المسترجع
-        // (فايربيس يتطلب الباسورد لإعادة التوثيق قبل الحذف لتفادي ثغرة requires-recent-login)
+
         await remoteDataSource.deleteAccount(password);
 
-        // 3. تنظيف شامل ومسح كل الكاش والبيانات الحيوية بعد نجاح الحذف
+
         await localDataSource.clearCachedUser();
         await localDataSource.clearSecureCredentials();
         await localDataSource.setBiometricEnabled(false);
@@ -276,29 +273,29 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, UserEntity>> checkEmailVerification() async {
     try {
-      // 1. نجلب المستخدم الحالي من فايربيس
+
       final user = remoteDataSource.currentUser;
 
       if (user != null) {
-        // 2. نجبر فايربيس على تحديث حالة الإيميل من السيرفر
+
         await user.reload();
         final updatedUser = remoteDataSource.currentUser;
 
-        // 3. نفحص هل قام بالضغط على الرابط فعلاً؟
+
         if (updatedUser != null && updatedUser.emailVerified) {
-          // تحويله إلى الموديل الخاص بنا
+
           final userModel = UserModel.fromFirebaseUser(updatedUser);
 
-          // 4. تحديث حالته في Firestore
+
           await remoteDataSource.updateUserVerificationStatusInFirestore(
             userModel.uid,
             true,
           );
 
-          // 5. تحديث الكاش المحلي
+
           await localDataSource.cacheUser(userModel);
 
-          // إرجاع المستخدم المحدث للواجهة
+
           return Right(userModel);
         } else {
           return Left(ServerFailure('لم يتم التحقق من البريد الإلكتروني بعد.'));

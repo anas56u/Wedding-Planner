@@ -50,7 +50,6 @@ class WelcomeBanner extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 20),
-          // صندوق النصيحة اليومية...
         ],
       ),
     );

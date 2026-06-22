@@ -20,8 +20,6 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
   @override
   void initState() {
     super.initState();
-    // كيف يعمل؟ نقوم بجلب بيانات المستخدم الحالية من الـ Provider
-    // ونضعها كقيمة مبدئية داخل حقول الإدخال لتسهيل التعديل على المستخدم
     final currentUser = context.read<AuthProvider>().currentUser;
     _nameController = TextEditingController(text: currentUser?.name ?? '');
     _ageController = TextEditingController(text: currentUser?.age?.toString() ?? '');
@@ -29,31 +27,26 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
 
   @override
   void dispose() {
-    // أفضل الممارسات: تنظيف الذاكرة (Memory Management) عند إغلاق النافذة
     _nameController.dispose();
     _ageController.dispose();
     super.dispose();
   }
 
   Future<void> _submitUpdate() async {
-    // التحقق من صحة المدخلات (Validation)
     if (_formKey.currentState!.validate()) {
       final authProvider = context.read<AuthProvider>();
       
       final newName = _nameController.text.trim();
       final newAge = int.parse(_ageController.text.trim());
-
-      // استدعاء دالة التحديث التي أنشأناها في الـ Provider
       final success = await authProvider.updateUserProfile(newName, newAge);
 
       if (mounted) {
         if (success) {
-          Navigator.pop(context); // إغلاق النافذة عند النجاح
+          Navigator.pop(context);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('settings.profile_updated_success'.tr()), backgroundColor: Colors.green),
           );
         } else {
-          // عرض رسالة الخطأ القادمة من الـ Provider
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(authProvider.errorMessage ?? 'common.error_occurred'.tr()), backgroundColor: Colors.red),
           );
@@ -64,7 +57,6 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
 
   @override
   Widget build(BuildContext context) {
-    // نستخدم Consumer لمراقبة حالة الـ isLoading وإظهار مؤشر التحميل في الزر
     return AlertDialog(
       backgroundColor: widget.theme.cardTheme.color,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
@@ -78,7 +70,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
       content: Form(
         key: _formKey,
         child: Column(
-          mainAxisSize: MainAxisSize.min, // لكي لا تأخذ النافذة مساحة الشاشة كاملة
+          mainAxisSize: MainAxisSize.min,
           children: [
             TextFormField(
               controller: _nameController,

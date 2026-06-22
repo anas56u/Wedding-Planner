@@ -1,4 +1,4 @@
-﻿import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/features/dashboard/presentation/widgets/service_card.dart';
@@ -18,14 +18,10 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
-    // جلب البيانات من الـ Providers
     final dailyTip = context.watch<String>();
-
-    // استخدام الـ Theme للوصول للألوان الموحدة بدلاً من Hardcoding
     final theme = Theme.of(context);
 
     return Scaffold(
-      // نعتمد على لون الخلفية المحدد في AppTheme
       appBar: AppBar(
         title: Text('dashboard.home'.tr()),
         actions: [
@@ -40,37 +36,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ],
       ),
-      // استخدمنا SingleChildScrollView لمنع مشاكل الـ Overflow في الشاشات الصغيرة
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. البطاقة الترحيبية (تدمج العداد والنصيحة)
             WelcomeBanner(dailyTip: dailyTip, theme: theme),
 
             const SizedBox(height: 24),
-
-            // 2. عنوان قسم الخدمات
             Text(
-              'الخدمات الأساسية', // يفضل إضافتها لملف الترجمة لاحقاً
+              'الخدمات الأساسية',
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: theme.colorScheme.primary, // الكحلي الملكي
+                color: theme.colorScheme.primary,
               ),
             ),
             const SizedBox(height: 16),
-
-            // 3. شبكة الخدمات (GridView)
-            // استخدمنا shrinkWrap لنسمح للـ GridView بالعمل داخل ScrollView
             GridView.count(
               crossAxisCount: 2,
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
-              childAspectRatio: 1.0, // جعل البطاقات مربعة ومتناسقة
+              childAspectRatio: 1.0,
               shrinkWrap: true,
               physics:
-                  const NeverScrollableScrollPhysics(), // إيقاف التمرير الداخلي للشبكة
+                  const NeverScrollableScrollPhysics(),
               children: [
                 ServiceCard(
                   title: 'dashboard.guests'.tr(),

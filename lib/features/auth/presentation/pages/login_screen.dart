@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/features/auth/presentation/pages/email_verification_screen.dart';
 import 'package:provider_test/features/auth/presentation/pages/sign_up_screen.dart';
-// تأكد من صحة هذه المسارات بناءً على هيكل مشروعك
-import '../providers/auth_provider.dart'; 
+import '../providers/auth_provider.dart';
 import '../../../dashboard/presentation/pages/dashboard_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,15 +14,15 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // 1. مفتاح النموذج (Form Key) للتحقق من صحة المدخلات
+
   final _formKey = GlobalKey<FormState>();
   
-  // 2. متحكمات النصوص (Controllers)
+
   final _emailController = TextEditingController();
   bool _rememberMe = false;
   final _passwordController = TextEditingController();
   
-  // 3. حالة إظهار/إخفاء كلمة المرور
+
   bool _obscurePassword = true;
 
   @override
@@ -32,10 +31,10 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.dispose();
     super.dispose();
   }
-// دالة عرض نافذة استعادة كلمة المرور
+
   void _showResetPasswordDialog(BuildContext context) {
     final TextEditingController resetEmailController = TextEditingController();
-    // نملأ الحقل تلقائياً إذا كان المستخدم قد كتب إيميله بالفعل في شاشة تسجيل الدخول
+
     resetEmailController.text = _emailController.text;
 
     showDialog(
@@ -72,17 +71,17 @@ class _LoginScreenState extends State<LoginScreen> {
               onPressed: () async {
                 final email = resetEmailController.text.trim();
                 if (email.isEmpty || !email.contains('@')) {
-                  // تنبيه بسيط إذا كان الإيميل غير صالح
+
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('auth.login_reset_invalid_email'.tr())),
                   );
                   return;
                 }
 
-                // إغلاق النافذة المنبثقة أولاً
+
                 Navigator.pop(dialogContext);
 
-                // استدعاء دالة الـ Provider
+
                 final authProvider = context.read<AuthProvider>();
                 final success = await authProvider.resetPassword(email);
 
@@ -111,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
       },
     );
   }
-  // دالة تنفيذ تسجيل الدخول
+
  Future<void> _handleLogin() async {
     if (_formKey.currentState!.validate()) {
       FocusScope.of(context).unfocus();
@@ -126,11 +125,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (success) {
         if (mounted) {
-          // 🌟 التعديل هنا: فحص حالة التوثيق قبل التوجيه
+
           final isVerified = authProvider.currentUser?.isEmailVerified ?? false;
 
           if (isVerified) {
-            // موثق؟ أهلاً بك في الرئيسية
+
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const DashboardScreen()),
@@ -162,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final authProvider = context.watch<AuthProvider>();
 
     return Scaffold(
-      // لون الخلفية يأتي تلقائياً من الـ AppTheme (backgroundCream)
+
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -173,11 +172,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // --- 1. الهيدر (الشعار والترحيب) ---
+
                   Icon(
-                    Icons.favorite_rounded, // أيقونة مؤقتة تناسب الزفاف
+                    Icons.favorite_rounded,
                     size: 80,
-                    color: theme.colorScheme.secondary, // الذهبي (Rose Gold)
+                    color: theme.colorScheme.secondary,
                   ),
                   const SizedBox(height: 16),
                   Text(
@@ -185,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     textAlign: TextAlign.center,
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.primary, // الكحلي
+                      color: theme.colorScheme.primary,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -198,7 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 40),
 
-                  // --- 2. حقل البريد الإلكتروني ---
+
                   _buildTextField(
                     controller: _emailController,
                     label: 'auth.email_label'.tr(),
@@ -208,7 +207,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (value == null || value.isEmpty) {
                         return 'auth.email_required'.tr();
                       }
-                      // Regex بسيط للتحقق من صيغة الإيميل
+
                       if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
                         return 'auth.email_invalid'.tr();
                       }
@@ -217,7 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  // --- 3. حقل كلمة المرور ---
+
                   _buildTextField(
                     controller: _passwordController,
                     label: 'auth.password_label'.tr(),
@@ -245,19 +244,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
 
-                  // --- 4. زر "نسيت كلمة المرور؟" ---
-                 // --- 4. زر تذكرني + نسيت كلمة المرور ---
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // قسم "تذكرني"
+
                       Row(
                         children: [
                           SizedBox(
-                            width: 24, // تصغير حجم الـ Checkbox الافتراضي
+                            width: 24,
                             child: Checkbox(
                               value: _rememberMe,
-                              activeColor: theme.colorScheme.primary, // لونه كحلي عند التفعيل
+                              activeColor: theme.colorScheme.primary,
                               onChanged: (value) {
                                 setState(() {
                                   _rememberMe = value ?? false;
@@ -273,7 +270,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ],
                       ),
                       
-                      // زر نسيت كلمة المرور الأصلي
+
                       TextButton(
                         onPressed: () {
                           _showResetPasswordDialog(context);
@@ -292,7 +289,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 24),
 
                   SizedBox(
-                    height: 56, // ارتفاع ثابت يعطي فخامة للزر
+                    height: 56,
                     child: ElevatedButton(
                       onPressed: authProvider.isLoading ? null : _handleLogin,
                       child: authProvider.isLoading
@@ -302,7 +299,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 24),
 
-                  // --- 6. زر "ليس لديك حساب؟ إنشاء حساب" ---
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -322,7 +319,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Text(
                           'auth.login_create_account'.tr(),
                           style: TextStyle(
-                            color: theme.colorScheme.primary, // الكحلي
+                            color: theme.colorScheme.primary,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -338,9 +335,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  // ==========================================
-  // دالة مساعدة لبناء حقول النصوص (Clean UI Logic)
-  // ==========================================
+
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
@@ -360,19 +355,19 @@ class _LoginScreenState extends State<LoginScreen> {
         prefixIcon: Icon(icon, color: Theme.of(context).colorScheme.primary),
         suffixIcon: suffixIcon,
         filled: true,
-        fillColor: Colors.white, // خلفية الحقل بيضاء تبرز فوق الـ Cream
+        fillColor: Colors.white,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none, // بدون حدود صلبة
+          borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade200), // حدود خفيفة جداً
+          borderSide: BorderSide(color: Colors.grey.shade200),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
-            color: Theme.of(context).colorScheme.primary, // لون الكحلي عند التحديد
+            color: Theme.of(context).colorScheme.primary,
             width: 2,
           ),
         ),

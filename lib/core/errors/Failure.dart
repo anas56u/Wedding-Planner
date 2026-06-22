@@ -1,4 +1,3 @@
-// مسار الملف: lib/core/errors/failures.dart
 
 /// الكلاس الأساسي المجرد الذي سترث منه كل أنواع الأخطاء في التطبيق
 abstract class Failure {

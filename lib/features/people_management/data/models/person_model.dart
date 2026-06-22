@@ -1,4 +1,3 @@
-// مسار الملف: lib/features/people_management/data/models/person_model.dart
 
 import '../../domain/entities/person_entity.dart';
 

@@ -1,4 +1,4 @@
-﻿import 'package:dartz/dartz.dart';
+import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:provider_test/core/errors/failure.dart';
 import '../entities/task_entity.dart';
@@ -15,12 +15,9 @@ class AddTaskUseCase {
     List<int> assignedPeopleIds = const [],
     List<String> assignedPeopleNames = const [],
   }) async {
-    // 🌟 قوانين العمل (Business Logic)
     if (title.trim().isEmpty) {
       return Left(InputFailure('عنوان المهمة لا يمكن أن يكون فارغاً'));
     }
-
-    // 🌟 إنشاء الكيان هنا
     final newTask = TaskEntity(
       id: DateTime.now().toString(),
       title: title.trim(),

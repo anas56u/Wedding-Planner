@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart'; // لا تنسَ هذا الاستدعاء
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,8 +15,6 @@ abstract class RegisterModule {
 
   @lazySingleton
   FirebaseFirestore get firestore => FirebaseFirestore.instance;
-
-  // تسجيل خدمة الإشعارات الخاصة بفايربيس هنا
   @lazySingleton
   FirebaseMessaging get firebaseMessaging => FirebaseMessaging.instance;
 

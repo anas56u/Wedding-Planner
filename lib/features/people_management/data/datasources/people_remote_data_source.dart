@@ -26,8 +26,6 @@ class PeopleRemoteDataSourceImpl implements IPeopleRemoteDataSource {
     }
   }
 }
-
-// 🌟 دالة التحويل المعزولة
 List<PersonModel> _parseApiPeople(String jsonString) {
   final Map<String, dynamic> data = json.decode(jsonString);
   final List<dynamic> usersList = data['users'];

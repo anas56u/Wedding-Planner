@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_test/core/utlis/biometric_helper.dart';
-// 1. استيراد أداة البصمة التي أنشأناها
+
 import 'package:provider_test/features/auth/presentation/providers/auth_provider.dart';
 import 'package:provider_test/features/auth/presentation/pages/login_screen.dart';
 import 'package:provider_test/features/profile/presentation/pages/privacy_policy_screen.dart';
@@ -26,20 +26,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
 void _onDeleteAccountPressed(BuildContext context) async {
   final authProvider = context.read<AuthProvider>();
 
-  // الفحص الشرطي: هل المستخدم مفعّل خيار البصمة في إعداداته؟
+
   if (authProvider.isBiometricEnabled) {
     
-    // الفلو الأول: الحذف عبر البصمة مباشرة
+
     final success = await authProvider.deleteAccountWithBiometric();
     
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('تم حذف الحساب بنجاح.'), backgroundColor: Colors.green),
       );
-      // التوجيه لشاشة تسجيل الدخول أو الشاشة الترحيبية ومسح التاريخ
+
 Navigator.of(context).pushAndRemoveUntil(
   MaterialPageRoute(builder: (context) => const LoginScreen()),
-  (Route<dynamic> route) => false, // هذا الجزء يحذف كل الشاشات السابقة من الذاكرة لمنع زر الرجوع
+  (Route<dynamic> route) => false,
 );    } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(authProvider.errorMessage ?? 'حدث خطأ ما'), backgroundColor: Colors.redAccent),
@@ -47,7 +47,7 @@ Navigator.of(context).pushAndRemoveUntil(
     }
     
   } else {
-    // الفلو الثاني: تراجع للطلب التقليدي (إظهار الديالوج لإدخال كلمة المرور يدويًا)
+
     _showDeleteAccountDialog(context);
   }
   
@@ -55,8 +55,7 @@ Navigator.of(context).pushAndRemoveUntil(
   @override
   void initState() {
     super.initState();
-    // 2. أفضل ممارسة (Best Practice): جلب حالة البصمة الحالية عند فتح الشاشة
-    // نستخدم Future.microtask لضمان استدعاء الـ Provider بعد بناء الشاشة الأولي
+
     Future.microtask(() {
       if (mounted) {
         context.read<AuthProvider>().loadBiometricSettingsStatus();
@@ -107,7 +106,7 @@ Navigator.of(context).pushAndRemoveUntil(
               ),
               SettingsDivider(theme: theme),
               
-              // 3. إضافة خيار تفعيل البصمة مغلف بـ Consumer ليتفاعل مع التغييرات
+
               Consumer<AuthProvider>(
                 builder: (context, authProvider, child) {
                   return SwitchOption(
@@ -117,10 +116,10 @@ Navigator.of(context).pushAndRemoveUntil(
                     value: authProvider.isBiometricEnabled,
                     onChanged: (val) async {
                       if (val) {
-                        // إذا أراد المستخدم التفعيل، نظهر له نافذة تأكيد الباسورد
+
                         _showEnableBiometricDialog(context, authProvider);
                       } else {
-                        // إذا أراد التعطيل، نعطله مباشرة بدون طلب باسورد (UX أفضل)
+
                         final success = await authProvider.toggleDisableBiometric();
                         if (success && context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -144,7 +143,7 @@ Navigator.of(context).pushAndRemoveUntil(
           const SizedBox(height: 12),
           SettingsCard(
             theme: theme,
-            // ... (باقي كود قسم about_section وأزرار حذف الحساب وتسجيل الخروج يبقى كما هو تماماً بدون تغيير)
+
             children: [
               ActionOption(
                 theme: theme,
@@ -171,7 +170,7 @@ Navigator.of(context).pushAndRemoveUntil(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                onTap: () => _onDeleteAccountPressed(context), // استدعاء الدالة الجديدة عند الضغط
+                onTap: () => _onDeleteAccountPressed(context),
               ),
               SettingsDivider(theme: theme),
               ActionOption(
@@ -248,7 +247,7 @@ Navigator.of(context).pushAndRemoveUntil(
     );
   }
 
-  // 4. الدالة الجديدة المسؤولة عن Flow تفعيل البصمة الآمن
+
   void _showEnableBiometricDialog(BuildContext context, AuthProvider authProvider) {
     final passwordController = TextEditingController();
     final formKey = GlobalKey<FormState>();
@@ -301,7 +300,7 @@ Navigator.of(context).pushAndRemoveUntil(
               onPressed: () => Navigator.pop(dialogContext),
               child: const Text('إلغاء', style: TextStyle(color: Colors.grey)),
             ),
-            // نستخدم Consumer هنا لكي يتغير الزر إلى دائرة تحميل إذا كان الـ Provider في حالة Loading
+        
             Consumer<AuthProvider>(
               builder: (context, provider, child) {
                 return ElevatedButton(
@@ -313,7 +312,7 @@ Navigator.of(context).pushAndRemoveUntil(
                       ? null
                       : () async {
                           if (formKey.currentState!.validate()) {
-                            // 1. نغلق الـ Dialog أولاً
+
                             Navigator.pop(dialogContext);
 
                             final biometricHelper = BiometricHelper();
@@ -334,7 +333,7 @@ Navigator.of(context).pushAndRemoveUntil(
                                     ),
                                   );
                                 } else {
-                                  // إذا كان الباسورد خطأ
+
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(provider.errorMessage ?? 'كلمة المرور غير صحيحة.'),
@@ -344,7 +343,7 @@ Navigator.of(context).pushAndRemoveUntil(
                                 }
                               }
                             } else {
-                              // إذا ألغى نافذة البصمة
+
                               if (context.mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
@@ -371,9 +370,7 @@ Navigator.of(context).pushAndRemoveUntil(
     );
   }
 
-  // دالة الحذف الخاصة بك (بدون تغيير)
   void _showDeleteAccountDialog(BuildContext context) {
-    // ... (الكود الخاص بك هنا كما هو تماماً)
     final passwordController = TextEditingController();
     final formKey = GlobalKey<FormState>();
 
