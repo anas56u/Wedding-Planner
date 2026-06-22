@@ -50,6 +50,7 @@ dependencies:
   flutter_secure_storage: ^10.3.1
   firebase_messaging: ^16.4.0
   flutter_local_notifications: ^22.0.1
+  liquid_pull_to_refresh: ^3.0.1
 
 dev_dependencies:
   flutter_test:

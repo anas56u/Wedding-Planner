@@ -36,14 +36,10 @@ class _HomeScreenState extends State<HomeScreen> {
           title: Text(
             'guests.title'.tr(),
             style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
+          ),  
+          
           actions: [
-            IconButton(
-              icon: Icon(Icons.refresh_rounded, color: theme.colorScheme.primary),
-              onPressed: () {
-                context.read<PeopleProvider>().loadData();
-              },
-            ),
+          
             Consumer<PeopleProvider>(
               builder: (context, provider, child) {
                 return DropdownButtonHideUnderline(
@@ -75,7 +71,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
-            const SizedBox(width: 8),
           ],
           bottom: TabBar(
             indicatorColor: theme.colorScheme.secondary,
