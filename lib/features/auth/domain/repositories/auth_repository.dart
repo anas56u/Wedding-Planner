@@ -31,4 +31,5 @@ abstract class AuthRepository {
   Future<Either<Failure, void>> disableBiometric();
   Future<Either<Failure, UserEntity>> loginWithBiometric();
   Future<Either<Failure, bool>> isBiometricEnabled();
+  Future<Either<Failure, void>> deleteAccountWithBiometric();
 }

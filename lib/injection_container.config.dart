@@ -32,6 +32,8 @@ import 'package:provider_test/features/auth/domain/usecases/check_email_verifica
     as _i115;
 import 'package:provider_test/features/auth/domain/usecases/delete_account_usecase.dart'
     as _i1031;
+import 'package:provider_test/features/auth/domain/usecases/delete_account_with_biometric_usecase.dart'
+    as _i134;
 import 'package:provider_test/features/auth/domain/usecases/disable_biometric_usecase.dart'
     as _i650;
 import 'package:provider_test/features/auth/domain/usecases/enable_biometric_usecase.dart'
@@ -176,6 +178,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i368.TogglePersonSelectionUseCase>(
       () => _i368.TogglePersonSelectionUseCase(gh<_i446.IPeopleRepository>()),
     );
+    gh.factory<_i134.DeleteAccountWithBiometricUseCase>(
+      () => _i134.DeleteAccountWithBiometricUseCase(gh<_i655.AuthRepository>()),
+    );
     gh.factory<_i650.DisableBiometricUseCase>(
       () => _i650.DisableBiometricUseCase(gh<_i655.AuthRepository>()),
     );
@@ -227,18 +232,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1019.IHospitalityStaffRepository>(),
       ),
     );
-    gh.lazySingleton<_i1039.AddTaskUseCase>(
-      () => _i1039.AddTaskUseCase(gh<_i162.ITasksRepository>()),
-    );
-    gh.lazySingleton<_i630.DeleteTaskUseCase>(
-      () => _i630.DeleteTaskUseCase(gh<_i162.ITasksRepository>()),
-    );
-    gh.lazySingleton<_i177.GetTasksUseCase>(
-      () => _i177.GetTasksUseCase(gh<_i162.ITasksRepository>()),
-    );
-    gh.lazySingleton<_i1051.ToggleTaskCompletionUseCase>(
-      () => _i1051.ToggleTaskCompletionUseCase(gh<_i162.ITasksRepository>()),
-    );
     gh.factory<_i554.AuthProvider>(
       () => _i554.AuthProvider(
         gh<_i1073.LoginUseCase>(),
@@ -254,7 +247,20 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i650.DisableBiometricUseCase>(),
         gh<_i265.LoginWithBiometricUseCase>(),
         gh<_i835.IsBiometricEnabledUseCase>(),
+        gh<_i134.DeleteAccountWithBiometricUseCase>(),
       ),
+    );
+    gh.lazySingleton<_i1039.AddTaskUseCase>(
+      () => _i1039.AddTaskUseCase(gh<_i162.ITasksRepository>()),
+    );
+    gh.lazySingleton<_i630.DeleteTaskUseCase>(
+      () => _i630.DeleteTaskUseCase(gh<_i162.ITasksRepository>()),
+    );
+    gh.lazySingleton<_i177.GetTasksUseCase>(
+      () => _i177.GetTasksUseCase(gh<_i162.ITasksRepository>()),
+    );
+    gh.lazySingleton<_i1051.ToggleTaskCompletionUseCase>(
+      () => _i1051.ToggleTaskCompletionUseCase(gh<_i162.ITasksRepository>()),
     );
     gh.factory<_i1032.HospitalityStaffProvider>(
       () => _i1032.HospitalityStaffProvider(

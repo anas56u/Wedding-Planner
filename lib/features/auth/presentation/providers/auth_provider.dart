@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:provider_test/core/utlis/biometric_helper.dart';
 import 'package:provider_test/features/auth/domain/usecases/check_email_verification_usecase.dart';
 import 'package:provider_test/features/auth/domain/usecases/delete_account_usecase.dart';
+import 'package:provider_test/features/auth/domain/usecases/delete_account_with_biometric_usecase.dart';
 import 'package:provider_test/features/auth/domain/usecases/send_email_verification_usecase.dart';
 import 'package:provider_test/features/auth/domain/usecases/send_password_reset_usecase.dart';
 import 'package:provider_test/features/auth/domain/usecases/update_user_info_usecase.dart';
@@ -33,6 +34,7 @@ class AuthProvider extends ChangeNotifier {
   final DisableBiometricUseCase _disableBiometricUseCase;
   final LoginWithBiometricUseCase _loginWithBiometricUseCase;
   final IsBiometricEnabledUseCase _isBiometricEnabledUseCase;
+  final DeleteAccountWithBiometricUseCase _deleteAccountWithBiometricUseCase;
 
   AuthProvider(
     this._loginUseCase,
@@ -48,6 +50,7 @@ class AuthProvider extends ChangeNotifier {
     this._disableBiometricUseCase,
     this._loginWithBiometricUseCase,
     this._isBiometricEnabledUseCase,
+    this._deleteAccountWithBiometricUseCase,
   );
 
   bool _isLoading = false;
@@ -117,7 +120,46 @@ class AuthProvider extends ChangeNotifier {
       },
     );
   }
+Future<bool> deleteAccountWithBiometric() async {
+    _setLoading(true);
+    _clearError();
 
+    // 1. التحقق من وجود عتاد البصمة في الجهاز
+    final BiometricHelper biometricHelper = BiometricHelper();
+    final hasHardware = await biometricHelper.hasBiometrics();
+
+    if (!hasHardware) {
+      _errorMessage = "الجهاز الحالي لا يدعم المصادقة الحيوية.";
+      _setLoading(false);
+      return false;
+    }
+
+    // 2. إظهار نافذة النظام للبصمة وانتظار رد المستخدم
+    final authenticated = await biometricHelper.authenticate();
+    
+    if (!authenticated) {
+      _errorMessage = "تم إلغاء نظام المصادقة أو فشل التعرف على البصمة.";
+      _setLoading(false);
+      return false;
+    }
+
+    // 3. إذا نجحت البصمة، نستدعي الـ Use Case ليقوم بالعملية في الخلفية
+    final result = await _deleteAccountWithBiometricUseCase();
+
+    return result.fold(
+      (failure) {
+        _errorMessage = failure.message;
+        _setLoading(false);
+        return false;
+      },
+      (_) {
+        _currentUser = null;
+        _isBiometricEnabled = false;
+        _setLoading(false);
+        return true;
+      },
+    );
+  }
   /// دالة تفعيل البصمة من شاشة الإعدادات
   Future<bool> toggleEnableBiometric(String email, String password) async {
     _setLoading(true);

@@ -23,7 +23,35 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _notificationsEnabled = true;
+void _onDeleteAccountPressed(BuildContext context) async {
+  final authProvider = context.read<AuthProvider>();
 
+  // الفحص الشرطي: هل المستخدم مفعّل خيار البصمة في إعداداته؟
+  if (authProvider.isBiometricEnabled) {
+    
+    // الفلو الأول: الحذف عبر البصمة مباشرة
+    final success = await authProvider.deleteAccountWithBiometric();
+    
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('تم حذف الحساب بنجاح.'), backgroundColor: Colors.green),
+      );
+      // التوجيه لشاشة تسجيل الدخول أو الشاشة الترحيبية ومسح التاريخ
+Navigator.of(context).pushAndRemoveUntil(
+  MaterialPageRoute(builder: (context) => const LoginScreen()),
+  (Route<dynamic> route) => false, // هذا الجزء يحذف كل الشاشات السابقة من الذاكرة لمنع زر الرجوع
+);    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(authProvider.errorMessage ?? 'حدث خطأ ما'), backgroundColor: Colors.redAccent),
+      );
+    }
+    
+  } else {
+    // الفلو الثاني: تراجع للطلب التقليدي (إظهار الديالوج لإدخال كلمة المرور يدويًا)
+    _showDeleteAccountDialog(context);
+  }
+  
+}
   @override
   void initState() {
     super.initState();
@@ -143,7 +171,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                onTap: () => _showDeleteAccountDialog(context),
+                onTap: () => _onDeleteAccountPressed(context), // استدعاء الدالة الجديدة عند الضغط
               ),
               SettingsDivider(theme: theme),
               ActionOption(
