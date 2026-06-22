@@ -5,8 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:provider_test/core/providers/language_provider.dart';
 import 'package:provider_test/core/services/push_notification_service.dart';
 import 'package:provider_test/features/auth/presentation/providers/auth_provider.dart';
-import 'package:provider_test/features/auth/presentation/pages/login_screen.dart';
-import 'package:provider_test/features/dashboard/presentation/pages/dashboard_screen.dart';
 import 'package:provider_test/features/hospitality_staff/presentation/providers/hospitality_staff_provider.dart';
 import 'package:provider_test/features/splash/presentation/pages/splash_screen.dart';
 import 'package:provider_test/features/tasks/presentation/providers/tasks_provider.dart';
