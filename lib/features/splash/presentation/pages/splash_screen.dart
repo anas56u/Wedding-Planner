@@ -101,6 +101,11 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                   color: AppTheme.accentRoseGold,
                 ),
               ),
+              const SizedBox(height: 40), // مسافة فاصلة
+              // مؤشر التحميل
+              const CircularProgressIndicator(
+                color: AppTheme.accentRoseGold, // استخدام لون متناسق من الثيم الخاص بك
+              ),
             ],
           ),
         ),
