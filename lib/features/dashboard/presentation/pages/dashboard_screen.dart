@@ -21,21 +21,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final dailyTip = context.watch<String>();
-
     final theme = Theme.of(context);
-
     final authProvider = context.watch<AuthProvider>();
     final user = authProvider.currentUser;
 
     return PopScope(
       canPop: false,
       onPopInvoked: (bool didPop) async {
-        if (didPop) {
-          return;
-        }
-
+        if (didPop) return;
         final bool shouldExit = await _showExitDialog(context) ?? false;
-
         if (shouldExit) {
           SystemNavigator.pop();
         }
@@ -57,7 +51,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ],
         ),
-
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -67,7 +60,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 InkWell(
                   onTap: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SettingsScreen()),
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsScreen(),
+                    ),
                   ),
                   child: Container(
                     padding: const EdgeInsets.all(20),
@@ -106,7 +101,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                         ),
                         const SizedBox(width: 16),
-
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,11 +164,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 const SizedBox(height: 24),
               ],
-
               WelcomeBanner(dailyTip: dailyTip, theme: theme),
-
               const SizedBox(height: 24),
-
               Text(
                 'dashboard.essential_services'.tr(),
                 style: theme.textTheme.titleLarge?.copyWith(
@@ -183,19 +174,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-
-              GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 1.0,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
+              Column(
                 children: [
-                  ServiceCard(
+                  HorizontalServiceCard(
                     title: 'dashboard.guests'.tr(),
+                    subtitle: 'إدارة وتتبع المدعوين',
                     icon: Icons.people_alt_rounded,
                     theme: theme,
+                    customColor: const Color(0xFF4A90E2),
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -203,10 +189,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ),
                   ),
-                  ServiceCard(
+                  HorizontalServiceCard(
                     title: 'dashboard.preparations'.tr(),
+                    subtitle: 'المهام والتجهيزات',
                     icon: Icons.task_alt_rounded,
                     theme: theme,
+                    customColor: const Color(0xFF2ECC71),
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -214,10 +202,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ),
                   ),
-                  ServiceCard(
+                  HorizontalServiceCard(
                     title: 'dashboard.hospitality'.tr(),
+                    subtitle: 'طاقم الخدمة',
                     icon: Icons.room_service_rounded,
                     theme: theme,
+                    customColor: const Color(0xFFF39C12),
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(

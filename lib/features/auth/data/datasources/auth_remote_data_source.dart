@@ -5,7 +5,7 @@ import '../models/user_model.dart';
 
 abstract class AuthRemoteDataSource {
   Future<UserModel> login(String email, String password);
-  Future<UserModel> signUp(String email, String password ,String name, int age);
+  Future<UserModel> signUp(String email, String password, String name, int age);
   Future<void> sendEmailVerification();
   Future<void> logout();
   User? get currentUser;
@@ -16,7 +16,7 @@ abstract class AuthRemoteDataSource {
   );
   Future<void> sendPasswordResetEmail(String email);
   Future<void> updateUserData(String uid, String name, int age);
-  Future<void> deleteAccount( String password);
+  Future<void> deleteAccount(String password);
 }
 
 @LazySingleton(as: AuthRemoteDataSource)
@@ -26,14 +26,16 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   User? get currentUser => firebaseAuth.currentUser;
 
-  AuthRemoteDataSourceImpl({required this.firebaseAuth, required this.firestore});
+  AuthRemoteDataSourceImpl({
+    required this.firebaseAuth,
+    required this.firestore,
+  });
 
-@override
+  @override
   Future<void> deleteAccount(String password) async {
     try {
       final user = firebaseAuth.currentUser;
       if (user != null && user.email != null) {
-
         AuthCredential credential = EmailAuthProvider.credential(
           email: user.email!,
           password: password,
@@ -41,9 +43,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
         await user.reauthenticateWithCredential(credential);
 
-
         await firestore.collection('users').doc(user.uid).delete();
-        
 
         await user.delete();
       }
@@ -57,10 +57,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       throw Exception('حدث خطأ غير متوقع أثناء الحذف.');
     }
   }
+
   @override
   Future<void> updateUserData(String uid, String name, int age) async {
     try {
-
       await firestore.collection('users').doc(uid).update({
         'name': name,
         'age': age,
@@ -71,75 +71,81 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<void> updateUserVerificationStatusInFirestore(String uid, bool isVerified) async {
-
+  Future<void> updateUserVerificationStatusInFirestore(
+    String uid,
+    bool isVerified,
+  ) async {
     await firestore.collection('users').doc(uid).update({
       'isEmailVerified': isVerified,
     });
   }
+
   @override
-  Future<void> saveUserDataToFirestore (UserModel user) async{
-    await  firestore.collection("users").doc(user.uid).set(user.toJson());
-    
+  Future<void> saveUserDataToFirestore(UserModel user) async {
+    await firestore.collection("users").doc(user.uid).set(user.toJson());
   }
-@override
+
+  @override
   Future<void> sendPasswordResetEmail(String email) async {
     try {
       await firebaseAuth.sendPasswordResetEmail(email: email);
     } catch (e) {
-
       throw Exception();
     }
   }
- @override
+
+  @override
   Future<UserModel> login(String email, String password) async {
     try {
-
       final userCredential = await firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
       final user = userCredential.user;
-      
-      if (user != null) {
 
+      if (user != null) {
         final userDoc = await firestore.collection('users').doc(user.uid).get();
-        
+
         String fetchedName = '';
         int fetchedAge = 0;
-        
 
         if (userDoc.exists && userDoc.data() != null) {
           fetchedName = userDoc.data()!['name'] ?? '';
           fetchedAge = userDoc.data()!['age'] ?? 0;
         }
 
-
         return UserModel.fromFirebaseUser(
-          user, 
-          name: fetchedName, 
+          user,
+          name: fetchedName,
           age: fetchedAge,
         );
       } else {
         throw Exception('فشل في استرداد بيانات المستخدم.');
       }
     } catch (e) {
-
       throw Exception();
     }
   }
 
   @override
-  Future<UserModel> signUp(String email, String password, String name, int age) async {
+  Future<UserModel> signUp(
+    String email,
+    String password,
+    String name,
+    int age,
+  ) async {
     try {
       final userCredential = await firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
-
       );
-      
-      return UserModel.fromFirebaseUser(userCredential.user! , name: name, age: age);
+
+      return UserModel.fromFirebaseUser(
+        userCredential.user!,
+        name: name,
+        age: age,
+      );
     } catch (e) {
       throw Exception();
     }

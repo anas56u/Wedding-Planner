@@ -17,7 +17,7 @@ import '../../domain/usecases/sign_up_usecase.dart';
 import '../../domain/usecases/check_cached_user_usecase.dart';
 import '../../domain/usecases/logout_usecase.dart';
 
-@injectable 
+@injectable
 class AuthProvider extends ChangeNotifier {
   final LoginUseCase _loginUseCase;
   final SignUpUseCase _signUpUseCase;
@@ -25,10 +25,9 @@ class AuthProvider extends ChangeNotifier {
   final SendEmailVerificationUseCase _sendEmailVerificationUseCase;
   final LogoutUseCase _logoutUseCase;
   final CheckEmailVerificationUseCase _checkEmailVerificationUseCase;
-  final SendPasswordResetUseCase _sendPasswordResetUseCase; 
+  final SendPasswordResetUseCase _sendPasswordResetUseCase;
   final UpdateUserInfoUseCase _updateUserInfoUseCase;
   final DeleteAccountUseCase _deleteAccountUseCase;
-  
 
   final EnableBiometricUseCase _enableBiometricUseCase;
   final DisableBiometricUseCase _disableBiometricUseCase;
@@ -64,28 +63,27 @@ class AuthProvider extends ChangeNotifier {
   bool get isAuthenticated => _currentUser != null;
   bool get isBiometricEnabled => _isBiometricEnabled;
 
-  /// دالة التحقق من الجلسة المحفوظة (عند فتح التطبيق)
-  /// تم تحديثها لتدعم فلو البصمة أولاً، ثم التراجع لتذكرني إذا لم تكن مفعلة
   Future<void> checkAuthStatus() async {
     _clearError();
 
-
     final bioStatusResult = await _isBiometricEnabledUseCase();
-    _isBiometricEnabled = bioStatusResult.fold((_) => false, (enabled) => enabled);
+    _isBiometricEnabled = bioStatusResult.fold(
+      (_) => false,
+      (enabled) => enabled,
+    );
 
     if (_isBiometricEnabled) {
       final BiometricHelper biometricHelper = BiometricHelper();
       final hasHardware = await biometricHelper.hasBiometrics();
 
       if (hasHardware) {
-
         final authenticated = await biometricHelper.authenticate();
-        
+
         if (authenticated) {
           _setLoading(true);
 
           final loginResult = await _loginWithBiometricUseCase();
-          
+
           loginResult.fold(
             (failure) {
               _errorMessage = failure.message;
@@ -98,14 +96,12 @@ class AuthProvider extends ChangeNotifier {
           _setLoading(false);
           return;
         } else {
-
           _currentUser = null;
           notifyListeners();
           return;
         }
       }
     }
-
 
     final result = await _checkCachedUserUseCase();
 
@@ -120,10 +116,10 @@ class AuthProvider extends ChangeNotifier {
       },
     );
   }
-Future<bool> deleteAccountWithBiometric() async {
+
+  Future<bool> deleteAccountWithBiometric() async {
     _setLoading(true);
     _clearError();
-
 
     final BiometricHelper biometricHelper = BiometricHelper();
     final hasHardware = await biometricHelper.hasBiometrics();
@@ -134,15 +130,13 @@ Future<bool> deleteAccountWithBiometric() async {
       return false;
     }
 
-
     final authenticated = await biometricHelper.authenticate();
-    
+
     if (!authenticated) {
       _errorMessage = "تم إلغاء نظام المصادقة أو فشل التعرف على البصمة.";
       _setLoading(false);
       return false;
     }
-
 
     final result = await _deleteAccountWithBiometricUseCase();
 
@@ -160,7 +154,7 @@ Future<bool> deleteAccountWithBiometric() async {
       },
     );
   }
-  /// دالة تفعيل البصمة من شاشة الإعدادات
+
   Future<bool> toggleEnableBiometric(String email, String password) async {
     _setLoading(true);
     _clearError();
@@ -181,7 +175,6 @@ Future<bool> deleteAccountWithBiometric() async {
     );
   }
 
-  /// دالة تعطيل البصمة من شاشة الإعدادات
   Future<bool> toggleDisableBiometric() async {
     _setLoading(true);
     _clearError();
@@ -202,22 +195,27 @@ Future<bool> deleteAccountWithBiometric() async {
     );
   }
 
-  /// جلب حالة البصمة الحالية لتحديث واجهة الإعدادات عند فتحها
   Future<void> loadBiometricSettingsStatus() async {
     final result = await _isBiometricEnabledUseCase();
     _isBiometricEnabled = result.fold((_) => false, (enabled) => enabled);
     notifyListeners();
   }
 
-
-
   Future<bool> deleteAccount(String password) async {
     _setLoading(true);
     _clearError();
     final result = await _deleteAccountUseCase(password);
     return result.fold(
-      (failure) { _errorMessage = failure.message; _setLoading(false); return false; },
-      (_) { _currentUser = null; _setLoading(false); return true; },
+      (failure) {
+        _errorMessage = failure.message;
+        _setLoading(false);
+        return false;
+      },
+      (_) {
+        _currentUser = null;
+        _setLoading(false);
+        return true;
+      },
     );
   }
 
@@ -227,9 +225,19 @@ Future<bool> deleteAccountWithBiometric() async {
     _clearError();
     final result = await _updateUserInfoUseCase(_currentUser!.uid, name, age);
     return result.fold(
-      (failure) { _errorMessage = failure.message; _setLoading(false); return false; },
+      (failure) {
+        _errorMessage = failure.message;
+        _setLoading(false);
+        return false;
+      },
       (_) {
-        _currentUser = UserEntity(uid: _currentUser!.uid, email: _currentUser!.email, isEmailVerified: _currentUser!.isEmailVerified, name: name, age: age);
+        _currentUser = UserEntity(
+          uid: _currentUser!.uid,
+          email: _currentUser!.email,
+          isEmailVerified: _currentUser!.isEmailVerified,
+          name: name,
+          age: age,
+        );
         _setLoading(false);
         return true;
       },
@@ -241,8 +249,15 @@ Future<bool> deleteAccountWithBiometric() async {
     _clearError();
     final result = await _sendPasswordResetUseCase(email);
     return result.fold(
-      (failure) { _errorMessage = failure.message; _setLoading(false); return false; },
-      (_) { _setLoading(false); return true; },
+      (failure) {
+        _errorMessage = failure.message;
+        _setLoading(false);
+        return false;
+      },
+      (_) {
+        _setLoading(false);
+        return true;
+      },
     );
   }
 
@@ -251,8 +266,16 @@ Future<bool> deleteAccountWithBiometric() async {
     _clearError();
     final result = await _checkEmailVerificationUseCase();
     return result.fold(
-      (failure) { _errorMessage = failure.message; _setLoading(false); return false; },
-      (updatedUser) { _currentUser = updatedUser; _setLoading(false); return true; },
+      (failure) {
+        _errorMessage = failure.message;
+        _setLoading(false);
+        return false;
+      },
+      (updatedUser) {
+        _currentUser = updatedUser;
+        _setLoading(false);
+        return true;
+      },
     );
   }
 
@@ -261,41 +284,70 @@ Future<bool> deleteAccountWithBiometric() async {
     _clearError();
     final result = await _loginUseCase(email, password, rememberMe);
     return result.fold(
-      (failure) { _errorMessage = failure.message; _setLoading(false); return false; },
-      (user) { _currentUser = user; _setLoading(false); return true; },
+      (failure) {
+        _errorMessage = failure.message;
+        _setLoading(false);
+        return false;
+      },
+      (user) {
+        _currentUser = user;
+        _setLoading(false);
+        return true;
+      },
     );
   }
 
-  Future<bool> signUp(String email, String password, String name, int age) async {
+  Future<bool> signUp(
+    String email,
+    String password,
+    String name,
+    int age,
+  ) async {
     _setLoading(true);
     _clearError();
     final result = await _signUpUseCase(email, password, name, age);
     return result.fold(
-      (failure) { _errorMessage = failure.message; _setLoading(false); return false; },
-      (user) async { _currentUser = user; await _sendEmailVerificationUseCase(); _setLoading(false); return true; },
+      (failure) {
+        _errorMessage = failure.message;
+        _setLoading(false);
+        return false;
+      },
+      (user) async {
+        _currentUser = user;
+        await _sendEmailVerificationUseCase();
+        _setLoading(false);
+        return true;
+      },
     );
   }
 
   Future<void> logout() async {
     _setLoading(true);
-    
 
     await _logoutUseCase();
-    
 
     _currentUser = null;
-    
 
     _isBiometricEnabled = false;
-    
+
     _setLoading(false);
   }
 
   Future<bool> resendEmailVerification() async {
     final result = await _sendEmailVerificationUseCase();
-    return result.fold((failure) { _errorMessage = failure.message; notifyListeners(); return false; }, (_) => true);
+    return result.fold((failure) {
+      _errorMessage = failure.message;
+      notifyListeners();
+      return false;
+    }, (_) => true);
   }
 
-  void _setLoading(bool value) { _isLoading = value; notifyListeners(); }
-  void _clearError() { _errorMessage = null; }
+  void _setLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
+
+  void _clearError() {
+    _errorMessage = null;
+  }
 }

@@ -14,14 +14,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   final _formKey = GlobalKey<FormState>();
-  
 
   final _emailController = TextEditingController();
   bool _rememberMe = false;
   final _passwordController = TextEditingController();
-  
 
   bool _obscurePassword = true;
 
@@ -41,7 +38,9 @@ class _LoginScreenState extends State<LoginScreen> {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           title: Text(
             'auth.login_reset_title'.tr(),
             style: TextStyle(color: Theme.of(context).colorScheme.primary),
@@ -57,7 +56,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 decoration: InputDecoration(
                   labelText: 'auth.email_label'.tr(),
                   prefixIcon: const Icon(Icons.email_outlined),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
             ],
@@ -65,22 +66,24 @@ class _LoginScreenState extends State<LoginScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
-              child: Text('common.cancel'.tr(), style: const TextStyle(color: Colors.grey)),
+              child: Text(
+                'common.cancel'.tr(),
+                style: const TextStyle(color: Colors.grey),
+              ),
             ),
             ElevatedButton(
               onPressed: () async {
                 final email = resetEmailController.text.trim();
                 if (email.isEmpty || !email.contains('@')) {
-
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('auth.login_reset_invalid_email'.tr())),
+                    SnackBar(
+                      content: Text('auth.login_reset_invalid_email'.tr()),
+                    ),
                   );
                   return;
                 }
 
-
                 Navigator.pop(dialogContext);
-
 
                 final authProvider = context.read<AuthProvider>();
                 final success = await authProvider.resetPassword(email);
@@ -96,7 +99,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text(authProvider.errorMessage ?? 'common.error_occurred'.tr()),
+                        content: Text(
+                          authProvider.errorMessage ??
+                              'common.error_occurred'.tr(),
+                        ),
                         backgroundColor: Colors.redAccent,
                       ),
                     );
@@ -111,12 +117,12 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
- Future<void> _handleLogin() async {
+  Future<void> _handleLogin() async {
     if (_formKey.currentState!.validate()) {
       FocusScope.of(context).unfocus();
 
       final authProvider = context.read<AuthProvider>();
-      
+
       final success = await authProvider.login(
         _emailController.text.trim(),
         _passwordController.text.trim(),
@@ -125,11 +131,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (success) {
         if (mounted) {
-
           final isVerified = authProvider.currentUser?.isEmailVerified ?? false;
 
           if (isVerified) {
-
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const DashboardScreen()),
@@ -137,7 +141,9 @@ class _LoginScreenState extends State<LoginScreen> {
           } else {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const EmailVerificationScreen()),
+              MaterialPageRoute(
+                builder: (context) => const EmailVerificationScreen(),
+              ),
             );
           }
         }
@@ -161,7 +167,6 @@ class _LoginScreenState extends State<LoginScreen> {
     final authProvider = context.watch<AuthProvider>();
 
     return Scaffold(
-
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -172,7 +177,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-
                   Icon(
                     Icons.favorite_rounded,
                     size: 80,
@@ -197,7 +201,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 40),
 
-
                   _buildTextField(
                     controller: _emailController,
                     label: 'auth.email_label'.tr(),
@@ -208,14 +211,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         return 'auth.email_required'.tr();
                       }
 
-                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                      if (!RegExp(
+                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                      ).hasMatch(value)) {
                         return 'auth.email_invalid'.tr();
                       }
                       return null;
                     },
                   ),
                   const SizedBox(height: 16),
-
 
                   _buildTextField(
                     controller: _passwordController,
@@ -224,7 +228,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     obscureText: _obscurePassword,
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                        _obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
                         color: Colors.grey,
                       ),
                       onPressed: () {
@@ -247,7 +253,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-
                       Row(
                         children: [
                           SizedBox(
@@ -269,7 +274,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ],
                       ),
-                      
 
                       TextButton(
                         onPressed: () {
@@ -299,7 +303,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 24),
 
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -309,12 +312,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       TextButton(
                         onPressed: () {
-                          
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const SignUpScreen()),
+                            MaterialPageRoute(
+                              builder: (context) => const SignUpScreen(),
+                            ),
                           );
-                          
                         },
                         child: Text(
                           'auth.login_create_account'.tr(),
@@ -334,7 +337,6 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
 
   Widget _buildTextField({
     required TextEditingController controller,
